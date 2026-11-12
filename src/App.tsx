@@ -902,6 +902,8 @@ function App() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [profileName, setProfileName] = useState('');
   const [profileSaving, setProfileSaving] = useState(false);
+  const [accessStatus, setAccessStatus] = useState('checking');
+  const [selectedRole, setSelectedRole] = useState('student');
   const handleAvatarSelection = (event: any) => {
     const file = event.target.files?.[0] as File | undefined;
     event.target.value = '';
@@ -980,7 +982,7 @@ function App() {
       setNotice(error?.message || 'Your profile could not be updated. Please try again.');
     } finally { setProfileSaving(false); }
   };
-  const isTeacherAccount = String(user?.email || '').toLowerCase() === 'manasse@icircles.rw';
+  const isTeacherAccount = ['teacher','admin'].includes(String(user?.role || '')) || String(user?.email || '').toLowerCase() === 'manasse@icircles.rw';
   const isTeacher = isTeacherAccount && !studentPreview;
   useEffect(() => { if (user && isTeacher) setTab('Teacher dashboard'); }, [user?.userId, isTeacher]);
   useEffect(() => {
@@ -990,6 +992,16 @@ function App() {
       setUser(current);
       if (current) {
         try {
+          const accessResult = await api.get('/api/access/status');
+          const access = accessResult.data;
+          if (mounted) {
+            setAccessStatus(access.status || 'pending');
+            setUser({ ...current, role: access.role || 'student' });
+          }
+          if (access.status !== 'approved') {
+            if (mounted) setAccountReady(true);
+            return;
+          }
           const [{ data }, journey, report, profile, assigned] = await Promise.all([
             api.get('/api/progress'),
             api.get('/api/journey'),
@@ -1007,7 +1019,7 @@ function App() {
         }
       }
       if (mounted) setAccountReady(true);
-    }).catch(() => { if (mounted) setAccountReady(true); });
+    }).catch(() => { if (mounted) { setAccessStatus('error'); setNotice('We could not verify your account approval. Please refresh or contact the administrator.'); setAccountReady(true); } });
     return () => { mounted = false; };
   }, []);
   useEffect(() => {
@@ -1421,7 +1433,8 @@ function App() {
     setResult(null);
   };
   if (!accountReady) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><p>Preparing your learning space…</p></div></div>;
-  if (!user && !guestMode) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><div className="eyebrow dark">DUOLINGO ENGLISH TEST · 145–160</div><h1>How would you like to enter?</h1><p>Choose the space that matches your role. Student accounts keep individual progress private; teacher access is separately restricted.</p><div className="entry-options"><button className="entry-option" onClick={async () => { try { await auth.signInWithGoogle(); } catch (error: any) { setNotice(error?.message || 'Google sign-in could not start. Please retry.'); } }}><strong>Continue with Google</strong><span>Use your Google account to sign in or request access.</span></button><button className="entry-option" onClick={async () => { try { await auth.signInWithRedirect(); } catch (error: any) { setNotice(error?.message || 'Email sign-in could not start. Please retry.'); } }}><strong>Continue with email</strong><span>Receive a secure sign-in link in your inbox.</span></button><button className="entry-option guest-option" onClick={() => { setGuestMode(true); setTab('Home'); }}><strong>Use without logging in</strong><span>Explore the public learning library. Personal progress and assessments require an approved account.</span></button></div><small>New accounts and accounts outside the automatic approval rules must be approved by the ISOMO administrator before accessing restricted features.</small></div></div>;
+  if (!user && !guestMode) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><div className="eyebrow dark">DUOLINGO ENGLISH TEST · 145–160</div><h1>How would you like to enter?</h1><p>Choose the space that matches your role. Student accounts keep individual progress private; teacher access is separately restricted.</p><label className="profile-field-label" htmlFor="requested-role">I want to join as</label><select id="requested-role" className="teacher-input" value={selectedRole} onChange={e => setSelectedRole(e.target.value)}><option value="student">Student</option><option value="teacher">Teacher</option></select><div className="entry-options"><button className="entry-option" onClick={async () => { try { await auth.signInWithGoogle(selectedRole); } catch (error: any) { setNotice(error?.message || 'Google sign-in could not start. Please retry.'); } }}><strong>Continue with Google</strong><span>Use your Google account to sign in or request access.</span></button><button className="entry-option" onClick={async () => { try { await auth.signInWithRedirect(selectedRole); } catch (error: any) { setNotice(error?.message || 'Email sign-in could not start. Please retry.'); } }}><strong>Continue with email</strong><span>Receive a secure sign-in link in your inbox.</span></button><button className="entry-option guest-option" onClick={() => { setGuestMode(true); setTab('Home'); }}><strong>Use without logging in</strong><span>Explore the public learning library. Personal progress and assessments require an approved account.</span></button></div><small>New accounts and accounts outside the automatic approval rules must be approved by the ISOMO administrator before accessing restricted features.</small></div></div>;
+  if (user && accessStatus !== 'approved') return <div className="entry-screen"><div className="entry-card"><div className="eyebrow dark">ISOMO ACCOUNT ACCESS</div><h1>{accessStatus === 'rejected' ? 'Access not approved' : accessStatus === 'error' ? 'Approval check unavailable' : 'Your account is awaiting approval'}</h1><p>{accessStatus === 'rejected' ? 'Your request was not approved. Please contact the ISOMO Academy administrator if you believe this is a mistake.' : accessStatus === 'error' ? 'We could not confirm your account status. Please try again.' : 'Your sign-in was successful, but access to lessons, assessments and personal records is restricted until the ISOMO administrator approves your account.'}</p><p><strong>Signed in as:</strong> {user.email}</p><button className="btn primary full" onClick={async () => { try { const { data } = await api.get('/api/access/status'); setAccessStatus(data.status); setUser((current:any) => current ? {...current, role:data.role} : current); if (data.status === 'approved') window.location.reload(); } catch (error:any) { setNotice(error?.message || 'Approval status could not be refreshed.'); } }}>Check approval status</button><button className="btn outline full" onClick={async () => { await auth.signOut(); setUser(null); setAccessStatus('checking'); setAccountReady(true); }}>Sign out</button></div></div>;
   if (user && !isTeacher && needsCohort) return <div className="entry-screen"><div className="entry-card"><div className="eyebrow dark">STUDENT PROFILE · REQUIRED</div><h1>Which cohort are you part of?</h1><p>Select your programme group to help your teacher organise learning and support. Your individual records remain private to you and the authorised teacher.</p><select className="teacher-input" value={cohort} onChange={e => setCohort(e.target.value)}><option value="">Select your cohort</option>{['Cohort I','Cohort II','Cohort III','Cohort IV','Cohort V','Cohort VI','Cohort VII','Isomo Circles','IRIS'].map(x => <option key={x} value={x}>{x}</option>)}</select><button className="btn primary full" disabled={!cohort} onClick={saveCohort}>Continue to learning</button></div></div>;
   return (
     <div className="shell">
