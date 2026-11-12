@@ -56,17 +56,6 @@ export const auth = {
     });
     if (error) throw error;
   },
-  async signInWithRedirect(requestedRole = 'student') {
-    window.localStorage.setItem('isomo_requested_role', requestedRole);
-    const email = window.prompt('Enter your email address. We will send you a secure sign-in link.');
-    if (!email) return;
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: { emailRedirectTo: window.location.origin, shouldCreateUser: true, data: { requested_role: requestedRole } },
-    });
-    if (error) throw error;
-    window.alert('Check your email for the secure sign-in link.');
-  },
   async signOut() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
