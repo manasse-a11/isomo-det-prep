@@ -1850,3 +1850,15 @@ html[data-theme="dark"] .theme-picker select { background:#14232d; border-color:
 html[data-theme="dark"] .btn.outline { background:#20333d; border-color:#435864; color:#e5edf0; }
 html[data-theme="dark"] .answer-box::placeholder { color:#80939c; }
 @media (max-width:780px) { .theme-picker span { display:none; } .top-right { gap:8px; } }
+
+
+.auth-form { display:flex; flex-direction:column; gap:9px; margin:16px 0; padding:18px; border:1px solid #dbe7df; border-radius:16px; background:rgba(255,255,255,.82); text-align:left; }
+.auth-form .teacher-input { width:100%; box-sizing:border-box; min-height:46px; }
+.auth-mode-switch { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; margin-bottom:8px; border-radius:12px; background:#edf3ef; }
+.auth-mode-switch button { border:0; border-radius:9px; padding:10px; background:transparent; color:#45605a; font:inherit; font-weight:700; cursor:pointer; }
+.auth-mode-switch button.active { background:#fff; color:#126c62; box-shadow:0 1px 5px rgba(20,50,40,.12); }
+.auth-form .btn { margin-top:8px; }
+html[data-theme="dark"] .auth-form { background:#172832; border-color:#3a505c; }
+html[data-theme="dark"] .auth-mode-switch { background:#20333d; }
+html[data-theme="dark"] .auth-mode-switch button { color:#c0d0d5; }
+html[data-theme="dark"] .auth-mode-switch button.active { background:#314751; color:#fff; }
