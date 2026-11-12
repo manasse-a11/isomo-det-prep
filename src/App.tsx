@@ -919,6 +919,24 @@ function App() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [accessStatus, setAccessStatus] = useState('checking');
   const [selectedRole, setSelectedRole] = useState('student');
+  const [themePreference, setThemePreference] = useState<'light' | 'dark' | 'default'>(() => {
+    try {
+      const saved = localStorage.getItem('isomo_theme_preference');
+      return saved === 'light' || saved === 'dark' ? saved : 'default';
+    } catch { return 'default'; }
+  });
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const applyTheme = () => {
+      const resolved = themePreference === 'default' ? (media.matches ? 'dark' : 'light') : themePreference;
+      document.documentElement.dataset.theme = resolved;
+      document.documentElement.style.colorScheme = resolved;
+    };
+    applyTheme();
+    if (themePreference === 'default') media.addEventListener?.('change', applyTheme);
+    try { localStorage.setItem('isomo_theme_preference', themePreference); } catch {}
+    return () => media.removeEventListener?.('change', applyTheme);
+  }, [themePreference]);
   const handleAvatarSelection = (event: any) => {
     const file = event.target.files?.[0] as File | undefined;
     event.target.value = '';
@@ -1511,6 +1529,14 @@ function App() {
             Learning space <ChevronRight size={14} /> <b>{tab}</b>
           </div>
           <div className="top-right">
+            <label className="theme-picker" title="Choose appearance">
+              <span>Theme</span>
+              <select aria-label="Appearance" value={themePreference} onChange={event => setThemePreference(event.target.value as 'light' | 'dark' | 'default')}>
+                <option value="default">Default</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
             {user ? <div className="account-actions"><button className="account-button" onClick={openProfileEditor}>Edit profile</button><button className="account-button" onClick={async () => { await auth.signOut(); setUser(null); setProgress({}); setHistory([]); setAssessmentStage('baseline'); setCloudLoaded(false); setAccountReady(true); setNeedsCohort(false); setGuestMode(false); setTab('Home'); }}>Sign out · {user.name || user.email || 'Account'}</button></div> : <button className="account-button" onClick={() => { setGuestMode(false); setAccountReady(true); }}>Choose access</button>}
             <span className="streak">
               <Sparkles size={15} /> Aim higher, every day
