@@ -197,7 +197,8 @@ button {
   gap: 7px;
   color: #6f7d82;
   font-size: 11px;
-}.streak svg {
+}
+.streak svg {
   color: #d5a449;
 }
 .avatar {
@@ -396,7 +397,8 @@ button {
 .card-c {
   bottom: 43px;
   left: 30px;
-}.section-heading {
+}
+.section-heading {
   display: flex;
   justify-content: space-between;
   align-items: end;
@@ -595,7 +597,8 @@ button {
 .focus-stat {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;  color: #61766f;
+  font-size: 10px;
+  color: #61766f;
   margin: 23px 0 8px;
 }
 .focus-stat strong {
@@ -794,7 +797,8 @@ button {
 }
 .word-option,
 .option {
-  background: #fff;  border: 1px solid #e2e9e9;
+  background: #fff;
+  border: 1px solid #e2e9e9;
   border-radius: 9px;
   padding: 12px;
   text-align: left;
@@ -993,7 +997,8 @@ button {
   font-size: 11px;
   color: #c0d0d3;
   line-height: 1.6;
-  margin: 0;}
+  margin: 0;
+}
 .resource-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1192,7 +1197,8 @@ button {
   margin-top: 18px;
 }
 .results-layout {
-  display: grid;  grid-template-columns: 1fr 1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
 .estimate-pill {
@@ -1391,7 +1397,8 @@ button {
     width: 78px;
   }
   .resource-strip {
-    align-items: flex-start;    flex-wrap: wrap;
+    align-items: flex-start;
+    flex-wrap: wrap;
   }
   .resource-strip .btn {
     margin-left: 55px;
@@ -1590,7 +1597,8 @@ body, .shell { background: #fffdf8; color: #183b43; }
 }
 .hero .eyebrow { color: #805a0d; }
 .hero .eyebrow span, .live-dot { background: #1e8b78; }
-.hero h1, .hero h1 em { color: #173d46; }.hero-copy > p { color: #45645f; }
+.hero h1, .hero h1 em { color: #173d46; }
+.hero-copy > p { color: #45645f; }
 .hero-foot { color: #42645d; }
 .hero-foot svg { color: #247c70; }
 .orbit { border-color: #e4ad3d; }
