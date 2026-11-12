@@ -1,4 +1,4 @@
-const CACHE_NAME = 'isomo-det-prep-shell-v1';
+const CACHE_NAME = 'isomo-det-prep-shell-v2';
 const APP_SHELL = ['/'];
 
 self.addEventListener('install', (event) => {
@@ -9,7 +9,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)))
+      Promise.all(keys.filter((key) => key.startsWith('isomo-det-prep-') && key !== CACHE_NAME).map((key) => caches.delete(key)))
     )
   );
   self.clients.claim();
@@ -30,7 +30,21 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match('/') )
+        .catch(() => caches.match('/'))
+    );
+    return;
+  }
+
+  if (/\.(?:js|css|svg|woff2?)$/i.test(url.pathname)) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async (cache) => {
+        const cached = await cache.match(request);
+        const network = fetch(request).then((response) => {
+          if (response.ok) cache.put(request, response.clone());
+          return response;
+        });
+        return cached || network;
+      })
     );
   }
 });
