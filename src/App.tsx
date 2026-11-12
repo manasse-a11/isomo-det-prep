@@ -859,7 +859,19 @@ function estimateObjective(answer: string, item: any) {
   if (typeof item.a === 'number') return Number(answer) === item.a ? 100 : 0;
   return answer.trim().toLowerCase() === item.expected ? 100 : 0;
 }
-function App() {
+
+function downloadPracticePdf(title: string, report: any) {
+  const safe = (value: any) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch] || ch));
+  const rows = (report.items || []).map((item: any, index: number) => '<tr><td>'+(index+1)+'</td><td>'+safe(item.type)+'</td><td>'+safe(item.area)+'</td><td>'+safe(item.score)+' / 100</td><td>'+safe(item.difficulty || '—')+'</td></tr>').join('');
+  const skills = ['reading','listening','writing','speaking'].filter(k => report[k] != null).map(k => '<div class="metric"><span>'+k.toUpperCase()+'</span><b>'+safe(report[k])+' / 160</b></div>').join('');
+  const overall = report.overall != null ? '<div class="overall"><small>OVERALL PRACTICE ESTIMATE</small><strong>'+safe(report.overall)+'</strong><span>/ 160</span></div>' : '<div class="overall"><small>SKILL PRACTICE SCORE</small><strong>'+safe(report.score)+'</strong><span>/ 100</span></div>';
+  const feedback = [report.feedback, ...(report.strengths || []), ...(report.improvements || [])].filter(Boolean).map(safe).join('<br/>');
+  const html = '<!doctype html><html><head><meta charset="utf-8"><title>'+safe(title)+'</title><style>body{font:14px Arial,sans-serif;color:#183b3a;margin:36px}header{border-bottom:4px solid #e7a93b;padding-bottom:14px}h1{margin:0;color:#087d78;font-size:25px}header p{color:#667;margin:6px 0}.overall{background:#edf7f4;padding:18px;margin:22px 0;border-radius:10px}.overall strong{font-size:34px;margin:0 8px}.overall small{display:block;font-weight:bold;letter-spacing:1px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.metric{background:#f4f7f6;padding:12px;border-radius:8px}.metric span{display:block;font-size:11px;color:#667}.metric b{font-size:18px}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{text-align:left;padding:9px;border-bottom:1px solid #ddd}th{background:#087d78;color:white}.feedback{margin-top:22px;line-height:1.6}.disclaimer{margin-top:26px;color:#687;font-size:11px;border-top:1px solid #ddd;padding-top:12px}@media print{body{margin:18mm}button{display:none}}</style></head><body><header><h1>ISOMO ACADEMY · DET PREP</h1><p>'+safe(title)+' · '+safe(new Date(report.date || Date.now()).toLocaleString())+'</p></header>'+overall+(skills ? '<div class="metrics">'+skills+'</div>' : '')+(rows ? '<h2>Question-by-question performance</h2><table><thead><tr><th>#</th><th>Question type</th><th>Skill area</th><th>Score</th><th>Level</th></tr></thead><tbody>'+rows+'</tbody></table>' : '')+(feedback ? '<div class="feedback"><h2>Feedback</h2>'+feedback+'</div>' : '')+'<p class="disclaimer">This is an ISOMO practice diagnostic, not an official Duolingo English Test score report. Practice estimates are not certified DET scores.</p><script>window.onload=()=>{window.print()}</script></body></html>';
+  const win = window.open('', '_blank');
+  if (!win) { alert('Please allow pop-ups to create your PDF report, then choose Save as PDF in the print window.'); return; }
+  win.document.open(); win.document.write(html); win.document.close();
+}
+\nfunction App() {
   const [tab, setTab] = useState('Home');
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [history, setHistory] = useState<any[]>([]);
@@ -2055,6 +2067,8 @@ function App() {
                 </a>
               ))}
             </div>
+
+            {history.length > 0 && <div className="panel results-main" style={{marginTop:20}}><div className="eyebrow dark">PAST PRACTICE REPORTS</div><h3>Download a report for each practice</h3><div className="subscore-list">{history.map((item: any, index: number) => <div className="subscore" key={item.id || item.date || index}><span>{String(item.stage || 'Mock practice').toUpperCase()} · {new Date(item.date || Date.now()).toLocaleDateString()}</span><strong>{item.overall ?? '—'} / 160</strong><button className="btn outline" onClick={() => downloadPracticePdf('Mock practice score report', item)}>Download PDF</button></div>)}</div></div>}
             <div className="note-box">
               <strong>Use resources actively</strong>
               <p>
