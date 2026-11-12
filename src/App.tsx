@@ -899,6 +899,9 @@ function App() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState('');
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileName, setProfileName] = useState('');
+  const [profileSaving, setProfileSaving] = useState(false);
   const handleAvatarSelection = (event: any) => {
     const file = event.target.files?.[0] as File | undefined;
     event.target.value = '';
@@ -959,6 +962,23 @@ function App() {
     } catch (error: any) {
       setNotice(error?.message || 'Your profile picture could not be removed. Please try again.');
     }
+  };
+  const openProfileEditor = () => { setProfileName(String(user?.name || '')); setProfileOpen(true); };
+  const saveProfile = async () => {
+    if (!user) return;
+    const cleanName = profileName.trim();
+    if (!cleanName) { setNotice('Please enter your name.'); return; }
+    setProfileSaving(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ data: { full_name: cleanName } });
+      if (error) throw error;
+      if (cohort) await api.post('/api/profile', { cohort });
+      setUser((current: any) => current ? { ...current, name: cleanName } : current);
+      setProfileOpen(false);
+      setNotice('Your profile details have been updated.');
+    } catch (error: any) {
+      setNotice(error?.message || 'Your profile could not be updated. Please try again.');
+    } finally { setProfileSaving(false); }
   };
   const isTeacherAccount = String(user?.email || '').toLowerCase() === 'manasse@icircles.rw';
   const isTeacher = isTeacherAccount && !studentPreview;
@@ -1401,7 +1421,7 @@ function App() {
     setResult(null);
   };
   if (!accountReady) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><p>Preparing your learning space…</p></div></div>;
-  if (!user && !guestMode) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><div className="eyebrow dark">DUOLINGO ENGLISH TEST · 145–160</div><h1>How would you like to enter?</h1><p>Choose the space that matches your role. Student accounts keep individual progress private; teacher access is separately restricted.</p><div className="entry-options"><button className="entry-option" onClick={async () => { try { await auth.signInWithRedirect(); } catch { setNotice('Student sign-in could not start. Please retry.'); } }}><strong>I'm a student</strong><span>Sign in with Google or create an account using email to access lessons, tests and your personal progress.</span></button><button className="entry-option" onClick={async () => { try { await auth.signInWithRedirect(); } catch { setNotice('Teacher sign-in could not start. Please retry.'); } }}><strong>I'm a teacher</strong><span>Open the management portal. Teacher access is limited to the authorised ISOMO administrator.</span></button><button className="entry-option guest-option" onClick={() => { setGuestMode(true); setTab('Home'); }}><strong>Use without logging in</strong><span>Explore the public learning library and preview the study approach. Tests and personal progress require a student account.</span></button></div><small>Signing in supports Google and email account access. You can browse public materials as a guest.</small></div></div>;
+  if (!user && !guestMode) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><div className="eyebrow dark">DUOLINGO ENGLISH TEST · 145–160</div><h1>How would you like to enter?</h1><p>Choose the space that matches your role. Student accounts keep individual progress private; teacher access is separately restricted.</p><div className="entry-options"><button className="entry-option" onClick={async () => { try { await auth.signInWithGoogle(); } catch (error: any) { setNotice(error?.message || 'Google sign-in could not start. Please retry.'); } }}><strong>Continue with Google</strong><span>Use your Google account to sign in or request access.</span></button><button className="entry-option" onClick={async () => { try { await auth.signInWithRedirect(); } catch (error: any) { setNotice(error?.message || 'Email sign-in could not start. Please retry.'); } }}><strong>Continue with email</strong><span>Receive a secure sign-in link in your inbox.</span></button><button className="entry-option guest-option" onClick={() => { setGuestMode(true); setTab('Home'); }}><strong>Use without logging in</strong><span>Explore the public learning library. Personal progress and assessments require an approved account.</span></button></div><small>New accounts and accounts outside the automatic approval rules must be approved by the ISOMO administrator before accessing restricted features.</small></div></div>;
   if (user && !isTeacher && needsCohort) return <div className="entry-screen"><div className="entry-card"><div className="eyebrow dark">STUDENT PROFILE · REQUIRED</div><h1>Which cohort are you part of?</h1><p>Select your programme group to help your teacher organise learning and support. Your individual records remain private to you and the authorised teacher.</p><select className="teacher-input" value={cohort} onChange={e => setCohort(e.target.value)}><option value="">Select your cohort</option>{['Cohort I','Cohort II','Cohort III','Cohort IV','Cohort V','Cohort VI','Cohort VII','Isomo Circles','IRIS'].map(x => <option key={x} value={x}>{x}</option>)}</select><button className="btn primary full" disabled={!cohort} onClick={saveCohort}>Continue to learning</button></div></div>;
   return (
     <div className="shell">
@@ -1450,7 +1470,7 @@ function App() {
             Learning space <ChevronRight size={14} /> <b>{tab}</b>
           </div>
           <div className="top-right">
-            {user ? <button className="account-button" onClick={async () => { await auth.signOut(); setUser(null); setProgress({}); setHistory([]); setAssessmentStage('baseline'); setCloudLoaded(false); setAccountReady(true); setNeedsCohort(false); setGuestMode(false); setTab('Home'); }}>Sign out · {user.name || user.email || 'Account'}</button> : <button className="account-button" onClick={() => { setGuestMode(false); setAccountReady(true); }}>Choose access</button>}
+            {user ? <div className="account-actions"><button className="account-button" onClick={openProfileEditor}>Edit profile</button><button className="account-button" onClick={async () => { await auth.signOut(); setUser(null); setProgress({}); setHistory([]); setAssessmentStage('baseline'); setCloudLoaded(false); setAccountReady(true); setNeedsCohort(false); setGuestMode(false); setTab('Home'); }}>Sign out · {user.name || user.email || 'Account'}</button></div> : <button className="account-button" onClick={() => { setGuestMode(false); setAccountReady(true); }}>Choose access</button>}
             <span className="streak">
               <Sparkles size={15} /> Aim higher, every day
             </span>
@@ -1465,6 +1485,22 @@ function App() {
             ) : <div className="avatar">IA</div>}
           </div>
         </header>
+        {profileOpen && (
+          <div className="avatar-preview-backdrop" role="dialog" aria-modal="true" aria-label="Edit your profile">
+            <div className="profile-editor-card">
+              <div className="eyebrow dark">ACCOUNT SETTINGS</div>
+              <h2>Edit profile</h2>
+              <label className="profile-field-label">Full name</label>
+              <input className="teacher-input" value={profileName} onChange={e => setProfileName(e.target.value)} placeholder="Your full name" autoComplete="name" />
+              <label className="profile-field-label">Email address</label>
+              <input className="teacher-input" value={user?.email || ''} readOnly />
+              <label className="profile-field-label">Cohort</label>
+              <select className="teacher-input" value={cohort} onChange={e => setCohort(e.target.value)}><option value="">Select your cohort</option>{['Cohort I','Cohort II','Cohort III','Cohort IV','Cohort V','Cohort VI','Cohort VII','Isomo Circles','IRIS'].map(x => <option key={x} value={x}>{x}</option>)}</select>
+              <p className="profile-help">You can also change your profile picture using the profile image in the top bar.</p>
+              <div className="avatar-preview-actions"><button className="btn outline" onClick={() => setProfileOpen(false)} disabled={profileSaving}>Cancel</button><button className="btn primary" onClick={saveProfile} disabled={profileSaving}>{profileSaving ? 'Saving…' : 'Save changes'}</button></div>
+            </div>
+          </div>
+        )}
         {avatarPreview && (
           <div className="avatar-preview-backdrop" role="dialog" aria-modal="true" aria-label="Preview profile picture">
             <div className="avatar-preview-card">
