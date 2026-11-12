@@ -12,11 +12,13 @@ export default function TeacherDashboard({ user, onViewAsStudent }: Props) {
   const [selected, setSelected] = useState<any>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [accessRequests, setAccessRequests] = useState<any[]>([]);
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
   const [description, setDescription] = useState('');
   const [cohort, setCohort] = useState(cohorts[0]);
-  const isAdmin = String(user?.email || '').toLowerCase() === ADMIN_EMAIL;
+  const isAdmin = user?.role === 'admin' || String(user?.email || '').toLowerCase() === ADMIN_EMAIL;
+  const isTeacher = isAdmin || user?.role === 'teacher';
 
   const loadOverview = async () => {
     setBusy(true);
@@ -24,7 +26,9 @@ export default function TeacherDashboard({ user, onViewAsStudent }: Props) {
     catch { setMessage('Teacher analytics could not be loaded. Confirm that you are signed in with the authorised teacher account.'); }
     finally { setBusy(false); }
   };
-  useEffect(() => { if (isAdmin) loadOverview(); }, [user?.userId, isAdmin]);
+  const loadAccessRequests = async () => { try { const { data } = await api.get('/api/admin/access-requests'); setAccessRequests(data.requests || []); } catch { setMessage('The access approval list could not be loaded.'); } };
+  const reviewAccess = async (userId: string, decision: 'approved'|'rejected') => { setBusy(true); try { await api.post('/api/admin/access-requests', { userId, decision }); setMessage('Access request ' + decision + '.'); await loadAccessRequests(); } catch (error:any) { setMessage(error?.message || 'The access request could not be updated.'); } finally { setBusy(false); } };
+  useEffect(() => { if (isTeacher) loadOverview(); if (isAdmin) loadAccessRequests(); }, [user?.userId, isAdmin, isTeacher]);
 
   const assignMaterial = async () => {
     if (!title.trim() || !/^https:\/\//i.test(url.trim())) { setMessage('Enter a material title and a valid HTTPS link.'); return; }
@@ -52,9 +56,10 @@ export default function TeacherDashboard({ user, onViewAsStudent }: Props) {
     return { students: students.length, active: students.filter((s: any) => s.practiceCount > 0).length, support: students.filter((s: any) => (s.supportNeeds || []).length > 0).length, assessments: overview?.assessments?.length || 0 };
   }, [overview]);
 
-  if (!isAdmin) return <div className="page narrow"><div className="panel teacher-panel"><h2>Teacher access is restricted</h2><p>This management portal is available only to the authorised ISOMO teacher account.</p></div></div>;
+  if (!isTeacher) return <div className="page narrow"><div className="panel teacher-panel"><h2>Teacher access is restricted</h2><p>This management portal is available only to approved ISOMO teachers.</p></div></div>;
   return <div className="page">
     <div className="page-intro"><div className="eyebrow dark">RESTRICTED · TEACHER MANAGEMENT</div><h1>ISOMO management portal.</h1><p>Manage cohorts, monitor student growth, identify support needs and assign learning materials. This account is for teaching and administration—not student tests or lessons.</p><button className="btn primary" onClick={onViewAsStudent}>View as a student <Users size={15}/></button><p className="score-disclaimer">Opens a read-only preview of the learner experience. It does not switch your account role or let you submit student tests.</p></div>
+    {isAdmin && <section className="panel access-requests-panel"><div className="section-heading"><div><div className="eyebrow dark">ADMINISTRATOR CONTROL</div><h2>Account approval requests</h2><p>Only your administrator account can approve or reject new logins.</p></div><button className="btn outline" onClick={loadAccessRequests}><RefreshCw size={14}/> Refresh</button></div>{accessRequests.length === 0 ? <p>No account requests yet.</p> : <div className="access-request-list">{accessRequests.map((r:any)=><div className="access-request-row" key={r.user_id}><div><strong>{r.email}</strong><span>{String(r.requested_role).toUpperCase()} · {new Date(r.created_at).toLocaleString()}</span></div><span className={'access-status '+r.status}>{r.status}</span>{r.status === 'pending' && <div className="access-actions"><button className="btn primary" disabled={busy} onClick={()=>reviewAccess(r.user_id,'approved')}>Approve</button><button className="btn outline" disabled={busy} onClick={()=>reviewAccess(r.user_id,'rejected')}>Reject</button></div>}</div>)}</div>}</section>}
     <div className="stats-grid">
       <div className="stat-card"><div className="stat-icon teal"><Users/></div><div className="stat-label">Student accounts with records</div><div className="stat-value">{summary.students}</div></div>
       <div className="stat-card"><div className="stat-icon gold"><Activity/></div><div className="stat-label">Recorded app activities</div><div className="stat-value">{overview?.activityCount || 0}</div></div>
