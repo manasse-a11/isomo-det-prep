@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { api, auth } from './lib';
+import { api, auth, supabase } from './lib';
 import TeacherDashboard from './TeacherDashboard';
 import {
   ArrowRight,
@@ -896,6 +896,70 @@ function App() {
   const [cohort, setCohort] = useState('');
   const [needsCohort, setNeedsCohort] = useState(false);
   const [assignedMaterials, setAssignedMaterials] = useState<any[]>([]);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState('');
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const handleAvatarSelection = (event: any) => {
+    const file = event.target.files?.[0] as File | undefined;
+    event.target.value = '';
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setNotice('Please choose a JPG, PNG or WebP image.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setNotice('Your profile picture must be 5 MB or smaller.');
+      return;
+    }
+    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  };
+  const cancelAvatarPreview = () => {
+    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    setAvatarPreview('');
+    setAvatarFile(null);
+  };
+  const saveAvatar = async () => {
+    if (!avatarFile || !user) return;
+    setAvatarUploading(true);
+    try {
+      const extension = avatarFile.type === 'image/png' ? 'png' : avatarFile.type === 'image/webp' ? 'webp' : 'jpg';
+      const filePath = user.userId + '/avatar.' + extension;
+      const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, avatarFile, {
+        upsert: true,
+        contentType: avatarFile.type,
+        cacheControl: '3600',
+      });
+      if (uploadError) throw uploadError;
+      const publicUrl = supabase.storage.from('avatars').getPublicUrl(filePath).data.publicUrl + '?v=' + Date.now();
+      const { error: profileError } = await supabase.auth.updateUser({ data: { avatar_url: publicUrl } });
+      if (profileError) throw profileError;
+      setUser((current: any) => current ? { ...current, picture: publicUrl } : current);
+      setNotice('Your profile picture has been updated.');
+      cancelAvatarPreview();
+    } catch (error: any) {
+      setNotice(error?.message || 'Your profile picture could not be saved. Please try again.');
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+  const removeAvatar = async () => {
+    if (!user) return;
+    try {
+      const { error } = await supabase.auth.updateUser({ data: { avatar_url: null } });
+      if (error) throw error;
+      await supabase.storage.from('avatars').remove([
+        user.userId + '/avatar.jpg',
+        user.userId + '/avatar.png',
+        user.userId + '/avatar.webp',
+      ]);
+      setUser((current: any) => current ? { ...current, picture: null } : current);
+      setNotice('Your profile picture has been removed.');
+    } catch (error: any) {
+      setNotice(error?.message || 'Your profile picture could not be removed. Please try again.');
+    }
+  };
   const isTeacherAccount = String(user?.email || '').toLowerCase() === 'manasse@icircles.rw';
   const isTeacher = isTeacherAccount && !studentPreview;
   useEffect(() => { if (user && isTeacher) setTab('Teacher dashboard'); }, [user?.userId, isTeacher]);
@@ -1390,9 +1454,31 @@ function App() {
             <span className="streak">
               <Sparkles size={15} /> Aim higher, every day
             </span>
-            <div className="avatar">IA</div>
+            {user ? (
+              <div className="avatar-tools">
+                <label className="avatar avatar-picker" htmlFor="avatar-file-input" title="Add or change profile picture">
+                  {user.picture ? <img src={user.picture} alt="Your profile" /> : String(user.name || user.email || 'I').charAt(0).toUpperCase()}
+                </label>
+                <input id="avatar-file-input" className="avatar-file-input" type="file" accept="image/jpeg,image/png,image/webp" onChange={handleAvatarSelection} />
+                {user.picture && <button className="avatar-remove" type="button" onClick={removeAvatar} title="Remove profile picture" aria-label="Remove profile picture"><X size={12} /></button>}
+              </div>
+            ) : <div className="avatar">IA</div>}
           </div>
         </header>
+        {avatarPreview && (
+          <div className="avatar-preview-backdrop" role="dialog" aria-modal="true" aria-label="Preview profile picture">
+            <div className="avatar-preview-card">
+              <div className="eyebrow dark">PROFILE PHOTO</div>
+              <h2>Preview your picture</h2>
+              <p>This photo will appear beside your name in ISOMO Academy.</p>
+              <img className="avatar-preview-image" src={avatarPreview} alt="Selected profile preview" />
+              <div className="avatar-preview-actions">
+                <button className="btn outline" type="button" onClick={cancelAvatarPreview} disabled={avatarUploading}>Cancel</button>
+                <button className="btn primary" type="button" onClick={saveAvatar} disabled={avatarUploading}>{avatarUploading ? 'Saving…' : 'Save picture'}</button>
+              </div>
+            </div>
+          </div>
+        )}
         {notice && (
           <div className="notice">
             {notice}
