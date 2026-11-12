@@ -49,6 +49,7 @@ export const auth = {
     } : null;
   },
   async signInWithGoogle(requestedRole = 'student') {
+    window.localStorage.setItem('isomo_requested_role', requestedRole);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin, data: { requested_role: requestedRole }, queryParams: { access_type: 'offline', prompt: 'select_account' } },
@@ -56,6 +57,7 @@ export const auth = {
     if (error) throw error;
   },
   async signInWithRedirect(requestedRole = 'student') {
+    window.localStorage.setItem('isomo_requested_role', requestedRole);
     const email = window.prompt('Enter your email address. We will send you a secure sign-in link.');
     if (!email) return;
     const { error } = await supabase.auth.signInWithOtp({
