@@ -266,4 +266,34 @@ export const handler = router({
       return json({ className: klass.className, students });
     },
   ],
+,
+
+  'GET /api/vocabulary': [requireAuth(), async ({ user }) => {
+    const [record] = await db.get<{ words?: unknown[] }>('isomo_vocabulary', [user!.userId]);
+    return json({ words: Array.isArray(record?.words) ? record.words : [] });
+  }],
+  'POST /api/vocabulary': [requireAuth(), async ({ body, user }) => {
+    const input = body as { words?: any[] };
+    if (!Array.isArray(input?.words) || input.words.length > 300) return error('A valid vocabulary list is required (maximum 300 words).', 400);
+    const words = input.words.slice(0,300).map((w:any)=>({id:String(w.id||'').slice(0,80),word:String(w.word||'').trim().slice(0,80),meaning:String(w.meaning||'').trim().slice(0,240),example:String(w.example||'').slice(0,300),dueAt:Math.max(0,Number(w.dueAt)||Date.now()),interval:Math.max(0,Math.min(30,Number(w.interval)||0)),addedAt:Math.max(0,Number(w.addedAt)||Date.now())})).filter(w=>w.id&&w.word&&w.meaning);
+    const id=user!.userId, record={words,updatedAt:Date.now()};
+    const [created]=await db.tx.add('isomo_vocabulary',[{id,...record}]);
+    if(!created){const [updated]=await db.tx.update('isomo_vocabulary',[{id,record}],{patch:true});if(!updated)return error('Could not save your vocabulary notebook.',503);}
+    return json({saved:true,count:words.length});
+  }],
+  'GET /api/announcements': [requireAuth(), async ({ user }) => {
+    const [profile]=await db.get<{cohort?:string}>('isomo_profiles',[user!.userId]);
+    const records=await db.list('isomo_announcements',{limit:100});
+    const announcements=records.items.filter((a:any)=>a.published!==false&&(!a.cohort||a.cohort===profile?.cohort)).sort((a:any,b:any)=>b.createdAt-a.createdAt).slice(0,30);
+    return json({announcements});
+  }],
+  'POST /api/announcements': [requireAuth(), requireAdminEmailAllowlist(ADMIN_EMAILS), async ({ body, user }) => {
+    const input=body as {title?:string;message?:string;cohort?:string}, title=String(input?.title||'').trim().slice(0,120), message=String(input?.message||'').trim().slice(0,1000), cohort=String(input?.cohort||'');
+    const allowed=['','Cohort I','Cohort II','Cohort III','Cohort IV','Cohort V','Cohort VI','Cohort VII','Isomo Circles','IRIS'];
+    if(!title||!message||!allowed.includes(cohort))return error('Provide a title, message and valid cohort.',400);
+    const id='announcement_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);
+    const [created]=await db.add('isomo_announcements',[{id,title,message,cohort:cohort||null,published:true,createdBy:user!.userId,createdAt:Date.now()}]);
+    if(!created)return error('Could not publish the announcement.',503);
+    return json({published:true,id});
+  }],
 });
