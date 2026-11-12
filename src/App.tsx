@@ -919,6 +919,10 @@ function App() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [accessStatus, setAccessStatus] = useState('checking');
   const [selectedRole, setSelectedRole] = useState('student');
+  const [emailAuthMode, setEmailAuthMode] = useState<'login' | 'signup'>('login');
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authBusy, setAuthBusy] = useState(false);
   const [themePreference, setThemePreference] = useState<'light' | 'dark' | 'default'>(() => {
     try {
       const saved = localStorage.getItem('isomo_theme_preference');
@@ -937,6 +941,38 @@ function App() {
     try { localStorage.setItem('isomo_theme_preference', themePreference); } catch {}
     return () => media.removeEventListener?.('change', applyTheme);
   }, [themePreference]);
+  const submitEmailAuth = async (event: any) => {
+    event.preventDefault();
+    const email = authEmail.trim().toLowerCase();
+    if (!email || !authPassword) { setNotice('Enter your email address and password.'); return; }
+    if (emailAuthMode === 'signup' && authPassword.length < 8) { setNotice('Choose a password with at least 8 characters.'); return; }
+    setAuthBusy(true);
+    setNotice('');
+    window.localStorage.setItem('isomo_requested_role', selectedRole);
+    try {
+      if (emailAuthMode === 'login') {
+        const { error } = await supabase.auth.signInWithPassword({ email, password: authPassword });
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password: authPassword,
+          options: { emailRedirectTo: window.location.origin, data: { requested_role: selectedRole, full_name: email.split('@')[0] } },
+        });
+        if (error) throw error;
+        if (!data.session) {
+          setNotice('Your account has been created. Supabase requires email verification for new accounts on this platform; please verify your address once, then return here and sign in with your password.');
+        } else {
+          setNotice('Your account is created. Your access will follow ISOMO approval rules.');
+        }
+      }
+    } catch (error: any) {
+      const message = error?.message || 'Email sign-in could not be completed. Please check your details and try again.';
+      setNotice(message.toLowerCase().includes('invalid login credentials') ? 'Email or password is incorrect. If your account was previously created using a sign-in link, use Google or contact the administrator to arrange a password setup.' : message);
+    } finally {
+      setAuthBusy(false);
+    }
+  };
   const handleAvatarSelection = (event: any) => {
     const file = event.target.files?.[0] as File | undefined;
     event.target.value = '';
@@ -1479,7 +1515,7 @@ function App() {
     setResult(null);
   };
   if (!accountReady) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><p>Preparing your learning space…</p></div></div>;
-  if (!user && !guestMode) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><div className="eyebrow dark">DUOLINGO ENGLISH TEST · 145–160</div><h1>How would you like to enter?</h1><p>Choose the space that matches your role. Student accounts keep individual progress private; teacher access is separately restricted.</p><label className="profile-field-label" htmlFor="requested-role">I want to join as</label><select id="requested-role" className="teacher-input" value={selectedRole} onChange={e => setSelectedRole(e.target.value)}><option value="student">Student</option><option value="teacher">Teacher</option></select><div className="entry-options"><button className="entry-option" onClick={async () => { try { await auth.signInWithGoogle(selectedRole); } catch (error: any) { setNotice(error?.message || 'Google sign-in could not start. Please retry.'); } }}><strong>Continue with Google</strong><span>Use your Google account to sign in or request access.</span></button><button className="entry-option" onClick={async () => { try { await auth.signInWithRedirect(selectedRole); } catch (error: any) { setNotice(error?.message || 'Email sign-in could not start. Please retry.'); } }}><strong>Continue with email</strong><span>Receive a secure sign-in link in your inbox.</span></button><button className="entry-option guest-option" onClick={() => { setGuestMode(true); setTab('Home'); }}><strong>Use without logging in</strong><span>Explore the public learning library. Personal progress and assessments require an approved account.</span></button></div><small>New accounts and accounts outside the automatic approval rules must be approved by the ISOMO administrator before accessing restricted features.</small></div></div>;
+  if (!user && !guestMode) return <div className="entry-screen"><div className="entry-card"><img className="entry-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy"/><div className="eyebrow dark">DUOLINGO ENGLISH TEST · 145–160</div><h1>Welcome to ISOMO DET Prep</h1><p>Students and teachers can sign in using Google or an email address and password.</p><label className="profile-field-label" htmlFor="requested-role">I want to join as</label><select id="requested-role" className="teacher-input" value={selectedRole} onChange={e => setSelectedRole(e.target.value)}><option value="student">Student</option><option value="teacher">Teacher</option></select><div className="entry-options"><button className="entry-option" onClick={async () => { try { await auth.signInWithGoogle(selectedRole); } catch (error: any) { setNotice(error?.message || 'Google sign-in could not start. Please retry.'); } }}><strong>Continue with Google</strong><span>Use your Google account to sign in or request access.</span></button></div><form className="auth-form" onSubmit={submitEmailAuth}><div className="auth-mode-switch"><button type="button" className={emailAuthMode === 'login' ? 'active' : ''} onClick={() => { setEmailAuthMode('login'); setNotice(''); }}>Sign in</button><button type="button" className={emailAuthMode === 'signup' ? 'active' : ''} onClick={() => { setEmailAuthMode('signup'); setNotice(''); }}>Create account</button></div><label className="profile-field-label" htmlFor="auth-email">Email address</label><input id="auth-email" className="teacher-input" type="email" autoComplete="email" required value={authEmail} onChange={e => setAuthEmail(e.target.value)} placeholder="you@example.com"/><label className="profile-field-label" htmlFor="auth-password">Password</label><input id="auth-password" className="teacher-input" type="password" autoComplete={emailAuthMode === 'login' ? 'current-password' : 'new-password'} minLength={8} required value={authPassword} onChange={e => setAuthPassword(e.target.value)} placeholder={emailAuthMode === 'signup' ? 'At least 8 characters' : 'Enter your password'}/><button className="btn primary full" type="submit" disabled={authBusy}>{authBusy ? 'Please wait…' : emailAuthMode === 'login' ? 'Sign in with email' : 'Create student / teacher account'}</button></form>{notice && <div className="note-box" role="status">{notice}</div>}<div className="entry-options"><button className="entry-option guest-option" onClick={() => { setGuestMode(true); setTab('Home'); }}><strong>Use without logging in</strong><span>Explore the public learning library. Personal progress and assessments require an approved account.</span></button></div><small>Student accounts can register here. All teachers and accounts outside the automatic approval rules remain subject to ISOMO administrator approval before restricted access is granted. New email accounts may require one-time email verification under the current security settings.</small></div></div>;
   if (user && accessStatus !== 'approved') return <div className="entry-screen"><div className="entry-card"><div className="eyebrow dark">ISOMO ACCOUNT ACCESS</div><h1>{accessStatus === 'rejected' ? 'Access not approved' : accessStatus === 'error' ? 'Approval check unavailable' : 'Your account is awaiting approval'}</h1><p>{accessStatus === 'rejected' ? 'Your request was not approved. Please contact the ISOMO Academy administrator if you believe this is a mistake.' : accessStatus === 'error' ? 'We could not confirm your account status. Please try again.' : 'Your sign-in was successful, but access to lessons, assessments and personal records is restricted until the ISOMO administrator approves your account.'}</p><p><strong>Signed in as:</strong> {user.email}</p><button className="btn primary full" onClick={async () => { try { const { data } = await api.get('/api/access/status?role=' + encodeURIComponent(user?.role || 'student')); setAccessStatus(data.status); setUser((current:any) => current ? {...current, role:data.role} : current); if (data.status === 'approved') window.location.reload(); } catch (error:any) { setNotice(error?.message || 'Approval status could not be refreshed.'); } }}>Check approval status</button><button className="btn outline full" onClick={async () => { await auth.signOut(); setUser(null); setAccessStatus('checking'); setAccountReady(true); }}>Sign out</button></div></div>;
   if (user && !isTeacher && needsCohort) return <div className="entry-screen"><div className="entry-card"><div className="eyebrow dark">STUDENT PROFILE · REQUIRED</div><h1>Which cohort are you part of?</h1><p>Select your programme group to help your teacher organise learning and support. Your individual records remain private to you and the authorised teacher.</p><select className="teacher-input" value={cohort} onChange={e => setCohort(e.target.value)}><option value="">Select your cohort</option>{['Cohort I','Cohort II','Cohort III','Cohort IV','Cohort V','Cohort VI','Cohort VII','Isomo Circles','IRIS'].map(x => <option key={x} value={x}>{x}</option>)}</select><button className="btn primary full" disabled={!cohort} onClick={saveCohort}>Continue to learning</button></div></div>;
   return (
