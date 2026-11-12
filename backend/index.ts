@@ -197,7 +197,8 @@ export const handler = router({
         const s = students.get(row.userId) || { userId: row.userId, name: row.name || 'Student', average: 0, skills: {}, lastActive: null, practiceCount: 0, assessments: [] };
         s.practiceCount += 1; s.lastActive = Math.max(s.lastActive || 0, row.createdAt || 0); students.set(row.userId, s);
       }
-      for (const row of assessments.items as any[]) {        const s = students.get(row.userId) || { userId: row.userId, name: row.name || 'Student', average: 0, skills: {}, lastActive: null, practiceCount: 0, assessments: [] };
+      for (const row of assessments.items as any[]) {
+        const s = students.get(row.userId) || { userId: row.userId, name: row.name || 'Student', average: 0, skills: {}, lastActive: null, practiceCount: 0, assessments: [] };
         s.assessments.push({ stage: row.stage, overall: row.overall, reading: row.reading, listening: row.listening, writing: row.writing, speaking: row.speaking, createdAt: row.createdAt, recommendations: row.recommendations || [] });
         s.lastActive = Math.max(s.lastActive || 0, row.createdAt || 0); students.set(row.userId, s);
       }
