@@ -871,7 +871,8 @@ function downloadPracticePdf(title: string, report: any) {
   if (!win) { alert('Please allow pop-ups to create your PDF report, then choose Save as PDF in the print window.'); return; }
   win.document.open(); win.document.write(html); win.document.close();
 }
-\nfunction App() {
+
+function App() {
   const [tab, setTab] = useState('Home');
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [history, setHistory] = useState<any[]>([]);
