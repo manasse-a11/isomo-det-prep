@@ -1752,3 +1752,28 @@ body, .shell { background: #fffdf8; color: #183b43; }
 .trend-labels span { display:grid; gap:3px; }
 .trend-labels b { color:#275e55; }
 @media(max-width:560px){.achievement-grid{grid-template-columns:1fr}.trend-chart svg{height:140px}}
+
+
+/* ISOMO learning toolkit */
+.learning-toolkit .toolkit-feature{display:flex;justify-content:space-between;align-items:center;gap:24px;background:linear-gradient(120deg,#e8f4ef,#fff8e8);border:1px solid #dcebe3;border-radius:18px;padding:25px;margin:18px 0}
+.learning-toolkit .toolkit-feature>div:first-child{max-width:700px}
+.learning-toolkit .toolkit-feature h2{font:800 23px Manrope;color:#1e514a;margin:10px 0}
+.learning-toolkit .toolkit-feature p,.learning-toolkit .panel p{line-height:1.65;color:#70817c;font-size:12px}
+.toolkit-score{min-width:130px;display:grid;text-align:center;color:#315f54}
+.toolkit-score strong{font:800 42px Manrope}.toolkit-score span{font-size:10px}
+.toolkit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.toolkit-grid .panel{min-width:0}
+.mistake-list{display:grid;gap:10px;max-height:460px;overflow:auto}
+.mistake-card{border:1px solid #e1eae5;border-radius:12px;padding:12px;background:#fbfdfb;display:grid;gap:7px}
+.mistake-card strong{font-size:12px;color:#24594e}
+.mistake-card p{margin:0;color:#344c49}
+.mistake-card small{font-size:10px;color:#788782;overflow-wrap:anywhere}
+.mistake-card .btn{justify-self:start}
+.course-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid #e8eeeb}
+.course-row>div{min-width:0}.course-row strong{font-size:12px;color:#28564e}.course-row p{margin:5px 0}.course-row a{font-size:11px;color:#147e73}.course-row label{display:flex;align-items:center;gap:6px;font-size:10px;white-space:nowrap}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #edf0ee;font-size:12px}
+.setting-row .teacher-input{max-width:190px}
+.access-contrast{background:#fff!important;color:#000!important}
+.access-contrast .panel,.access-contrast .toolkit-feature{border:2px solid #111!important}
+.access-contrast p,.access-contrast small,.access-contrast .eyebrow{color:#222!important}
+@media(max-width:760px){.toolkit-grid{grid-template-columns:1fr}.learning-toolkit .toolkit-feature{align-items:flex-start;flex-direction:column}.toolkit-score{display:flex;align-items:center;gap:10px}.course-row{align-items:flex-start;flex-direction:column}}
