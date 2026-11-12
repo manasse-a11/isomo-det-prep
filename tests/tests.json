@@ -1,0 +1,128 @@
+[
+  {
+    "name": "Choose a guest, student or teacher entry route",
+    "sanity": true,
+    "viewport": "desktop",
+    "covers": [
+      "role-based entry selection",
+      "guest public-library access",
+      "student authentication gate",
+      "teacher-only portal navigation"
+    ],
+    "description": "Verifies the welcome screen offers three access routes and guests cannot enter private tests or teacher management.",
+    "steps": [
+      "Open the app while signed out",
+      "Choose Use without logging in",
+      "Open Learning library",
+      "Attempt to open Skill practice",
+      "Return to the welcome screen and inspect student and teacher sign-in choices"
+    ],
+    "expected": "Guest access exposes public learning resources only; private skill practice and tests require sign-in; teacher management is not exposed to students or guests."
+  },
+  {
+    "name": "Save a student's cohort after account sign-in",
+    "viewport": "mobile",
+    "covers": [
+      "Google and email account sign-in options",
+      "required cohort onboarding",
+      "cohort profile persistence",
+      "student-private learning access"
+    ],
+    "description": "Verifies a newly authenticated student must select one of the supported cohorts before entering the learning workspace.",
+    "steps": [
+      "Sign in or create an account as a student",
+      "Choose Cohort IV in the required cohort step",
+      "Continue to the student learning space",
+      "Refresh the app"
+    ],
+    "expected": "The selected cohort is saved to the signed-in student profile and the student enters the learner workspace without being asked again."
+  },
+  {
+    "name": "Keep the teacher workspace separate and assign learning material",
+    "viewport": "desktop",
+    "covers": [
+      "teacher administrator allowlist",
+      "teacher dashboard isolation",
+      "teacher assignment creation",
+      "cohort-targeted student assignments",
+      "teacher cannot take student tests or use student materials"
+    ],
+    "description": "Verifies only the authorised teacher sees management tools and can publish a cohort-specific HTTPS resource assignment.",
+    "steps": [
+      "Sign in with the authorised teacher account",
+      "Confirm only the management portal is available",
+      "Create a material assignment with title, HTTPS link, description and Cohort II",
+      "Open student test and lesson routes directly"
+    ],
+    "expected": "The teacher can create a Cohort II assignment and manage learner progress; student tests, student lesson navigation and the student resource library are unavailable to the teacher."
+  },
+  {
+    "name": "Open a lesson video and complete scored practice",
+    "viewport": "desktop",
+    "covers": [
+      "Khan Academy-inspired video lesson sequence",
+      "video embedded within learning flow",
+      "YouTube-first DET resource collection across all four skills",
+      "official DET handbook, sample questions, test structure and scoring links",
+      "Arno practice platform and Arno video walkthroughs",
+      "Quill grammar, proofreading, sentence construction and reading evidence resources",
+      "YouTube official and independent DET tutorials",
+      "College Board SAT Reading and Writing, Bluebook and Student Question Bank resources",
+      "scored skill practice",
+      "immediate feedback and mastery guidance"
+    ],
+    "description": "Verifies the learner-facing library presents an embedded instructional video followed by active practice and feedback.",
+    "steps": [
+      "Sign in as a student and complete cohort onboarding",
+      "Open Learning library",
+      "Play the embedded lesson video",
+      "Open Skill practice and complete a task",
+      "Open Mock test and grant browser camera permission",
+      "Begin the mock and confirm the live camera preview appears",
+      "Switch away from the test tab or exit full-screen mode",
+      "Acknowledge the warning and continue answering"
+    ],
+    "expected": "The official DET walkthrough is embedded in the learning flow; the library offers a broad collection of task-specific YouTube tutorials, full courses, mock tests and general English development videos; a completed skill task produces a numerical score with feedback and a next-step recommendation. The mock test displays a live camera preview, warns when the test loses focus or full-screen mode, and continues without cancelling the practice session."
+  },
+  {
+    "name": "Maintain private student records and cohort-scoped assignments",
+    "viewport": "desktop",
+    "covers": [
+      "server-side profile scoping",
+      "student-only assignment retrieval",
+      "teacher-only assignment writes",
+      "existing baseline-midline-endline assessment journey",
+      "private progress and report authorization"
+    ],
+    "description": "Verifies profile and assignment records are scoped to the authenticated learner and existing assessment milestones remain available only to students.",
+    "steps": [
+      "Sign in as Student A and select Cohort I",
+      "Open the assigned materials area",
+      "Sign in as Student B in a separate session and select Cohort VII",
+      "Open the assigned materials area",
+      "Attempt to call the teacher assignment endpoint as a student"
+    ],
+    "expected": "Students receive only assignments for their own cohort; Student A cannot read Student B's profile or progress; students cannot create assignments; the baseline, midline and endline assessment journey remains intact."
+  },
+  {
+    "name": "Teacher opens and exits read-only student preview",
+    "viewport": "mobile",
+    "covers": [
+      "teacher-only view as student control",
+      "learner-facing navigation preview",
+      "read-only preview banner and return control",
+      "preview cannot submit tests or save student scores",
+      "teacher role and management permissions remain intact"
+    ],
+    "description": "Verifies the authorised teacher can inspect the student-facing layout without changing account role or creating learner activity.",
+    "steps": [
+      "Sign in with the authorised teacher account",
+      "Open the teacher management portal",
+      "Select View as a student",
+      "Inspect the student home page and learning library",
+      "Attempt to open a test or submit practice",
+      "Select Return to teacher portal"
+    ],
+    "expected": "The learner-facing experience opens in read-only preview mode; test and practice submissions are blocked; returning restores the teacher management portal and permissions."
+  }
+]
