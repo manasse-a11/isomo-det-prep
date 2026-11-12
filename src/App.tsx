@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { api, auth, supabase } from './lib';
 import TeacherDashboard from './TeacherDashboard';
+import StudentGrowthDashboard from './StudentGrowthDashboard';
 import {
   ArrowRight,
   Award,
@@ -1432,6 +1433,7 @@ function App() {
   };
   const nav = [
     ['Home', Home],
+    ['My dashboard', BarChart3],
     ['Skill practice', BookOpen],
     ['Learning library', GraduationCap],
     ['Mock test', Target],
@@ -1441,7 +1443,7 @@ function App() {
   const go = (name: string) => {
     if (studentPreview && ['Skill practice','Mock test','Results'].includes(name)) { setNotice('Student preview is read-only. Sign in with a student account to practise, take tests and view private progress.'); return; }
     if (isTeacher && name !== 'Teacher dashboard') { setNotice('The teacher workspace is separate. Teachers manage learners and assign materials here; tests and student lessons are not available on teacher accounts.'); return; }
-    if (['Skill practice','Mock test','Results'].includes(name) && !user) { setNotice('Create a student account or sign in to practise and save your private progress.'); return; }
+    if (['Skill practice','Mock test','Results','My dashboard'].includes(name) && !user) { setNotice('Create a student account or sign in to practise and save your private progress.'); return; }
     if (['Skill practice','Mock test','Results'].includes(name) && ['baseline','midline','endline'].includes(assessmentStage)) { beginMock(assessmentStage); return; }
     setTab(name);
     setActive(null);
@@ -1564,6 +1566,7 @@ function App() {
           </div>
         )}
         {isTeacher && tab === 'Teacher dashboard' && <TeacherDashboard user={user} progress={{}} onViewAsStudent={() => { setStudentPreview(true); setTab('Home'); setNotice('You are viewing the student experience in read-only preview mode. No student scores or activity will be changed.'); }} />}
+        {!isTeacher && !guestMode && tab === 'My dashboard' && <StudentGrowthDashboard progress={progress} history={history} user={user} onPractice={() => go('Skill practice')} />}
         {!isTeacher && tab === 'Home' && (
           <div className="page">
             <section className="hero">
