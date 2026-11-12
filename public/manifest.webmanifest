@@ -1,0 +1,21 @@
+{
+  "id": "/",
+  "name": "ISOMO Academy DET Prep",
+  "short_name": "ISOMO DET Prep",
+  "description": "Prepare confidently for the Duolingo English Test with ISOMO Academy.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fffaf0",
+  "theme_color": "#0b766e",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
