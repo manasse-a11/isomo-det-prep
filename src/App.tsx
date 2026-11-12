@@ -1056,23 +1056,31 @@ function App() {
   useEffect(() => { if (user && isTeacher) setTab('Teacher dashboard'); }, [user?.userId, isTeacher]);
   useEffect(() => {
     let mounted = true;
-    auth.getUser().then(async current => {
-      if (!mounted) return;
+    let loadingUserId = '';
+    let loadedUserId = '';
+
+    const loadAccount = async (supabaseUser: any) => {
+      if (!mounted || !supabaseUser?.id) return;
+      if (loadingUserId === supabaseUser.id || loadedUserId === supabaseUser.id) return;
+      loadingUserId = supabaseUser.id;
+      setAccountReady(false);
+      const current = {
+        userId: supabaseUser.id,
+        email: supabaseUser.email,
+        name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email,
+        picture: supabaseUser.user_metadata?.avatar_url,
+        scope: 'email profile',
+      };
       setUser(current);
-      if (current) {
-        try {
-          const requestedRole = window.localStorage.getItem('isomo_requested_role');
-          const accessResult = await api.get(requestedRole ? '/api/access/status?role=' + encodeURIComponent(requestedRole) : '/api/access/status');
-          window.localStorage.removeItem('isomo_requested_role');
-          const access = accessResult.data;
-          if (mounted) {
-            setAccessStatus(access.status || 'pending');
-            setUser({ ...current, role: access.role || 'student' });
-          }
-          if (access.status !== 'approved') {
-            if (mounted) setAccountReady(true);
-            return;
-          }
+      try {
+        const requestedRole = window.localStorage.getItem('isomo_requested_role');
+        const accessResult = await api.get(requestedRole ? '/api/access/status?role=' + encodeURIComponent(requestedRole) : '/api/access/status');
+        window.localStorage.removeItem('isomo_requested_role');
+        const access = accessResult.data;
+        if (!mounted) return;
+        setAccessStatus(access.status || 'pending');
+        setUser({ ...current, role: access.role || requestedRole || 'student' });
+        if (access.status === 'approved') {
           const [{ data }, journey, report, profile, assigned] = await Promise.all([
             api.get('/api/progress'),
             api.get('/api/journey'),
@@ -1083,15 +1091,59 @@ function App() {
           if (mounted && data.progress) setProgress(data.progress);
           if (mounted) setAssessmentStage(journey.data.stage || 'baseline');
           if (mounted) setHistory((report.data.assessments || []).sort((a: any,b: any)=>b.createdAt-a.createdAt).map((x: any)=>({...x,date:new Date(x.createdAt).toISOString()})));
-          if (mounted) { setCohort(profile.data.cohort || ''); setNeedsCohort(!profile.data.cohort && String(current.email || '').toLowerCase() !== 'manasse@icircles.rw'); setAssignedMaterials(assigned.data.assignments || []); }
+          if (mounted) {
+            setCohort(profile.data.cohort || '');
+            setNeedsCohort(!profile.data.cohort && String(current.email || '').toLowerCase() !== 'manasse@icircles.rw');
+            setAssignedMaterials(assigned.data.assignments || []);
+          }
           if (mounted) setCloudLoaded(true);
-        } catch {
-          if (mounted) setNotice('Your account is signed in, but cloud progress could not be loaded.');
         }
+        loadedUserId = supabaseUser.id;
+      } catch (error: any) {
+        if (mounted) {
+          setAccessStatus('error');
+          setNotice(error?.message || 'Your account is signed in, but we could not verify approval or load cloud progress. Please try again.');
+        }
+      } finally {
+        loadingUserId = '';
+        if (mounted) setAccountReady(true);
       }
+    };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        loadedUserId = '';
+        loadingUserId = '';
+        if (mounted) {
+          setUser(null);
+          setAccessStatus('checking');
+          setAccountReady(true);
+          setCloudLoaded(false);
+        }
+        return;
+      }
+      if (session?.user && (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'USER_UPDATED')) {
+        // Defer work outside the auth callback to avoid blocking Supabase's auth lock.
+        Promise.resolve().then(() => loadAccount(session.user));
+      }
+    });
+
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) throw error;
+      if (data.session?.user) return loadAccount(data.session.user);
       if (mounted) setAccountReady(true);
-    }).catch(() => { if (mounted) { setAccessStatus('error'); setNotice('We could not verify your account approval. Please refresh or contact the administrator.'); setAccountReady(true); } });
-    return () => { mounted = false; };
+    }).catch((error: any) => {
+      if (mounted) {
+        setAccessStatus('error');
+        setNotice(error?.message || 'We could not restore your sign-in. Please refresh and try again.');
+        setAccountReady(true);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
   useEffect(() => {
     if (user && accountReady && cloudLoaded) {
