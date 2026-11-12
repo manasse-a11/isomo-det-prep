@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { api } from '@appdeploy/client';
+import { api } from './lib';
 import { Users, Plus, RefreshCw, Download, ShieldCheck, Activity, Target, BookOpen } from 'lucide-react';
 
 type Props = { user: any; progress: Record<string, number>; onViewAsStudent: () => void };
