@@ -197,7 +197,8 @@ const skills: Skill[] = [
   },
   {
     id: 'writing-sample',
-    title: 'Writing Sample',    area: 'Writing',
+    title: 'Writing Sample',
+    area: 'Writing',
     icon: PenLine,
     desc: 'Produce a sustained, organised academic response.',
     time: '5 min',
@@ -396,7 +397,8 @@ const resources = [
     name: 'Official DET 2025 test walkthrough',
     kind: 'YouTube · official',
     detail: 'Watch the official Duolingo English Test walkthrough covering the current test experience and task types.',
-    url: 'https://www.youtube.com/watch?v=VttOg1fbsa8',  },
+    url: 'https://www.youtube.com/watch?v=VttOg1fbsa8',
+  },
   {
     name: 'DET complete course: all question types and full practice',
     kind: 'YouTube · full course',
@@ -595,7 +597,8 @@ const mockItems = [
     a: 0,
     seconds: 45,
   },
-  {    type: 'Listen and Type',
+  {
+    type: 'Listen and Type',
     area: 'Listening',
     q: 'Listen and type the sentence.',
     audio:
@@ -794,7 +797,8 @@ const expandedMockBank = Array.from({ length: 200 }, (_, i) => {
       q: 'A short research summary examines ' + topic + '. Which conclusion is most reasonable?',
       opts: [
         'The topic can be understood by considering evidence, context and possible trade-offs.',
-        'The topic has no relationship to people or communities.',        'One example proves that every situation has the same outcome.',
+        'The topic has no relationship to people or communities.',
+        'One example proves that every situation has the same outcome.',
         'Further evidence is never useful when discussing this topic.',
       ],
       a: 0,
@@ -993,7 +997,8 @@ function App() {
   const completed = skills.filter(s => (progress[s.id] || 0) >= 70).length;
   const average = skills.length
     ? Math.round(
-        skills.reduce((n, s) => n + (progress[s.id] || 0), 0) / skills.length      )
+        skills.reduce((n, s) => n + (progress[s.id] || 0), 0) / skills.length
+      )
     : 0;
   const estimated = Math.min(
     160,
@@ -1192,7 +1197,8 @@ function App() {
     setWarningCount(0);
     let fullscreenFailed = false;
     try {
-      if (!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();    } catch {
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+    } catch {
       fullscreenFailed = true;
     }
     const stage = requestedStage || (['baseline','midline','endline'].includes(assessmentStage) ? assessmentStage : 'practice');
@@ -1391,7 +1397,8 @@ function App() {
           <div className="notice">
             {notice}
             <button onClick={() => setNotice('')}>
-              <X size={14} />            </button>
+              <X size={14} />
+            </button>
           </div>
         )}
         {integrityWarning && mock && (
@@ -1590,7 +1597,8 @@ function App() {
                 <div className="mini-track large">
                   <span
                     style={{ width: (completed / skills.length) * 100 + '%' }}
-                  />                </div>
+                  />
+                </div>
                 <button
                   className="btn primary full"
                   onClick={() => go('Skill practice')}
@@ -1789,7 +1797,8 @@ function App() {
                         {recording ? 'Stop recording' : 'Record spoken answer'}
                       </button>
                       {audioUrl && (
-                        <span className="record-ready">                          <CheckCircle2 size={15} /> Recording ready
+                        <span className="record-ready">
+                          <CheckCircle2 size={15} /> Recording ready
                         </span>
                       )}
                     </div>
@@ -1988,4 +1997,223 @@ function App() {
                     :{(mockSeconds % 60).toString().padStart(2, '0')}
                   </div>
                 </div>
-                <div className="mock-progress">
+                <div className="mock-progress">                  <span
+                    style={{
+                      width: ((mockIndex + 1) / sessionItems.length) * 100 + '%',
+                    }}
+                  />
+                </div>
+                <div className="mock-meta">
+                  <span>{currentMock.type}</span>
+                  <span>{currentMock.area}</span>
+                  <span>Difficulty {difficulty}/5</span>
+                </div>
+                <h2>{currentMock.q}</h2>
+                {currentMock.audio && (
+                  <button
+                    className="audio-play"
+                    onClick={() => speakText(currentMock.audio)}
+                  >
+                    <Volume2 size={17} /> Play audio
+                  </button>
+                )}
+                {currentMock.opts ? (
+                  <div className="option-list">
+                    {currentMock.opts.map((o, i) => (
+                      <button
+                        key={o}
+                        className={
+                          'option ' +
+                          (currentMock.type === 'Read and Select'
+                            ? mockSelected.includes(i)
+                              ? 'chosen'
+                              : ''
+                            : mockAnswer === String(i)
+                              ? 'chosen'
+                              : '')
+                        }
+                        onClick={() =>
+                          currentMock.type === 'Read and Select'
+                            ? setMockSelected(a =>
+                                a.includes(i)
+                                  ? a.filter(x => x !== i)
+                                  : [...a, i]
+                              )
+                            : setMockAnswer(String(i))
+                        }
+                      >
+                        <span>{String.fromCharCode(65 + i)}</span>
+                        {o}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <textarea
+                    className="answer-box mock-answer"
+                    value={mockAnswer}
+                    onChange={e => setMockAnswer(e.target.value)}
+                    placeholder={
+                      currentMock.type === 'Listen and Type'
+                        ? 'Type exactly what you hear…'
+                        : 'Develop your response here…'
+                    }
+                  />
+                )}
+                <div className="mock-footer">
+                  <span>
+                    Question {mockIndex + 1} of {sessionItems.length}
+                  </span>
+                  <button
+                    className="btn primary"
+                    onClick={submitMock}
+                    disabled={
+                      busy || (!mockAnswer.trim() && !mockSelected.length)
+                    }
+                  >
+                    {busy ? 'Assessing…' : 'Submit answer'}{' '}
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+                <button className="end-early" onClick={() => finishMock()}>
+                  End practice and view current results
+                </button>
+              </div>
+            ) : null}
+          </div>
+        )}
+
+        {!isTeacher && !guestMode && tab === 'Results' && (
+          <div className="page">
+            <div className="page-intro">
+              <div className="eyebrow dark">YOUR PERFORMANCE</div>
+              <h1>Progress you can build on.</h1>
+              <p>
+                Review skill practice and mock results. Use your lowest area to
+                guide your next study session.
+              </p>
+            </div>
+            <div className="results-layout">
+              <div className="panel results-main">
+                <div className="panel-head">
+                  <div>
+                    <div className="eyebrow dark">LATEST PRACTICE ESTIMATE</div>
+                    <h3>
+                      {history.length
+                        ? 'Mock test result'
+                        : 'Your score report'}
+                    </h3>
+                  </div>
+                  <span className="estimate-pill">ESTIMATED</span>
+                </div>
+                {history.length ? (
+                  <>
+                    <div className="overall-score">
+                      <strong>{history[0].overall}</strong>
+                      <span>/ 160</span>
+                      <p>
+                        Practice estimate ·{' '}
+                        {new Date(history[0].date).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="subscore-list">
+                      {['reading', 'listening', 'writing', 'speaking'].map(
+                        k => (
+                          <div className="subscore" key={k}>
+                            <span>{k[0].toUpperCase() + k.slice(1)}</span>
+                            <div className="mini-track">
+                              <span
+                                style={{
+                                  width: (history[0][k] / 160) * 100 + '%',
+                                }}
+                              />
+                            </div>
+                            <strong>{history[0][k]}</strong>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="empty-state">
+                    <BarChart3 size={34} />
+                    <h3>No mock results yet</h3>
+                    <p>
+                      Take the 45-minute adaptive practice simulation to receive
+                      your first report.
+                    </p>
+                    <button className="btn primary" onClick={beginMock}>
+                      Start mock test
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="panel results-main">
+                <div className="eyebrow dark">SKILL MASTERY</div>
+                <h3>Practice scores</h3>
+                <div className="subscore-list">
+                  {skills.map(s => (
+                    <div className="subscore" key={s.id}>
+                      <span>{s.title}</span>
+                      <div className="mini-track">
+                        <span style={{ width: (progress[s.id] || 0) + '%' }} />
+                      </div>
+                      <strong>{progress[s.id] || 0}</strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="note-box">
+              <strong>Understanding your results</strong>
+              <p>
+                DET reports an overall score, four individual subscores and integrated subscores on a 10–160 scale. ISOMO practice diagnostics use classroom rubrics and AI-assisted feedback; they are not psychometrically equated to the official DET scoring engine. Calibration against official results requires a representative, consented set of paired practice and official results. Only an official DET result establishes a certified score.
+              </p>
+            </div>
+          </div>
+        )}
+        <footer className="footer">
+          <span>ISOMO ACADEMY · DET PREP</span>
+          <span>Learn with purpose. Lead with confidence.</span>
+          <a
+            href="https://www.isomo-rw.com/isomo-academy/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            About Isomo <ExternalLink size={12} />
+          </a>
+        </footer>
+      </main>
+    </div>
+  );
+}
+function SkillCard({
+  s,
+  progress,
+  onClick,
+}: {
+  s: Skill;
+  progress: number;
+  onClick: () => void;
+}) {
+  return (
+    <button className="skill-card" onClick={onClick}>
+      <div className={'skill-icon ' + s.area.toLowerCase()}>
+        <s.icon size={20} />
+      </div>
+      <div className="skill-card-top">
+        <span>{s.area}</span>
+        <span>{s.time}</span>
+      </div>
+      <strong>{s.title}</strong>
+      <p>{s.desc}</p>
+      <div className="skill-card-bottom">
+        <div className="mini-track">
+          <span style={{ width: progress + '%' }} />
+        </div>
+        <small>{progress ? progress + '% best score' : 'Not attempted'}</small>
+        <ArrowRight size={16} />
+      </div>
+    </button>
+  );
+}
+export default App;
