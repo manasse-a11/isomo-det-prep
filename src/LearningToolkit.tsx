@@ -29,7 +29,7 @@ export default function LearningToolkit({user,progress,history,onPractice}:Props
  const t=guidance[language]||guidance.en;
  useEffect(()=>{try{setMistakes(JSON.parse(localStorage.getItem(key)||'[]'))}catch{}},[key]);
  const skills=[['Reading','Reading'],['Listening','Listening'],['Writing','Writing'],['Speaking','Speaking']];
- const ranked=skills.map(([id,label])=>({id,label,score:Number(progress[id.toLowerCase()]??progress[id]??0)})).sort((a,b)=>a.score-b.score);
+ const ranked=skills.map(([id,label])=>{const matches=Object.entries(progress).filter(([k,v])=>{const key=k.toLowerCase();const belongs=id==='Reading'?/(read|interactive-reading)/.test(key):id==='Listening'?/listen/.test(key):id==='Writing'?/write/.test(key):/speak/.test(key);return belongs&&Number(v)>0});const score=matches.length?Math.round(matches.reduce((n,[,v])=>n+Number(v),0)/matches.length):Number(progress[id.toLowerCase()]??progress[id]??0);return {id,label,score}}).sort((a,b)=>a.score-b.score);
  const weak=ranked[0];
  const avg=history.length?Math.round(history.reduce((n:any,x:any)=>n+(Number(x.overall)||0),0)/history.length):0;
  const today=new Date().toLocaleDateString('en-CA');
