@@ -992,8 +992,8 @@ function App() {
       setUser(current);
       if (current) {
         try {
-          const requestedRole = window.localStorage.getItem('isomo_requested_role') || current.requestedRole || 'student';
-          const accessResult = await api.get('/api/access/status?role=' + encodeURIComponent(requestedRole));
+          const requestedRole = window.localStorage.getItem('isomo_requested_role');
+          const accessResult = await api.get(requestedRole ? '/api/access/status?role=' + encodeURIComponent(requestedRole) : '/api/access/status');
           window.localStorage.removeItem('isomo_requested_role');
           const access = accessResult.data;
           if (mounted) {
