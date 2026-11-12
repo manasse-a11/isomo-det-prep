@@ -48,19 +48,19 @@ export const auth = {
       scope: 'email profile',
     } : null;
   },
-  async signInWithGoogle() {
+  async signInWithGoogle(requestedRole = 'student') {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin, queryParams: { access_type: 'offline', prompt: 'select_account' } },
+      options: { redirectTo: window.location.origin, data: { requested_role: requestedRole }, queryParams: { access_type: 'offline', prompt: 'select_account' } },
     });
     if (error) throw error;
   },
-  async signInWithRedirect() {
+  async signInWithRedirect(requestedRole = 'student') {
     const email = window.prompt('Enter your email address. We will send you a secure sign-in link.');
     if (!email) return;
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: { emailRedirectTo: window.location.origin, shouldCreateUser: true },
+      options: { emailRedirectTo: window.location.origin, shouldCreateUser: true, data: { requested_role: requestedRole } },
     });
     if (error) throw error;
     window.alert('Check your email for the secure sign-in link.');
