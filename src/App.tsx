@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { api, auth } from '@appdeploy/client';
+import { api, auth } from './lib';
 import TeacherDashboard from './TeacherDashboard';
 import {
   ArrowRight,
