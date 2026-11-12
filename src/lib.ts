@@ -48,6 +48,13 @@ export const auth = {
       scope: 'email profile',
     } : null;
   },
+  async signInWithGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin, queryParams: { access_type: 'offline', prompt: 'select_account' } },
+    });
+    if (error) throw error;
+  },
   async signInWithRedirect() {
     const email = window.prompt('Enter your email address. We will send you a secure sign-in link.');
     if (!email) return;
