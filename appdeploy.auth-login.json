@@ -1,0 +1,17 @@
+{
+  "methods": [
+    "google",
+    "email"
+  ],
+  "headline": "Welcome to ISOMO Academy",
+  "subtitle": "Sign in with Google or create an account using your email to continue your DET learning journey.",
+  "style": {
+    "mode": "light",
+    "accentColor": "#d9ad58",
+    "backgroundColor": "#f5f7f8",
+    "panelColor": "#ffffff",
+    "textColor": "#173747",
+    "fontFamily": "DM Sans, system-ui, sans-serif",
+    "borderRadius": 12
+  }
+}
