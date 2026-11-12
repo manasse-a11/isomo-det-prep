@@ -1777,3 +1777,76 @@ body, .shell { background: #fffdf8; color: #183b43; }
 .access-contrast .panel,.access-contrast .toolkit-feature{border:2px solid #111!important}
 .access-contrast p,.access-contrast small,.access-contrast .eyebrow{color:#222!important}
 @media(max-width:760px){.toolkit-grid{grid-template-columns:1fr}.learning-toolkit .toolkit-feature{align-items:flex-start;flex-direction:column}.toolkit-score{display:flex;align-items:center;gap:10px}.course-row{align-items:flex-start;flex-direction:column}}
+
+
+/* App-wide appearance preference */
+.theme-picker { display:inline-flex; align-items:center; gap:6px; color:#71838a; font-size:10px; white-space:nowrap; }
+.theme-picker select { border:1px solid #dce6e5; border-radius:8px; padding:7px 24px 7px 9px; background:#fff; color:#294653; font:600 11px 'DM Sans',sans-serif; }
+html[data-theme="dark"] { color-scheme:dark; background:#111c24; }
+html[data-theme="dark"] body { background:#111c24; color:#e5edf0; }
+html[data-theme="dark"] .main { background:#111c24; }
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .skill-card,
+html[data-theme="dark"] .practice-card,
+html[data-theme="dark"] .result-card,
+html[data-theme="dark"] .resource-strip,
+html[data-theme="dark"] .lesson-pathway,
+html[data-theme="dark"] .entry-card,
+html[data-theme="dark"] .access-request-row,
+html[data-theme="dark"] .profile-editor-card,
+html[data-theme="dark"] .avatar-preview-card,
+html[data-theme="dark"] .integrity-dialog { background:#1b2a35; border-color:#344753; color:#e5edf0; }
+html[data-theme="dark"] .topbar { border-bottom-color:#344753; }
+html[data-theme="dark"] .breadcrumb b,
+html[data-theme="dark"] .section-heading h2,
+html[data-theme="dark"] .area-heading h2,
+html[data-theme="dark"] .panel h3,
+html[data-theme="dark"] .page-intro h1,
+html[data-theme="dark"] .practice-head h1,
+html[data-theme="dark"] .entry-card h1,
+html[data-theme="dark"] .lesson-pathway h2,
+html[data-theme="dark"] .profile-editor-card h2,
+html[data-theme="dark"] .integrity-dialog h2 { color:#edf4f5; }
+html[data-theme="dark"] .page-intro p,
+html[data-theme="dark"] .panel p,
+html[data-theme="dark"] .stat-label,
+html[data-theme="dark"] .stat-note,
+html[data-theme="dark"] .skill-meta span,
+html[data-theme="dark"] .skill-card > p,
+html[data-theme="dark"] .lesson-pathway p,
+html[data-theme="dark"] .entry-card > p { color:#a9bac2; }
+html[data-theme="dark"] .skill-row,
+html[data-theme="dark"] .word-option,
+html[data-theme="dark"] .option,
+html[data-theme="dark"] .answer-box,
+html[data-theme="dark"] .theme-picker select,
+html[data-theme="dark"] .teacher-input,
+html[data-theme="dark"] .profile-editor-card .teacher-input { background:#14232d; border-color:#3a505c; color:#e5edf0; }
+html[data-theme="dark"] .skill-meta strong,
+html[data-theme="dark"] .skill-card > strong,
+html[data-theme="dark"] .stat-value,
+html[data-theme="dark"] .resource-strip strong,
+html[data-theme="dark"] .profile-field-label { color:#e5edf0; }
+html[data-theme="dark"] .focus-panel,
+html[data-theme="dark"] .feedback-grid > div,
+html[data-theme="dark"] .prompt-box,
+html[data-theme="dark"] .mistake-card,
+html[data-theme="dark"] .learning-toolkit .toolkit-feature,
+html[data-theme="dark"] .setting-row,
+html[data-theme="dark"] .achievement-item { background:#203630; border-color:#3b5b50; color:#e5edf0; }
+html[data-theme="dark"] .focus-panel h3,
+html[data-theme="dark"] .mistake-card strong,
+html[data-theme="dark"] .course-row strong,
+html[data-theme="dark"] .achievement-item strong { color:#d7eee4; }
+html[data-theme="dark"] .entry-screen { background:radial-gradient(circle at top right,#1d3938,#111c24 58%); }
+html[data-theme="dark"] .entry-option { background:#1b2a35; border-color:#344753; color:#e5edf0; }
+html[data-theme="dark"] .entry-option span,
+html[data-theme="dark"] .entry-card small { color:#a9bac2; }
+html[data-theme="dark"] .guest-option { background:#20333b; }
+html[data-theme="dark"] .theme-picker { color:#a9bac2; }
+html[data-theme="dark"] .theme-picker select { background:#14232d; border-color:#3a505c; color:#e5edf0; }
+html[data-theme="dark"] .btn.outline { background:#20333d; border-color:#435864; color:#e5edf0; }
+html[data-theme="dark"] .answer-box::placeholder { color:#80939c; }
+@media (max-width:780px) { .theme-picker span { display:none; } .top-right { gap:8px; } }
