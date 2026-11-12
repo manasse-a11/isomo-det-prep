@@ -1720,3 +1720,15 @@ body, .shell { background: #fffdf8; color: #183b43; }
 .profile-editor-card .teacher-input { margin:0 0 6px; }
 .profile-help { margin:2px 0 8px; color:#718580; font-size:11px; line-height:1.55; }
 @media (max-width:780px) { .account-actions { gap:5px; } .account-actions .account-button { padding:7px 8px; font-size:10px; } }
+
+.access-requests-panel { margin:22px 0; }
+.access-request-list { display:grid; gap:10px; margin-top:16px; }
+.access-request-row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:13px 15px; border:1px solid #e7e4d9; border-radius:12px; background:#fff; }
+.access-request-row > div:first-child { display:grid; gap:4px; }
+.access-request-row > div:first-child span { color:#72817e; font-size:11px; }
+.access-status { border-radius:99px; padding:5px 10px; background:#f1eee7; color:#586b68; font-size:11px; font-weight:800; text-transform:capitalize; }
+.access-status.pending { background:#fff0cf; color:#8a5a00; }
+.access-status.approved { background:#e1f4e9; color:#17643d; }
+.access-status.rejected { background:#fbe6e4; color:#a33c35; }
+.access-actions { display:flex; gap:7px; }
+.access-actions .btn { padding:7px 11px; font-size:11px; }
