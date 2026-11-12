@@ -1710,3 +1710,13 @@ body, .shell { background: #fffdf8; color: #183b43; }
   .avatar-preview-card { padding: 22px; }
   .avatar-preview-image { width: 132px; height: 132px; }
 }
+
+
+/* Editable account profile */
+.account-actions { display:flex; align-items:center; gap:7px; }
+.profile-editor-card { width:min(100%,440px); display:flex; flex-direction:column; gap:8px; padding:28px; border:1px solid #e8e2d4; border-radius:20px; background:#fffdf8; box-shadow:0 24px 70px #10262a44; }
+.profile-editor-card h2 { margin:0 0 8px; color:#173d46; }
+.profile-field-label { margin-top:4px; color:#526d70; font-size:12px; font-weight:800; }
+.profile-editor-card .teacher-input { margin:0 0 6px; }
+.profile-help { margin:2px 0 8px; color:#718580; font-size:11px; line-height:1.55; }
+@media (max-width:780px) { .account-actions { gap:5px; } .account-actions .account-button { padding:7px 8px; font-size:10px; } }
