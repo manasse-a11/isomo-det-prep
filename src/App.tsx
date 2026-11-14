@@ -1118,6 +1118,8 @@ function downloadPracticePdf(title: string, report: any) {
 
 function App() {
   const [tab, setTab] = useState('Home');
+  const [exitPromptOpen, setExitPromptOpen] = useState(false);
+  const allowExitRef = useRef(false);
   const pageHistoryRef = useRef<string[]>([]);
   const currentTabRef = useRef(tab);
   const skipBackTrackingRef = useRef(false);
@@ -1980,6 +1982,46 @@ function App() {
     setTab(previousPage);
     setActive(null);
     setResult(null);
+  };
+  // Keep Android/iOS browser-back actions inside the app. Only leave after an explicit confirmation.
+  useEffect(() => {
+    window.history.pushState({ isomoBackGuard: true }, '', window.location.href);
+    const handleAppBack = () => {
+      if (allowExitRef.current) return;
+      window.history.pushState({ isomoBackGuard: true }, '', window.location.href);
+      if (exitPromptOpen) {
+        setExitPromptOpen(false);
+        return;
+      }
+      if (pageHistoryRef.current.length > 0) {
+        goBack();
+      } else if (tab !== 'Home') {
+        setTab('Home');
+        setActive(null);
+        setResult(null);
+        setMock(false);
+      } else {
+        setExitPromptOpen(true);
+      }
+    };
+    window.addEventListener('popstate', handleAppBack);
+    return () => window.removeEventListener('popstate', handleAppBack);
+  }, [tab, exitPromptOpen]);
+  const confirmAppExit = () => {
+    allowExitRef.current = true;
+    setExitPromptOpen(false);
+    window.history.back();
+  };
+  const returnHomeFromExitPrompt = () => {
+    setExitPromptOpen(false);
+    pageHistoryRef.current = [];
+    currentTabRef.current = 'Home';
+    skipBackTrackingRef.current = true;
+    setTab('Home');
+    setActive(null);
+    setResult(null);
+    setMock(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   const go = (name: string) => {
     if (studentPreview && ['Skill practice','Mock test','Results'].includes(name)) { setNotice('Student preview is read-only. Sign in with a student account to practise, take tests and view private progress.'); return; }
@@ -2950,6 +2992,16 @@ function App() {
             </div>
           </div>
         )}
+        {exitPromptOpen && <div className="app-exit-overlay" role="presentation" onClick={() => setExitPromptOpen(false)}>
+          <section className="app-exit-dialog" role="dialog" aria-modal="true" aria-labelledby="app-exit-title" onClick={event => event.stopPropagation()}>
+            <div className="app-exit-icon"><Home size={25} /></div>
+            <h2 id="app-exit-title">Would you like to leave ISOMO DET Prep?</h2>
+            <p>Your learning progress is saved when it has synchronised. You can stay here or return to the home page.</p>
+            <button className="btn primary full" type="button" onClick={() => setExitPromptOpen(false)}>Stay in the app</button>
+            <button className="btn outline full" type="button" onClick={returnHomeFromExitPrompt}><Home size={16} /> Go to home page</button>
+            <button className="app-exit-leave" type="button" onClick={confirmAppExit}>Yes, leave the app</button>
+          </section>
+        </div>}
         <footer className="footer">
           <span>ISOMO ACADEMY · DET PREP</span>
           <span>Learn with purpose. Lead with confidence.</span>
