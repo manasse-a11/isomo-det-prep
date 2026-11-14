@@ -2128,3 +2128,6 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .internal-source-note{margin:18px 0;padding:14px 16px;border-left:3px solid var(--gold,#e0a83e);background:rgba(224,168,62,.09);border-radius:8px}
 .internal-source-note p{margin:5px 0 0;line-height:1.6;font-size:13px;color:var(--muted,#647579)}
 @media(max-width:600px){.internal-lesson-heading{flex-direction:column}.internal-lesson-heading .btn{width:100%}.internal-resource-card{min-height:unset}}
+
+/* Keep each opened lesson immediately beneath its selected resource card. */
+.internal-lesson-inline{grid-column:1 / -1;width:100%;scroll-margin-top:24px}
