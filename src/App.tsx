@@ -2617,7 +2617,7 @@ function App() {
               <div className="internal-lesson-heading"><div><div className="eyebrow dark">IN-APP LESSON</div><h2>{selectedLesson.name}</h2></div><button className="btn outline" type="button" onClick={() => setSelectedLesson(null)}>Close lesson</button></div>
               {selectedLesson.sections.map((section: any, index: number) => <article className="internal-lesson-section" key={index}>
                 <h3>{section.heading}</h3>
-                {section.text && section.text.split('\\n\\n').map((paragraph: string, pIndex: number) => <p key={pIndex}>{paragraph}</p>)}
+                {section.text && section.text.split('\n\n').map((paragraph: string, pIndex: number) => <p key={pIndex}>{paragraph}</p>)}
                 {section.bullets && <ul>{section.bullets.map((item: string, itemIndex: number) => <li key={itemIndex}>{item}</li>)}</ul>}
               </article>)}
               <div className="internal-source-note"><strong>Source acknowledgement</strong><p>{selectedLesson.source}</p></div>
