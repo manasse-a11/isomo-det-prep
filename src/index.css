@@ -2138,3 +2138,8 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .internal-lesson-image figcaption{padding:12px 15px;font-size:13px;line-height:1.55;color:var(--muted,#647579)}
 .internal-lesson-image figcaption span{display:block;margin-top:4px;font-size:12px}
 .internal-lesson-image figcaption a{color:var(--ink,#173b45);text-decoration:underline}
+
+.lesson-completion-panel{margin:20px 0;padding:18px;border:1px solid var(--line,#dce5e3);border-radius:14px;background:var(--surface,#f4f7f5)}
+.lesson-completion-panel>p{margin:0 0 12px;line-height:1.55}
+.lesson-completion-panel .lesson-complete-message{display:flex;align-items:center;gap:8px;font-weight:650}
+.lesson-next-step{font-size:13px;color:var(--muted,#647579);margin-top:10px!important}
