@@ -613,6 +613,63 @@ const resources = [
     url: 'https://breakingnewsenglish.com/',
   },
 ];
+
+const internalLessons = [
+  { id:'det-overview', name:'Understand the DET: format and task families', kind:'DET foundations · in-app lesson', detail:'Learn how the test is organised and how to prepare for its changing task mix.', source:'Source: Duolingo English Test, The DET Handbook and official Test Structure guidance. ISOMO summary; consult the test maker for the latest rules.', sections:[
+    { heading:'What the test measures', text:'The Duolingo English Test measures how effectively you use English to understand information and communicate. Tasks sample reading, listening, writing and speaking, including tasks that combine these skills.', bullets:['Read and interpret words, sentences and short texts.','Understand spoken English and accurately capture key information.','Write clear, developed responses for a purpose and audience.','Speak fluently, organise ideas and support them with relevant details.'] },
+    { heading:'How to prepare', text:'The test is adaptive: the difficulty of some questions can change in response to your performance. Focus on accurate, independent language use rather than memorising answer patterns.', bullets:['Practise every skill, not only your strongest one.','Use a timer so that planning and responding become efficient.','Read instructions carefully; task requirements differ.','Take the official practice test to familiarise yourself with the experience.'] },
+    { heading:'ISOMO study task', text:'Write a short weekly plan with one reading, one listening, one writing and one speaking activity. Record what you found difficult and repeat the weakest task type.'}
+  ]},
+  { id:'read-select', name:'Read and Select: vocabulary precision', kind:'Reading · vocabulary lesson', detail:'Build fast recognition of correctly spelled, real English words.', source:'Source: Duolingo English Test official sample-question materials and public DET preparation guidance. Explanations and exercises written by ISOMO.', sections:[
+    { heading:'The skill', text:'You must distinguish genuine English words from plausible-looking invented forms. Strong vocabulary knowledge includes spelling, word families, collocations and meaning—not simply guessing from appearance.'},
+    { heading:'A reliable method', bullets:['Check whether the spelling matches a word you know.','Recall the word’s meaning and how it is used in a sentence.','Watch for familiar prefixes and suffixes, but do not assume every plausible combination is a word.','Do not select a word merely because it resembles another word.']},
+    { heading:'Practice set', text:'Select the real words: meticulous · drandish · eloquent · plimsy · resilient · frastive. ISOMO answer key: meticulous, eloquent and resilient. “Drandish”, “plimsy” and “frastive” are invented for this exercise.'},
+    { heading:'Build retention', text:'Keep a vocabulary notebook with the word, a plain-English definition, one original sentence, a synonym and the date for review. Revisit new words after one day, three days and one week.'}
+  ]},
+  { id:'fill-blanks', name:'Fill in the Blanks: grammar and context', kind:'Reading · grammar lesson', detail:'Use sentence meaning, grammar and word form to complete missing words.', source:'Source: DET official task descriptions and public sample materials. ISOMO-authored teaching notes and practice examples.', sections:[
+    { heading:'Read around the gap', text:'Read the whole sentence before choosing. Nearby words often reveal the required meaning, part of speech, tense, number or grammatical pattern.'},
+    { heading:'Three checks', bullets:['Meaning: does the word make sense in the sentence?','Grammar: does it agree with the subject and surrounding words?','Form: is a noun, verb, adjective or adverb required?']},
+    { heading:'Worked example', text:'“The findings were ___ with the original hypothesis.” The best answer is “consistent”: the phrase is “consistent with”, and the sentence requires an adjective.'},
+    { heading:'Try it', text:'“The committee postponed its decision until further evidence became ___.” Choose: available / availability / availably. Answer: available. It follows “became” as a subject complement.'}
+  ]},
+  { id:'read-complete', name:'Read and Complete: reconstructing words', kind:'Reading · spelling lesson', detail:'Use context and spelling patterns to complete partially displayed words.', source:'Source: Duolingo English Test public task descriptions and sample materials. ISOMO-authored examples.', sections:[
+    { heading:'Work from meaning to spelling', text:'Read the complete sentence first. Predict the word from context, then check its spelling and grammar against the letters already visible.'},
+    { heading:'Example', text:'“Effective communication depends on careful listen___ and thoughtful responses.” The missing word is “listening”. The phrase “careful listening” requires a noun/gerund.'},
+    { heading:'Useful habits', bullets:['Identify the part of speech before typing.','Check common suffixes such as -tion, -ment, -ing and -ity.','Reread the completed sentence for meaning and grammar.','Avoid adding letters that are not supported by the word pattern.']}
+  ]},
+  { id:'listening', name:'Listening: detail, purpose and inference', kind:'Listening · comprehension lesson', detail:'Practise understanding spoken information, speaker intention and key details.', source:'Source: DET official task descriptions; BBC Learning English and VOA Learning English listening-skills guidance. ISOMO synthesis; no third-party lesson text reproduced.', sections:[
+    { heading:'Listen with a purpose', text:'Before listening, identify what information the task may require. During listening, follow the main idea, speaker attitude, sequence and supporting details.'},
+    { heading:'Three listening passes', bullets:['First: identify the topic, speakers and overall purpose.','Next: notice names, numbers, contrasts, reasons and examples.','Finally: check whether your answer is directly supported or only guessed.']},
+    { heading:'ISOMO listening script', text:'“The library will remain open later during examination week. The change follows requests from students who attend afternoon classes. Staff will monitor attendance before deciding whether to keep the extended hours.”'},
+    { heading:'Check understanding', text:'Question: Why is the library extending its hours? Answer: To accommodate students who attend afternoon classes. What will determine whether the change continues? Answer: Staff monitoring of attendance.'}
+  ]},
+  { id:'writing', name:'Writing: develop a clear academic response', kind:'Writing · response lesson', detail:'Plan, develop and check a focused response with evidence and examples.', source:'Source: DET official scoring guidance for teachers and public writing-task descriptions. ISOMO-authored framework; not an official scoring rubric.', sections:[
+    { heading:'A dependable response structure', bullets:['Opening: answer the prompt directly and state your position.','Development: explain the main reason and show how it supports your position.','Example: include a specific, relevant example rather than a vague claim.','Closing: connect the ideas and, where appropriate, acknowledge a limitation.']},
+    { heading:'Example prompt', text:'“Should universities make community service part of the curriculum?” A strong response would take a clear position, explain educational or civic benefits, provide a realistic example and consider workload or accessibility.'},
+    { heading:'Revision checklist', bullets:['Does every paragraph answer the prompt?','Are ideas connected with accurate transitions?','Have you used varied sentence structures without sacrificing clarity?','Are grammar, punctuation and word choice accurate?','Have you avoided unsupported statistics and memorised generic phrases?']}
+  ]},
+  { id:'speaking', name:'Speaking: fluency, structure and development', kind:'Speaking · oral communication lesson', detail:'Organise spoken answers and extend ideas naturally under time pressure.', source:'Source: DET official scoring guidance for teachers and public speaking-task descriptions. ISOMO-authored practice framework.', sections:[
+    { heading:'Use a simple speaking arc', bullets:['Answer: respond to the question immediately.','Explain: give the reason behind your view.','Illustrate: add a concrete example or brief experience.','Reflect: explain why the example matters or what follows from it.']},
+    { heading:'Practice prompt', text:'“Describe a skill that every university student should develop.” Speak for 60–90 seconds. Give a clear answer, explain its value, use a specific example and finish with a practical implication.'},
+    { heading:'Improve delivery', text:'Speak at a natural pace, pronounce word endings clearly and use pauses between ideas. If you make a small mistake, correct it briefly and continue rather than restarting the entire response.'}
+  ]},
+  { id:'photo-description', name:'Describe a Photo: observe before you interpret', kind:'Speaking and writing · visual description', detail:'Describe visible details accurately and build a coherent picture for the listener.', source:'Source: DET official sample-question materials and task descriptions. ISOMO-authored guidance and prompts.', sections:[
+    { heading:'Move from broad to specific', bullets:['Set the scene: identify the setting and overall activity.','Describe people or objects: position, appearance and actions.','Add relationships: explain how visible elements connect.','Conclude carefully: mention atmosphere only when supported by visible evidence.']},
+    { heading:'Model response', text:'“The photograph shows an outdoor market. Several vendors are arranging fresh vegetables on tables while customers examine the produce. In the background, people are moving between the stalls. The scene appears active and organised around buying and selling food.”'},
+    { heading:'Practice', text:'Describe a group of learners discussing a map during an outdoor field activity. Avoid inventing names, motives or details that cannot be seen.'}
+  ]},
+  { id:'academic-reading', name:'Academic reading: evidence, inference and argument', kind:'Academic English · reading lesson', detail:'Distinguish a writer’s claim from evidence and reasonable inference.', source:'Source: College Board SAT Reading and Writing skill domains and Quill literacy pedagogy. ISOMO adaptation for transferable English skills; not DET questions.', sections:[
+    { heading:'Claim, evidence and inference', text:'A claim is an idea the writer wants readers to accept. Evidence is information used to support it. An inference is a conclusion that follows from the evidence, even if it is not stated word for word.'},
+    { heading:'Short passage', text:'“After the town added shaded seating and safer crossings near the market, pedestrian visits increased during the hottest part of the day. Shop owners also reported more lunchtime customers. The study did not examine changes in overall household spending.”'},
+    { heading:'Questions', bullets:['What changed after the improvements? Pedestrian visits increased during the hottest part of the day.','What is a reasonable inference? More comfortable walking conditions may encourage market visits.','What cannot be concluded? That total household spending increased; the study did not measure it.']},
+    { heading:'Reading strategy', text:'Return to the passage for evidence. Eliminate options that use absolute language, introduce facts not stated or confuse correlation with proof of causation.'}
+  ]},
+  { id:'vocabulary-building', name:'Academic vocabulary: learn words in context', kind:'Vocabulary · independent study', detail:'Learn precise words through collocations, word families and original sentences.', source:'Source: BBC Learning English and VOA Learning English public vocabulary-learning resources. ISOMO-authored word set and explanations.', sections:[
+    { heading:'High-value vocabulary', text:'Meticulous: very careful and precise. “The researcher kept meticulous records.”\n\nSubstantial: large or important in amount. “The project requires substantial investment.”\n\nFeasible: possible and practical. “The team proposed a feasible solution.”\n\nAmbiguous: having more than one possible meaning. “The instruction was ambiguous.”\n\nResilient: able to recover after difficulty. “The community became more resilient after the floods.”'},
+    { heading:'Learn actively', bullets:['Write a definition without copying a dictionary entry.','Record common word partners (for example, “substantial evidence”).','Create a sentence about your studies or community.','Review the word later and use it in speaking and writing.']}
+  ]}
+];
+
 const mockItems = [
   {
     id: 'published-preppass-sample-grammar',
@@ -978,6 +1035,7 @@ function App() {
   const [checkpointArea, setCheckpointArea] = useState('');
   const [pendingSkill, setPendingSkill] = useState<Skill | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
+  const [selectedLesson, setSelectedLesson] = useState<any>(null);
   const [answer, setAnswer] = useState('');
   const [checked, setChecked] = useState<number[]>([]);
   const [result, setResult] = useState<Result | null>(null);
@@ -2422,26 +2480,27 @@ function App() {
               </div>
             </div>
             {user && assignedMaterials.length > 0 && <div className="panel teacher-panel"><div className="eyebrow dark">ASSIGNED BY YOUR TEACHER</div><h2>Your learning assignments</h2><div className="resource-grid">{assignedMaterials.map((m: any) => <a key={m.id} className="resource-card" href={m.url} target="_blank" rel="noreferrer" onClick={() => api.post('/api/activity', { activityType: 'resource_opened', details: 'Assigned: ' + m.title }).catch(() => {})}><span className="resource-kind">{m.cohort}</span><strong>{m.title}</strong><p>{m.description}</p><span className="resource-open">Open assigned material <ExternalLink size={14}/></span></a>)}</div></div>}
-            <div className="lesson-pathway"><div className="eyebrow dark">A KHAN ACADEMY-INSPIRED STUDY FLOW</div><h2>Watch a lesson. Practise a skill. Check your mastery.</h2><p>Short video input is followed by an active task, immediate feedback and a clear next step—not passive watching alone.</p><div className="lesson-video"><iframe src="https://www.youtube-nocookie.com/embed/VttOg1fbsa8" title="Official Duolingo English Test walkthrough 2025: all current question types" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div><div className="lesson-steps"><span>1 · Watch and note key ideas</span><span>2 · Summarise in your own words</span><span>3 · Complete a scored practice task</span><span>4 · Review feedback and retry</span></div></div>
+            <div className="lesson-pathway"><div className="eyebrow dark">ISOMO IN-APP LEARNING LIBRARY</div><h2>Study the lesson without leaving ISOMO.</h2><p>These original learning notes, examples and practice activities are organised around DET task types and transferable academic English skills. Source references are credited in each lesson.</p><div className="lesson-steps"><span>1 · Read the lesson</span><span>2 · Study the example</span><span>3 · Complete the practice</span><span>4 · Apply the skill in Mock Test</span></div></div>
             <div className="resource-grid">
-              {resources.map(r => (
-                <a
-                  key={r.name}
-                  className="resource-card"
-                  href={r.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => { api.post('/api/activity', { activityType: 'resource_opened', details: r.name }).catch(() => {}); if ((r as any).longVideo) setSelectedVideo(r); }}
-                >
-                  <span className="resource-kind">{r.kind}</span>
-                  <strong>{r.name}</strong>
-                  <p>{r.detail}</p>
-                  <span className="resource-open">
-                    Open resource <ExternalLink size={14} />
-                  </span>
-                </a>
+              {internalLessons.map(lesson => (
+                <button key={lesson.id} type="button" className="resource-card internal-resource-card" onClick={() => { setSelectedLesson(lesson); api.post('/api/activity', { activityType: 'resource_opened', details: lesson.name }).catch(() => {}); }}>
+                  <span className="resource-kind">{lesson.kind}</span>
+                  <strong>{lesson.name}</strong>
+                  <p>{lesson.detail}</p>
+                  <span className="resource-open">Study inside ISOMO <ArrowRight size={14} /></span>
+                </button>
               ))}
             </div>
+            {selectedLesson && <section className="panel internal-lesson-view">
+              <div className="internal-lesson-heading"><div><div className="eyebrow dark">IN-APP LESSON</div><h2>{selectedLesson.name}</h2></div><button className="btn outline" type="button" onClick={() => setSelectedLesson(null)}>Close lesson</button></div>
+              {selectedLesson.sections.map((section: any, index: number) => <article className="internal-lesson-section" key={index}>
+                <h3>{section.heading}</h3>
+                {section.text && section.text.split('\\n\\n').map((paragraph: string, pIndex: number) => <p key={pIndex}>{paragraph}</p>)}
+                {section.bullets && <ul>{section.bullets.map((item: string, itemIndex: number) => <li key={itemIndex}>{item}</li>)}</ul>}
+              </article>)}
+              <div className="internal-source-note"><strong>Source acknowledgement</strong><p>{selectedLesson.source}</p></div>
+              <button className="btn primary" type="button" onClick={() => { setSelectedLesson(null); setTab('Mock test'); }}>Practise this skill</button>
+            </section>}
 
             {selectedVideo && user && !isTeacher && !guestMode && <StudySubmission key={selectedVideo.url} user={user} cohort={cohort} resourceTitle={selectedVideo.name} resourceUrl={selectedVideo.url} onSubmitted={() => setNotice('Your screenshot submission has reached the teacher dashboard.')} />}
 
