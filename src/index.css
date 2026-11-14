@@ -2131,3 +2131,10 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 
 /* Keep each opened lesson immediately beneath its selected resource card. */
 .internal-lesson-inline{grid-column:1 / -1;width:100%;scroll-margin-top:24px}
+
+/* Rwanda-based visual worked examples in the ISOMO learning library */
+.internal-lesson-image{margin:18px 0 24px;padding:0;overflow:hidden;border-radius:14px;background:var(--surface,#f4f6f4);border:1px solid var(--line,#dce5e3)}
+.internal-lesson-image img{display:block;width:100%;max-height:520px;object-fit:cover}
+.internal-lesson-image figcaption{padding:12px 15px;font-size:13px;line-height:1.55;color:var(--muted,#647579)}
+.internal-lesson-image figcaption span{display:block;margin-top:4px;font-size:12px}
+.internal-lesson-image figcaption a{color:var(--ink,#173b45);text-decoration:underline}
