@@ -13,6 +13,8 @@ export default function TeacherDashboard({ user, onViewAsStudent }: Props) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [accessRequests, setAccessRequests] = useState<any[]>([]);
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [submissionFeedback, setSubmissionFeedback] = useState<Record<string,string>>({});
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
   const [description, setDescription] = useState('');
@@ -26,13 +28,27 @@ export default function TeacherDashboard({ user, onViewAsStudent }: Props) {
 
   const loadOverview = async () => {
     setBusy(true);
-    try { const { data } = await api.get('/api/teacher/overview'); setOverview(data); }
+    try { const path = cohortFilter === 'All cohorts' ? '/api/teacher/overview' : '/api/teacher/overview?cohort=' + encodeURIComponent(cohortFilter); const { data } = await api.get(path); setOverview(data); }
     catch { setMessage('Teacher analytics could not be loaded. Confirm that you are signed in with the authorised teacher account.'); }
+    finally { setBusy(false); }
+  };
+  const loadSubmissions = async () => {
+    if (cohortFilter === 'All cohorts') { setSubmissions([]); return; }
+    try { const { data } = await api.get('/api/study-submissions?cohort=' + encodeURIComponent(cohortFilter)); setSubmissions(data.submissions || []); }
+    catch (error:any) { setMessage(error?.message || 'Practice submissions could not be loaded.'); }
+  };
+  const reviewSubmission = async (submission:any, status:'reviewed'|'needs_revision') => {
+    setBusy(true);
+    try {
+      await api.post('/api/study-submissions/review', { id:submission.id, cohort:cohortFilter, status, teacher_feedback:submissionFeedback[submission.id] || '' });
+      setMessage(status === 'reviewed' ? 'Submission marked as reviewed.' : 'Revision requested. The learner will see the review status.');
+      await loadSubmissions();
+    } catch (error:any) { setMessage(error?.message || 'The submission review could not be saved.'); }
     finally { setBusy(false); }
   };
   const loadAccessRequests = async () => { try { const { data } = await api.get('/api/admin/access-requests'); setAccessRequests(data.requests || []); } catch { setMessage('The access approval list could not be loaded.'); } };
   const reviewAccess = async (userId: string, decision: 'approved'|'rejected') => { setBusy(true); try { await api.post('/api/admin/access-requests', { userId, decision }); setMessage('Access request ' + decision + '.'); await loadAccessRequests(); } catch (error:any) { setMessage(error?.message || 'The access request could not be updated.'); } finally { setBusy(false); } };
-  useEffect(() => { if (isTeacher) loadOverview(); if (isAdmin) loadAccessRequests(); }, [user?.userId, isAdmin, isTeacher]);
+  useEffect(() => { if (isTeacher && (isAdmin || cohortFilter !== 'All cohorts')) { loadOverview(); if (cohortFilter !== 'All cohorts') loadSubmissions(); else setSubmissions([]); } else { setOverview(null); setSubmissions([]); } if (isAdmin) loadAccessRequests(); }, [user?.userId, isAdmin, isTeacher, cohortFilter]);
 
   const assignMaterial = async () => {
     if (!title.trim() || !/^https:\/\//i.test(url.trim())) { setMessage('Enter a material title and a valid HTTPS link.'); return; }
@@ -91,6 +107,18 @@ export default function TeacherDashboard({ user, onViewAsStudent }: Props) {
   return <div className="page">
     <div className="page-intro"><div className="eyebrow dark">RESTRICTED · TEACHER MANAGEMENT</div><h1>ISOMO management portal.</h1><p>Manage cohorts, monitor student growth, identify support needs and assign learning materials. This account is for teaching and administration—not student tests or lessons.</p><button className="btn primary" onClick={onViewAsStudent}>View as a student <Users size={15}/></button><p className="score-disclaimer">Opens a read-only preview of the learner experience. It does not switch your account role or let you submit student tests.</p></div>
     {isAdmin && <section className="panel access-requests-panel"><div className="section-heading"><div><div className="eyebrow dark">ADMINISTRATOR CONTROL</div><h2>Account approval requests</h2><p>Only your administrator account can approve or reject new logins.</p></div><button className="btn outline" onClick={loadAccessRequests}><RefreshCw size={14}/> Refresh</button></div>{accessRequests.length === 0 ? <p>No account requests yet.</p> : <div className="access-request-list">{accessRequests.map((r:any)=><div className="access-request-row" key={r.user_id}><div><strong>{r.email}</strong><span>{String(r.requested_role).toUpperCase()} · {new Date(r.created_at).toLocaleString()}</span></div><span className={'access-status '+r.status}>{r.status}</span>{r.status === 'pending' && <div className="access-actions"><button className="btn primary" disabled={busy} onClick={()=>reviewAccess(r.user_id,'approved')}>Approve</button><button className="btn outline" disabled={busy} onClick={()=>reviewAccess(r.user_id,'rejected')}>Reject</button></div>}</div>)}</div>}</section>}
+    <section className="panel teacher-panel submission-review-panel">
+      <div className="panel-head"><div><div className="eyebrow dark">INDIVIDUAL SCHOLAR SUBMISSIONS</div><h3>45-minute practice evidence</h3><p>Submissions are private to the scholar and authorised teachers. Select one cohort to review its learners separately.</p></div><button className="btn outline" onClick={loadSubmissions} disabled={busy || cohortFilter === 'All cohorts'}><RefreshCw size={14}/> Refresh</button></div>
+      {cohortFilter === 'All cohorts' ? <p>Select a specific cohort in the cohort filter to view its submissions.</p> : submissions.length ? <div className="submission-review-list">{submissions.map((s:any)=><article className="submission-review-item" key={s.id}>
+        <div className="submission-review-heading"><div><strong>{s.student_name || 'Scholar'}</strong><span>{s.cohort} · {s.skill} · {s.practice_minutes} minutes</span></div><span className={'access-status '+(s.status==='reviewed'?'approved':s.status==='needs_revision'?'pending':'')}>{s.status.replace('_',' ')}</span></div>
+        <p><strong>Lesson:</strong> {s.resource_title || 'Skill practice'}{s.resource_url ? <> · <a href={s.resource_url} target="_blank" rel="noreferrer">Open lesson</a></> : null}</p>
+        {s.reflection && <p>{s.reflection}</p>}
+        {s.screenshot_url && <a href={s.screenshot_url} target="_blank" rel="noreferrer" className="submission-evidence-link">View private screenshot evidence ↗</a>}
+        <small>Submitted {new Date(s.submitted_at).toLocaleString()}</small>
+        <textarea className="teacher-input" rows={2} value={submissionFeedback[s.id] ?? s.teacher_feedback ?? ''} onChange={e=>setSubmissionFeedback(p=>({...p,[s.id]:e.target.value}))} placeholder="Feedback for this scholar (optional)"/>
+        <div className="access-actions"><button className="btn primary" disabled={busy} onClick={()=>reviewSubmission(s,'reviewed')}>Mark reviewed</button><button className="btn outline" disabled={busy} onClick={()=>reviewSubmission(s,'needs_revision')}>Request revision</button></div>
+      </article>)}</div> : <p>No submissions have been received for {cohortFilter} yet.</p>}
+    </section>
     <div className="stats-grid">
       <div className="stat-card"><div className="stat-icon teal"><Users/></div><div className="stat-label">Student accounts with records</div><div className="stat-value">{summary.students}</div></div>
       <div className="stat-card"><div className="stat-icon gold"><Activity/></div><div className="stat-label">Recorded app activities</div><div className="stat-value">{overview?.activityCount || 0}</div></div>
