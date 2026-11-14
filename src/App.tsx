@@ -2251,7 +2251,7 @@ function App() {
         {!isTeacher && !guestMode && tab === 'AI Study Coach' && <AIStudyCoach user={user} priorMarks={priorMarks} progress={progress} onPractice={(skill?:string)=>{const s=skills.find(x=>x.area.toLowerCase()===String(skill||'').toLowerCase());if(s)startSkill(s);else go('Skill practice')}} />}
         {!isTeacher && !guestMode && tab === 'Study toolkit' && <LearningToolkit user={user} progress={progress} history={history} onPractice={(skill?:string)=>{if(skill){const s=skills.find(x=>x.area.toLowerCase()===skill.toLowerCase());if(s)startSkill(s);else go('Skill practice')}else go('Skill practice')}} />}
         {!isTeacher && tab === 'Home' && user && !guestMode && (
-          <div className="page"><MotivationHub userId={user.userId} name={user.name || user.email || 'Scholar'} onOpenGame={() => go('Word Arcade')} /></div>
+          <div className="page"><MotivationHub userId={user.userId} name={user.name || user.email || 'Scholar'} /></div>
         )}
         {!isTeacher && tab === 'Home' && (
           <div className="page">
