@@ -2143,3 +2143,8 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .lesson-completion-panel>p{margin:0 0 12px;line-height:1.55}
 .lesson-completion-panel .lesson-complete-message{display:flex;align-items:center;gap:8px;font-weight:650}
 .lesson-next-step{font-size:13px;color:var(--muted,#647579);margin-top:10px!important}
+
+.internal-lesson-image.isomo-brand-image{background:#173b45;padding:22px}
+.internal-lesson-image.isomo-brand-image img{object-fit:contain;max-height:230px;padding:12px}
+.internal-lesson-image.isomo-brand-image figcaption{color:#f5f3eb}
+.internal-lesson-image.isomo-brand-image figcaption a{color:#fff}
