@@ -1865,7 +1865,6 @@ html[data-theme="dark"] .auth-mode-switch button.active { background:#314751; co
 
 
 /* ISOMO Academy visual identity refresh — aligned to the public Academy site */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap');
 :root {
   --isomo-ink: #173b45;
   --isomo-deep: #123440;
