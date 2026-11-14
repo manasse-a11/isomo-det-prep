@@ -3019,7 +3019,7 @@ function App() {
           <section className="app-exit-dialog" role="dialog" aria-modal="true" aria-labelledby="app-exit-title" onClick={event => event.stopPropagation()}>
             <div className="app-exit-icon"><Home size={25} /></div>
             <h2 id="app-exit-title">Would you like to leave ISOMO DET Prep?</h2>
-            <p>Your learning progress is saved when it has synchronised. You can stay here or return to the home page.</p>
+            <p>Thank you for showing up today, {user?.name?.split(' ')[0] || 'scholar'} — your visit has made an impact. Every return builds your confidence and keeps your goals within reach. Come back tomorrow to keep your learning streak alive. You can stay here or return to the home page.</p>
             <button className="btn primary full" type="button" onClick={() => setExitPromptOpen(false)}>Stay in the app</button>
             <button className="btn outline full" type="button" onClick={returnHomeFromExitPrompt}><Home size={16} /> Go to home page</button>
             <button className="app-exit-leave" type="button" onClick={confirmAppExit}>Yes, leave the app</button>
