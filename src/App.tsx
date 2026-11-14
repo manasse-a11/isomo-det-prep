@@ -1750,7 +1750,7 @@ function App() {
             <div className="panel" style={{maxWidth:820,marginTop:18}}>
               <div className="panel-head"><div><div className="eyebrow dark">DIRECT ADMIN SUPPORT</div><h3>Need help from the administrator?</h3></div><span style={{fontSize:24}}>💬</span></div>
               <p>Contact the ISOMO administrator directly on WhatsApp for account or platform support.</p>
-              <a className="btn primary" href="https://wa.me/250798597486?text=Hello%20ISOMO%20Administrator%2C%20I%20need%20help%20with%20ISOMO%20DET%20Prep." target="_blank" rel="noreferrer">Message administrator on WhatsApp <ArrowRight size={16}/></a>
+              <a className="btn primary" href="whatsapp://send?phone=250798597486&text=Hello%20ISOMO%20Administrator%2C%20I%20need%20help%20with%20ISOMO%20DET%20Prep.">Message administrator on WhatsApp <ArrowRight size={16}/></a>
             </div>
           </div>
         )}
