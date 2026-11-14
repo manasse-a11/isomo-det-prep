@@ -1989,3 +1989,23 @@ html[data-theme="dark"] .checkpoint-modal>p,html[data-theme="dark"] .checkpoint-
 html[data-theme="dark"] .checkpoint-questions fieldset,html[data-theme="dark"] .checkpoint-clock,html[data-theme="dark"] .study-timer,html[data-theme="dark"] .submission-review-item{background:#14232d;border-color:#3a505c;color:#e5edf0}
 html[data-theme="dark"] .submission-review-heading strong{color:#e5edf0}
 @media(max-width:600px){.checkpoint-modal{padding:17px}.checkpoint-modal h2{font-size:20px}.checkpoint-actions{align-items:flex-start;flex-direction:column}.study-timer{flex-wrap:wrap}}
+
+
+/* Adaptive learner experience and previous skill marks */
+.adaptive-marks-panel,.adaptive-plan-panel{margin:20px 0;padding:22px}
+.adaptive-marks-panel h2,.adaptive-plan-panel h2{margin:7px 0 9px;font-size:21px}
+.adaptive-marks-panel>p,.adaptive-plan-panel>p{max-width:780px;font-size:13px;line-height:1.65;color:var(--muted,#667b7d)}
+.adaptive-mark-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
+.adaptive-mark-field{display:grid;gap:7px;font-size:13px;font-weight:700}
+.adaptive-mark-field input{width:100%;min-width:0;box-sizing:border-box;padding:12px;border:1px solid var(--border,#d9e1dd);border-radius:8px;background:var(--surface,#fff);color:inherit;font:inherit}
+.adaptive-priority-list{display:grid;gap:12px;margin:18px 0}
+.adaptive-priority-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 14px;align-items:center;padding:12px;border:1px solid var(--border,#e4e9e5);border-radius:8px}
+.adaptive-priority-row strong{display:block;font-size:13px}
+.adaptive-priority-row small{display:block;margin-top:4px;font-size:11px;color:var(--muted,#667b7d)}
+.adaptive-priority-row>span{font-size:12px;font-weight:800;white-space:nowrap}
+.adaptive-priority-row .mini-track{grid-column:1/-1}
+.adaptive-focus-tag{padding:5px 9px;border-radius:20px;background:#f5e8c8;color:#6c4c13;font-size:10px;font-weight:800}
+html[data-theme="dark"] .adaptive-mark-field input{background:#14232d;border-color:#3a505c;color:#e5edf0}
+html[data-theme="dark"] .adaptive-priority-row{border-color:#3a505c}
+html[data-theme="dark"] .adaptive-focus-tag{background:#493b20;color:#f5d99a}
+@media(max-width:760px){.adaptive-mark-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.adaptive-marks-panel,.adaptive-plan-panel{padding:16px}}
