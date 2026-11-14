@@ -623,7 +623,6 @@ const mockItems = [
     a: 2,
     seconds: 25,
     source: 'Published sample question · PrepPass (free DET practice sample)',
-    sourceUrl: 'https://www.preppass.org/en/duolingo-english-test',
     explanation: "The subject 'she' is third-person singular in the present simple, so the verb takes -s: goes. 'Every morning' signals a regular habit."
   },
   {
@@ -635,7 +634,6 @@ const mockItems = [
     a: [0],
     seconds: 5,
     source: 'Published sample word · VmapU DET practice',
-    sourceUrl: 'https://vmapu.com/duolingo-practice-tests',
     explanation: "Quixotic is a real adjective meaning exceedingly idealistic or impractical."
   },
 
@@ -2542,11 +2540,7 @@ function App() {
                 {currentMock.source && (
                   <div className="question-source-note">
                     <span>{currentMock.source}</span>
-                    {currentMock.sourceUrl && <a href={currentMock.sourceUrl} target="_blank" rel="noreferrer">Source details</a>}
                   </div>
-                )}
-                {currentMock.explanation && (
-                  <div className="question-explanation"><strong>Answer explanation</strong><p>{currentMock.explanation}</p></div>
                 )}
                 {currentMock.audio && (
                   <button
