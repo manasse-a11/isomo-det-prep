@@ -2157,3 +2157,8 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .app-exit-dialog .btn{margin-top:9px;display:flex;align-items:center;justify-content:center;gap:8px}
 .app-exit-leave{margin:17px 0 0;padding:8px 12px;border:0;background:transparent;color:var(--muted,#64777b);font:inherit;text-decoration:underline;cursor:pointer}
 @media(max-width:640px){.app-exit-dialog{padding:24px 20px;border-radius:20px}.app-exit-dialog h2{font-size:1.22rem}}
+
+/* Always provide an in-app exit control because Android may close a standalone PWA without dispatching popstate. */
+.mobile-exit-button{display:inline-flex;align-items:center;gap:6px;margin-right:10px;padding:8px 11px!important}
+@media(min-width:641px){.mobile-exit-button{display:none}}
+@media(max-width:640px){.breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:4px}.mobile-exit-button{margin-right:5px}.breadcrumb>b{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
