@@ -2201,3 +2201,11 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .golden-shield .arcade-champion-eagle{width:88px;height:78px;object-fit:contain}
 .golden-shield .arcade-champion-shield{width:100px;height:100px;object-fit:contain}
 @media(max-width:560px){.arcade-art-strip img{height:82px}.arcade-level-art{gap:7px}.arcade-level-art img{height:105px}.golden-shield .arcade-champion-eagle{width:72px;height:65px}.golden-shield .arcade-champion-shield{width:82px;height:82px}}
+
+
+/* Endless Word Arcade progression and TalkDrill-inspired game controls */
+.arcade-infinite-controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:12px 0 4px;padding:12px;border-radius:12px;background:#f4f8f5}
+.arcade-infinite-controls label{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:#35594e}
+.arcade-infinite-controls input{width:125px;padding:8px 9px;border:1px solid #d6e3dc;border-radius:8px;background:#fff;color:#234b42}
+.arcade-infinite-controls span{font-size:10px;color:#668078}
+@media(max-width:560px){.arcade-infinite-controls{align-items:stretch}.arcade-infinite-controls label{width:100%;justify-content:space-between}.arcade-infinite-controls input{flex:1;min-width:0}.arcade-infinite-controls .btn{flex:1}}
