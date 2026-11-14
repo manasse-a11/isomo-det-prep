@@ -2148,3 +2148,12 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .internal-lesson-image.isomo-brand-image img{object-fit:contain;max-height:230px;padding:12px}
 .internal-lesson-image.isomo-brand-image figcaption{color:#f5f3eb}
 .internal-lesson-image.isomo-brand-image figcaption a{color:#fff}
+
+.app-exit-overlay{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,20,25,.68);backdrop-filter:blur(5px)}
+.app-exit-dialog{width:min(100%,420px);padding:28px;border-radius:22px;background:var(--panel,#fff);color:var(--text,#173b45);box-shadow:0 24px 80px rgba(0,0,0,.28);text-align:center}
+.app-exit-icon{width:54px;height:54px;margin:0 auto 14px;border-radius:17px;display:grid;place-items:center;background:rgba(57,125,120,.13);color:#397d78}
+.app-exit-dialog h2{font-size:1.35rem;line-height:1.25;margin:0 0 10px}
+.app-exit-dialog p{font-size:.94rem;line-height:1.55;margin:0 0 20px;color:var(--muted,#64777b)}
+.app-exit-dialog .btn{margin-top:9px;display:flex;align-items:center;justify-content:center;gap:8px}
+.app-exit-leave{margin:17px 0 0;padding:8px 12px;border:0;background:transparent;color:var(--muted,#64777b);font:inherit;text-decoration:underline;cursor:pointer}
+@media(max-width:640px){.app-exit-dialog{padding:24px 20px;border-radius:20px}.app-exit-dialog h2{font-size:1.22rem}}
