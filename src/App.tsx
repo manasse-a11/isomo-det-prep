@@ -615,6 +615,31 @@ const resources = [
 ];
 const mockItems = [
   {
+    id: 'published-preppass-sample-grammar',
+    type: 'Fill in the Blanks',
+    area: 'Reading',
+    q: 'She ___ to the gym every morning before work. Which choice is correct?',
+    opts: ['A going', 'B go', 'C goes', 'D gone'],
+    a: 2,
+    seconds: 25,
+    source: 'Published sample question · PrepPass (free DET practice sample)',
+    sourceUrl: 'https://www.preppass.org/en/duolingo-english-test',
+    explanation: "The subject 'she' is third-person singular in the present simple, so the verb takes -s: goes. 'Every morning' signals a regular habit."
+  },
+  {
+    id: 'published-vmapu-sample-vocabulary',
+    type: 'Read and Select',
+    area: 'Reading',
+    q: 'Is this a real English word?',
+    opts: ['Yes — quixotic', 'No — it is not a real word'],
+    a: [0],
+    seconds: 5,
+    source: 'Published sample word · VmapU DET practice',
+    sourceUrl: 'https://vmapu.com/duolingo-practice-tests',
+    explanation: "Quixotic is a real adjective meaning exceedingly idealistic or impractical."
+  },
+
+  {
     type: 'Read and Select',
     area: 'Reading',
     q: 'Select the real English word.',
@@ -2215,17 +2240,7 @@ function App() {
               <div className="task-label">YOUR TASK</div>
               <h2>{active.task}</h2>
               <div className="prompt-box">{active.prompt}</div>
-              <div className="source-question-panel">
-                <strong>Explore published DET practice questions</strong>
-                <p>Practise with question sets published by established preparation providers. Some offer free samples; others limit access or require an account. ISOMO links to these providers rather than copying or claiming ownership of their question banks.</p>
-                <div className="source-question-links">
-                  <a href="https://www.detpractice.com/practice" target="_blank" rel="noreferrer">DETPractice · free sample questions ↗</a>
-                  <a href="https://www.detready.com/practice" target="_blank" rel="noreferrer">DET Ready · free sample questions ↗</a>
-                  <a href="https://www.preppassport.com/duolingo-practice" target="_blank" rel="noreferrer">Prep Passport · practice sets ↗</a>
-                  <a href="https://vmapu.com/duolingo-practice-tests" target="_blank" rel="noreferrer">VmapU · free practice questions ↗</a>
-                  <a href="https://www.effortlessmath.com/duolingo-english-test/" target="_blank" rel="noreferrer">Effortless Math · public sample questions ↗</a>
-                </div>
-              </div>
+
               {active.id === 'read-select' ? (
                 <div className="word-grid">
                   {active.options?.map((o, i) => (
@@ -2524,6 +2539,15 @@ function App() {
                   <span>Difficulty {difficulty}/5</span>
                 </div>
                 <h2>{currentMock.q}</h2>
+                {currentMock.source && (
+                  <div className="question-source-note">
+                    <span>{currentMock.source}</span>
+                    {currentMock.sourceUrl && <a href={currentMock.sourceUrl} target="_blank" rel="noreferrer">Source details</a>}
+                  </div>
+                )}
+                {currentMock.explanation && (
+                  <div className="question-explanation"><strong>Answer explanation</strong><p>{currentMock.explanation}</p></div>
+                )}
                 {currentMock.audio && (
                   <button
                     className="audio-play"
