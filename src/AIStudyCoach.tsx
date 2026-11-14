@@ -62,7 +62,7 @@ export default function AIStudyCoach({user,priorMarks,progress,onPractice}:any){
     <label>Daily study time<select value={minutes} onChange={e=>setMinutes(e.target.value)}>{['15','30','45','60','90','120'].map(x=><option key={x} value={x}>{x} minutes</option>)}</select></label>
    </div>
    {showProfile&&<div className="ai-score-context"><strong>Baseline scores</strong><p>{profile}</p><strong>Progress context</strong><p>{progressSummary}</p><small>Only available data is added to the prompt. Check the generated prompt before sharing it with an external service.</small></div>}
-  </section>
+  </div>
   <div className="ai-free-layout">
    <section className="panel ai-free-main">
     <div className="panel-head"><div><div className="eyebrow dark">CHOOSE YOUR ASSISTANT</div><h3><Bot size={18}/> Free AI assistants</h3></div><span className="ai-free-pill">External tools · Free tiers</span></div>
