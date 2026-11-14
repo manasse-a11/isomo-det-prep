@@ -1264,8 +1264,8 @@ function App() {
     setDetBaselineSaving(true);
     const marks = { ...(progress._prior_skill_marks || {}) };
     const valid = skillAreas.filter(key => marks[key] !== '' && Number(marks[key]) >= 10 && Number(marks[key]) <= 160);
-    if (!skip && !valid.length) {
-      setNotice('Enter at least one DET subscore, or choose to do this later.');
+    if (!skip && valid.length !== skillAreas.length) {
+      setNotice('Please enter all eight official DET subscores, or choose to do this later.');
       setDetBaselineSaving(false);
       return;
     }
@@ -1868,7 +1868,7 @@ function App() {
               <div className="adaptive-mark-grid">
                 {['Literacy','Comprehension','Conversation','Production'].map(area => <label key={area} className="adaptive-mark-field"><span>{area}</span><input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} /></label>)}
               </div>
-              <p className="score-disclaimer">Enter at least one subscore. You can skip this step and add your results later in Skill Practice. Scores are on the official 10–160 DET scale.</p>
+              <p className="score-disclaimer">Complete all eight subscores from your score report. You can skip this step and add your results later in Skill Practice. Scores are on the official 10–160 DET scale.</p>
               <div className="avatar-preview-actions">
                 <button className="btn outline" onClick={()=>saveDetBaseline(true)} disabled={detBaselineSaving}>Do this later</button>
                 <button className="btn primary" onClick={()=>saveDetBaseline(false)} disabled={detBaselineSaving}>{detBaselineSaving ? 'Saving…' : 'Save my DET results'}</button>
