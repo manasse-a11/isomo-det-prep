@@ -1627,9 +1627,9 @@ function App() {
   };
   const markLessonStudied = async (lessonId: string) => {
     const next = { ...progress, _lessons_studied: { ...(progress._lessons_studied || {}), [lessonId]: new Date().toISOString() } };
-    setProgress(next);
     try {
       await api.post('/api/progress', { progress: next });
+      setProgress(next);
       setNotice('Lesson marked as studied. The related assessment is now unlocked.');
       if (lessonPendingSkill && lessonForSkill[lessonPendingSkill.id] === lessonId) {
         const nextSkill = lessonPendingSkill;
