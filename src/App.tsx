@@ -4,6 +4,7 @@ import TeacherDashboard from './TeacherDashboard';
 import StudentGrowthDashboard from './StudentGrowthDashboard';
 import LearningToolkit from './LearningToolkit';
 import {
+  ArrowLeft,
   ArrowRight,
   Award,
   BookOpen,
@@ -876,6 +877,20 @@ function downloadPracticePdf(title: string, report: any) {
 
 function App() {
   const [tab, setTab] = useState('Home');
+  const pageHistoryRef = useRef<string[]>([]);
+  const currentTabRef = useRef(tab);
+  const skipBackTrackingRef = useRef(false);
+  useEffect(() => {
+    if (skipBackTrackingRef.current) {
+      skipBackTrackingRef.current = false;
+      currentTabRef.current = tab;
+      return;
+    }
+    if (currentTabRef.current !== tab) {
+      pageHistoryRef.current = [...pageHistoryRef.current, currentTabRef.current];
+      currentTabRef.current = tab;
+    }
+  }, [tab]);
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [history, setHistory] = useState<any[]>([]);
   const [assessmentStage, setAssessmentStage] = useState('baseline');
@@ -1589,6 +1604,14 @@ function App() {
     ['Contact teacher', ExternalLink],
     ['Teacher dashboard', GraduationCap],
   ] as const;
+  const goBack = () => {
+    const previousPage = pageHistoryRef.current.pop();
+    if (!previousPage) return;
+    skipBackTrackingRef.current = true;
+    setTab(previousPage);
+    setActive(null);
+    setResult(null);
+  };
   const go = (name: string) => {
     if (studentPreview && ['Skill practice','Mock test','Results'].includes(name)) { setNotice('Student preview is read-only. Sign in with a student account to practise, take tests and view private progress.'); return; }
     if (isTeacher && name !== 'Teacher dashboard') { setNotice('The teacher workspace is separate. Teachers manage learners and assign materials here; tests and student lessons are not available on teacher accounts.'); return; }
@@ -1646,6 +1669,9 @@ function App() {
             <img className="isomo-logo mobile-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy" />
           </div>
           <div className="breadcrumb">
+            <button className="btn outline" type="button" onClick={goBack} disabled={pageHistoryRef.current.length === 0} aria-label="Go back to previous page" title="Go back to previous page" style={{padding:'8px 11px',marginRight:10,display:'inline-flex',alignItems:'center',gap:6}}>
+              <ArrowLeft size={16} /> Back
+            </button>
             Learning space <ChevronRight size={14} /> <b>{tab}</b>
           </div>
           <div className="top-right">
