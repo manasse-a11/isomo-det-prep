@@ -1862,3 +1862,93 @@ html[data-theme="dark"] .auth-form { background:#172832; border-color:#3a505c; }
 html[data-theme="dark"] .auth-mode-switch { background:#20333d; }
 html[data-theme="dark"] .auth-mode-switch button { color:#c0d0d5; }
 html[data-theme="dark"] .auth-mode-switch button.active { background:#314751; color:#fff; }
+
+
+/* ISOMO Academy visual identity refresh — aligned to the public Academy site */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap');
+:root {
+  --isomo-ink: #173b45;
+  --isomo-deep: #123440;
+  --isomo-accent: #e0a83e;
+  --isomo-accent-soft: #f8edcf;
+  --isomo-teal: #397d78;
+  --isomo-muted: #647b7d;
+  --isomo-paper: #fbfaf6;
+  --isomo-line: #e6e3d9;
+  font-family: 'Open Sans', sans-serif;
+  color: var(--isomo-ink);
+  background: var(--isomo-paper);
+}
+body { font-family:'Open Sans',sans-serif; background:var(--isomo-paper); color:var(--isomo-ink); }
+h1,h2,h3,h4,h5,h6,
+.entry-card h1,.brand strong,.section-heading h2,.area-heading h2,
+.panel h3,.page-intro h1,.practice-head h1,.practice-card h2,
+.lesson-pathway h2,.library-feature h2,.mock-intro h2 {
+  font-family:'Montserrat',sans-serif;
+  letter-spacing:-.025em;
+}
+.sidebar { background:var(--isomo-deep); }
+.brand-mark,.mobile-brand .brand-mark { background:var(--isomo-accent); color:var(--isomo-deep); }
+.nav-item.selected { background:#254d57; }
+.nav-item.selected svg,.goal-icon,.hero-foot svg { color:var(--isomo-accent); }
+.topbar { background:#fff; border-bottom:1px solid var(--isomo-line); }
+.page { max-width:1320px; padding-top:38px; }
+.hero { background:var(--isomo-deep); border-radius:4px; box-shadow:0 12px 35px #173b4512; }
+.hero .eyebrow,.library-feature .eyebrow { color:#f0c66f; }
+.hero h1 em { color:#f0c66f; }
+.btn { border-radius:3px; letter-spacing:.015em; }
+.btn.primary { background:var(--isomo-accent); color:var(--isomo-deep); }
+.btn.primary:hover { background:#efbd5c; }
+.btn.outline { border-color:#cbd8d4; color:var(--isomo-ink); }
+.stat-card,.panel,.skill-card,.practice-card,.result-card,.resource-strip,
+.lesson-pathway,.mock-intro,.resource-card {
+  border-color:var(--isomo-line);
+  border-radius:4px;
+  box-shadow:0 5px 18px rgba(23,59,69,.035);
+}
+.section-heading h2,.area-heading h2,.panel h3,.page-intro h1,
+.practice-head h1,.practice-card h2 { color:var(--isomo-ink); }
+.eyebrow.dark,.stat-label,.page-intro p { color:var(--isomo-muted); }
+.skill-card,.resource-card { border-radius:4px; }
+.skill-card:hover,.resource-card:hover { border-color:#b9c9be; box-shadow:0 10px 24px rgba(23,59,69,.08); }
+.skill-card > strong,.skill-meta strong { color:var(--isomo-ink); }
+.skill-icon.reading,.stat-icon.teal { background:#e8f1ed; color:#397d78; }
+.skill-icon.writing,.stat-icon.gold { background:var(--isomo-accent-soft); color:#946a1d; }
+.focus-panel { background:#eef3ee; border-color:#dfe8df; border-radius:4px; }
+.focus-panel h3 { color:#234f49; }
+.resource-kind,.task-label { color:#9a7027; }
+.resource-card strong { color:var(--isomo-ink); }
+.entry-screen { background:linear-gradient(135deg,#f7f4eb 0%,#edf3ef 100%); }
+.entry-card { border:1px solid var(--isomo-line); border-radius:5px; box-shadow:0 18px 55px rgba(23,59,69,.09); }
+.entry-card h1 { color:var(--isomo-ink); }
+.entry-option { border-radius:4px; border-color:#d9e3dd; color:var(--isomo-ink); }
+.entry-option:hover { border-color:var(--isomo-accent); background:#fbf7ec; }
+.entry-option strong { font-family:'Montserrat',sans-serif; }
+.teacher-input,.answer-box,.auth-form,.theme-picker select {
+  border-radius:4px;
+}
+.library-feature { background:var(--isomo-deep); border-radius:4px; }
+.lesson-pathway,.mock-intro { border-radius:4px; }
+@media(max-width:780px) {
+  .hero { background:var(--isomo-deep); border-radius:3px; }
+  .page { padding-top:22px; }
+}
+html[data-theme="dark"] body,
+html[data-theme="dark"] .main { background:#111e24; }
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .skill-card,
+html[data-theme="dark"] .practice-card,
+html[data-theme="dark"] .result-card,
+html[data-theme="dark"] .resource-strip,
+html[data-theme="dark"] .lesson-pathway,
+html[data-theme="dark"] .entry-card { background:#1a2b32; border-color:#344951; }
+html[data-theme="dark"] .hero,
+html[data-theme="dark"] .library-feature { background:#102f39; }
+html[data-theme="dark"] .section-heading h2,
+html[data-theme="dark"] .area-heading h2,
+html[data-theme="dark"] .panel h3,
+html[data-theme="dark"] .page-intro h1,
+html[data-theme="dark"] .practice-head h1,
+html[data-theme="dark"] .entry-card h1 { color:#edf2ef; }
