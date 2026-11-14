@@ -914,7 +914,7 @@ function App() {
       currentTabRef.current = tab;
     }
   }, [tab]);
-  const [progress, setProgress] = useState<Record<string, number>>({});
+  const [progress, setProgress] = useState<Record<string, any>>({});
   const [history, setHistory] = useState<any[]>([]);
   const [assessmentStage, setAssessmentStage] = useState('baseline');
   const [assessmentType, setAssessmentType] = useState('baseline');
