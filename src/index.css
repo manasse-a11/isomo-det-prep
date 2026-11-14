@@ -2099,3 +2099,12 @@ html[data-theme="dark"] .ai-profile-fields select{background:#14232d;color:#e5ed
 html[data-theme="dark"] .ai-score-context{background:#1c302a}
 html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-context small{color:#c0d1c9}
 @media(max-width:640px){.ai-profile-fields{grid-template-columns:1fr}.ai-study-profile-head{align-items:flex-start;flex-direction:column}}
+
+
+/* External DET question-source panel */
+.source-question-panel{margin:18px 0;padding:16px 18px;border:1px solid var(--line,#dce5e3);border-radius:14px;background:rgba(57,125,120,.055)}
+.source-question-panel>strong{display:block;font-size:14px;color:var(--ink,#173b45)}
+.source-question-panel p{font-size:13px;line-height:1.55;margin:6px 0 12px;color:var(--muted,#647579)}
+.source-question-links{display:flex;flex-wrap:wrap;gap:8px}
+.source-question-links a{display:inline-flex;align-items:center;padding:8px 11px;border:1px solid var(--line,#dce5e3);border-radius:9px;color:var(--teal,#397d78);font-size:12px;font-weight:650;text-decoration:none;background:var(--surface,#fff)}
+.source-question-links a:hover{text-decoration:underline}
