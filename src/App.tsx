@@ -930,7 +930,7 @@ function App() {
   const [teachersLoading, setTeachersLoading] = useState(false);
   const [contactNotice, setContactNotice] = useState('');
   useEffect(() => {
-    if (tab !== 'Contact teacher' || !user || isTeacher) return;
+    if (tab !== 'Contact teacher' || !user || user.role === 'teacher' || user.role === 'admin') return;
     let active = true;
     setTeachersLoading(true);
     api.get('/api/contact/teachers').then(({ data }) => {
@@ -942,7 +942,7 @@ function App() {
       if (active) setContactNotice('We could not load the teacher email list. Please try again later.');
     }).finally(() => { if (active) setTeachersLoading(false); });
     return () => { active = false; };
-  }, [tab, user?.userId, isTeacher]);
+  }, [tab, user?.userId, user?.role]);
   const sendTeacherEmail = (event: any) => {
     event.preventDefault();
     if (!contactTeacher || !contactMessage.trim()) {
