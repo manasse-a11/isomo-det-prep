@@ -2191,3 +2191,13 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 @keyframes motivationFadeIn{from{opacity:0}to{opacity:1}}
 @keyframes motivationPopIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:560px){.motivation-popup{padding:20px 15px;border-radius:19px}.motivation-popup-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.motivation-popup .motivation-rewards{grid-template-columns:repeat(2,minmax(0,1fr))}.motivation-popup .motivation-invite{flex-direction:column;align-items:stretch}.motivation-popup .motivation-invite .btn{width:100%}}
+
+
+/* Uploaded ISOMO Word Arcade reference artwork */
+.arcade-art-strip{display:flex;gap:10px;align-items:center;margin-top:12px;max-width:560px}
+.arcade-art-strip img{width:calc(50% - 5px);height:112px;object-fit:cover;border:1px solid #dce8e2;border-radius:13px;box-shadow:0 5px 16px #173b4514}
+.arcade-level-art{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 4px}
+.arcade-level-art img{display:block;width:100%;height:145px;object-fit:cover;border-radius:13px;border:1px solid #e1e9e5;background:#f6f8f6}
+.golden-shield .arcade-champion-eagle{width:88px;height:78px;object-fit:contain}
+.golden-shield .arcade-champion-shield{width:100px;height:100px;object-fit:contain}
+@media(max-width:560px){.arcade-art-strip img{height:82px}.arcade-level-art{gap:7px}.arcade-level-art img{height:105px}.golden-shield .arcade-champion-eagle{width:72px;height:65px}.golden-shield .arcade-champion-shield{width:82px;height:82px}}
