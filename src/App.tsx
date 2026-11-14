@@ -921,6 +921,29 @@ function App() {
     }
   }, [tab]);
   const [progress, setProgress] = useState<Record<string, any>>({});
+  const priorMarks = (progress._prior_skill_marks || {}) as Record<string, number | ''>;
+  const skillAreas = ['Reading', 'Listening', 'Writing', 'Speaking'];
+  const adaptiveAreas = skillAreas.map(area => {
+    const prior = Number(priorMarks[area] || 0);
+    const related = skills.filter(s => s.area === area).map(s => Number(progress[s.id] || 0)).filter(v => v > 0);
+    const practice = related.length ? related.reduce((n,v)=>n+v,0)/related.length : 0;
+    const priorPct = prior > 0 ? Math.max(0,Math.min(100,((prior-10)/150)*100)) : null;
+    const indicators = [priorPct, ...(related.length ? [practice] : [])];
+    const score = indicators.length ? indicators.reduce((n,v)=>n+v,0)/indicators.length : null;
+    return { area, prior, practice, score, evidence: indicators.length };
+  }).sort((x,y) => (x.score ?? 101) - (y.score ?? 101));
+  const weakestArea = adaptiveAreas.find(x => x.evidence > 0);
+  const savePriorMark = (area: string, raw: string) => {
+    const value = raw === '' ? '' : Math.max(10,Math.min(160,Number(raw)));
+    setProgress(current => {
+      const next = { ...current, _prior_skill_marks: { ...(current._prior_skill_marks || {}), [area]: value } };
+      return next;
+    });
+  };
+  const persistPriorMarks = () => {
+    api.post('/api/progress', { progress }).then(() => setNotice('Your previous skill marks have been saved. They will help ISOMO adapt your practice.')).catch(() => setNotice('Your marks are saved on this device, but cloud synchronisation failed. Please try again.'));
+  };
+
   const [history, setHistory] = useState<any[]>([]);
   const [assessmentStage, setAssessmentStage] = useState('baseline');
   const [assessmentType, setAssessmentType] = useState('baseline');
@@ -2055,77 +2078,47 @@ function App() {
         {!isTeacher && !guestMode && tab === 'Skill practice' && (
           <div className="page">
             <div className="page-intro">
-              <div className="eyebrow dark">THE SKILL-BY-SKILL JOURNEY</div>
+              <div className="eyebrow dark">YOUR ADAPTIVE LEARNING JOURNEY</div>
               <h1>Practise with intention.</h1>
-              <p>
-                Work through every task type. Each session ends with a score and
-                clear next steps.
-              </p>
+              <p>ISOMO uses your previous marks and practice results to identify the skills that need the most attention. Update your marks whenever you receive a new result.</p>
             </div>
-            <div className="area-heading">
-              <h2>Reading</h2>
-              <span>Comprehension · Vocabulary · Accuracy</span>
-            </div>
-            <div className="skill-cards">
-              {skills
-                .filter(s => s.area === 'Reading')
-                .map(s => (
-                  <SkillCard
-                    key={s.id}
-                    s={s}
-                    progress={progress[s.id] || 0}
-                    onClick={() => startSkill(s)}
-                  />
+            <section className="panel adaptive-marks-panel">
+              <div className="eyebrow dark">PERSONALISE YOUR LEARNING</div>
+              <h2>Enter your previous skill marks</h2>
+              <p>Enter your latest marks for each skill. Use the DET 10–160 scale where available, or a comparable teacher-assessed mark converted to that scale. Leave a field blank if you have no result yet. These are learning inputs, not verified official scores.</p>
+              <div className="adaptive-mark-grid">
+                {skillAreas.map(area => <label key={area} className="adaptive-mark-field">
+                  <span>{area}</span>
+                  <input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} onBlur={persistPriorMarks}/>
+                </label>)}
+              </div>
+              <p className="score-disclaimer">Your marks are private to your account. You can update them as your performance changes.</p>
+            </section>
+            <section className="panel adaptive-plan-panel">
+              <div className="eyebrow dark">YOUR PERSONAL STUDY PRIORITIES</div>
+              <h2>{weakestArea ? 'Your current priority is ' + weakestArea.area : 'Start by adding your previous marks'}</h2>
+              <p>{weakestArea ? 'The learning plan ranks skills using your previous marks and recorded practice results. Lower results receive more practice time; new results continuously update this recommendation.' : 'Add any previous skill marks above, then complete short practice activities. ISOMO will use both sources to build a more useful study plan.'}</p>
+              <div className="adaptive-priority-list">
+                {adaptiveAreas.map((item,index)=><div className="adaptive-priority-row" key={item.area}>
+                  <div><strong>{index+1}. {item.area}</strong><small>{item.prior ? 'Previous mark: '+item.prior+'/160' : 'No previous mark'} · {item.practice ? 'Practice average: '+Math.round(item.practice)+'%' : 'No practice result yet'}</small></div>
+                  <span>{item.score===null?'Awaiting results':Math.round(item.score)+'/100'}</span>
+                  <div className="mini-track"><span style={{width:(item.score===null?0:item.score)+'%'}}/></div>
+                </div>)}
+              </div>
+              {weakestArea && <button className="btn primary" onClick={()=>{const first=skills.find(s=>s.area===weakestArea.area);if(first)startSkill(first);}}>Start with {weakestArea.area} <ArrowRight size={15}/></button>}
+            </section>
+            {adaptiveAreas.map(({area}) => <section key={area}>
+              <div className="area-heading">
+                <h2>{area}</h2>
+                <span>{area==='Reading'?'Comprehension · Vocabulary · Accuracy':area==='Listening'?'Understanding · Detail · Interaction':area==='Writing'?'Ideas · Organisation · Language control':'Fluency · Clarity · Pronunciation'}</span>
+                {adaptiveAreas.findIndex(x=>x.area===area)===0 && <span className="adaptive-focus-tag">Priority skill</span>}
+              </div>
+              <div className="skill-cards">
+                {skills.filter(s=>s.area===area).sort((x,y)=>(Number(progress[x.id]||0)||0)-(Number(progress[y.id]||0)||0)).map(s=>(
+                  <SkillCard key={s.id} s={s} progress={progress[s.id]||0} onClick={()=>startSkill(s)}/>
                 ))}
-            </div>
-            <div className="area-heading">
-              <h2>Listening</h2>
-              <span>Understanding · Detail · Interaction</span>
-            </div>
-            <div className="skill-cards">
-              {skills
-                .filter(s => s.area === 'Listening')
-                .map(s => (
-                  <SkillCard
-                    key={s.id}
-                    s={s}
-                    progress={progress[s.id] || 0}
-                    onClick={() => startSkill(s)}
-                  />
-                ))}
-            </div>
-            <div className="area-heading">
-              <h2>Writing</h2>
-              <span>Ideas · Organisation · Language control</span>
-            </div>
-            <div className="skill-cards">
-              {skills
-                .filter(s => s.area === 'Writing')
-                .map(s => (
-                  <SkillCard
-                    key={s.id}
-                    s={s}
-                    progress={progress[s.id] || 0}
-                    onClick={() => startSkill(s)}
-                  />
-                ))}
-            </div>
-            <div className="area-heading">
-              <h2>Speaking</h2>
-              <span>Fluency · Clarity · Pronunciation</span>
-            </div>
-            <div className="skill-cards">
-              {skills
-                .filter(s => s.area === 'Speaking')
-                .map(s => (
-                  <SkillCard
-                    key={s.id}
-                    s={s}
-                    progress={progress[s.id] || 0}
-                    onClick={() => startSkill(s)}
-                  />
-                ))}
-            </div>
+              </div>
+            </section>)}
           </div>
         )}
         {!isTeacher && !guestMode && tab === 'Practice' && active && (
