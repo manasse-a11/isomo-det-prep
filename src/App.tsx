@@ -694,6 +694,128 @@ const mockItems = [
     explanation: "Quixotic is a real adjective meaning exceedingly idealistic or impractical."
   },
 
+
+  {
+    id:'isomo-vocab-precision-01', type:'Read and Select', area:'Reading',
+    q:'Select all correctly spelled English words.',
+    opts:['accommodate','definately','conscientious','occurence','indispensable','recieve'],
+    a:[0,2,4], seconds:30,
+    source:'ISOMO original practice · vocabulary accuracy',
+    explanation:'Accommodate, conscientious and indispensable are correctly spelled. The other options contain common spelling errors.'
+  },
+  {
+    id:'isomo-vocab-precision-02', type:'Read and Select', area:'Reading',
+    q:'Select the real English words.',
+    opts:['ubiquitous','perceptive','flinter','candid','obstinate','glarm'],
+    a:[0,1,3,4], seconds:30,
+    source:'ISOMO original practice · vocabulary accuracy'
+  },
+  {
+    id:'isomo-fill-01', type:'Fill in the Blanks', area:'Reading',
+    q:'Despite the limited budget, the team developed a ___ solution that could be implemented immediately.',
+    opts:['feasible','feasibility','feasibly','feasiblyness'], a:0, seconds:40,
+    source:'ISOMO original practice · context and word form'
+  },
+  {
+    id:'isomo-fill-02', type:'Fill in the Blanks', area:'Reading',
+    q:'The report provides ___ evidence that the intervention improved attendance.',
+    opts:['compel','compelling','compelled','compulsion'], a:1, seconds:40,
+    source:'ISOMO original practice · context and word form'
+  },
+  {
+    id:'isomo-fill-03', type:'Fill in the Blanks', area:'Reading',
+    q:'Students are encouraged to evaluate sources ___ before using them in academic writing.',
+    opts:['critical','criticism','critically','critic'], a:2, seconds:40,
+    source:'ISOMO original practice · grammar and adverbs'
+  },
+  {
+    id:'isomo-readcomplete-01', type:'Read and Complete', area:'Reading',
+    q:'Complete the word: The research team collected addit___ data before reaching a conclusion.',
+    expected:'additional', seconds:55,
+    source:'ISOMO original practice · spelling in context'
+  },
+  {
+    id:'isomo-readcomplete-02', type:'Read and Complete', area:'Reading',
+    q:'Complete the word: Public transpor___ can reduce congestion when services are reliable.',
+    expected:'transport', seconds:55,
+    source:'ISOMO original practice · spelling in context'
+  },
+  {
+    id:'isomo-reading-inference-01', type:'Interactive Reading', area:'Reading',
+    q:'A university introduced peer study groups. Students who attended regularly reported greater confidence, although the study did not measure final examination results. Which conclusion is best supported?',
+    opts:['Peer groups may improve students’ confidence.','Peer groups guarantee higher examination scores.','Students who did not attend failed their courses.','The university removed individual study.'],
+    a:0, seconds:75, source:'ISOMO original practice · inference and evidence'
+  },
+  {
+    id:'isomo-reading-inference-02', type:'Interactive Reading', area:'Reading',
+    q:'A farmer tested two irrigation methods on similar plots. The drip-irrigated plot used less water, while crop yields were comparable. What is the most reasonable inference?',
+    opts:['Drip irrigation may use water more efficiently.','Drip irrigation always doubles crop yields.','The second plot received no water.','Weather has no effect on farming.'],
+    a:0, seconds:75, source:'ISOMO original practice · inference and evidence'
+  },
+  {
+    id:'isomo-reading-inference-03', type:'Interactive Reading', area:'Reading',
+    q:'A museum extended its weekend opening hours. Visitor numbers rose, but the museum also introduced free family workshops during the same period. What should a careful reader conclude?',
+    opts:['The longer hours alone caused the increase.','The workshops alone caused the increase.','Both changes may have contributed; the evidence does not isolate one cause.','The museum had fewer visitors.'],
+    a:2, seconds:75, source:'ISOMO original practice · evaluating evidence'
+  },
+  {
+    id:'isomo-listen-type-01', type:'Listen and Type', area:'Listening',
+    q:'Listen carefully and type the sentence exactly as you hear it.',
+    audio:'Although the proposal was ambitious, the committee agreed to examine it in greater detail.',
+    expected:'although the proposal was ambitious, the committee agreed to examine it in greater detail.',
+    seconds:65, source:'ISOMO original practice · sentence transcription'
+  },
+  {
+    id:'isomo-listen-type-02', type:'Listen and Type', area:'Listening',
+    q:'Listen carefully and type the sentence exactly as you hear it.',
+    audio:'Reliable public information helps communities make informed decisions during emergencies.',
+    expected:'reliable public information helps communities make informed decisions during emergencies.',
+    seconds:65, source:'ISOMO original practice · sentence transcription'
+  },
+  {
+    id:'isomo-listen-type-03', type:'Listen and Type', area:'Listening',
+    q:'Listen carefully and type the sentence exactly as you hear it.',
+    audio:'The lecturer emphasised that careful observation is essential to scientific research.',
+    expected:'the lecturer emphasised that careful observation is essential to scientific research.',
+    seconds:65, source:'ISOMO original practice · sentence transcription'
+  },
+  {
+    id:'isomo-listening-detail-01', type:'Interactive Listening', area:'Listening',
+    q:'A student explains that she cannot attend a morning seminar because her bus arrives late. The instructor suggests watching the recorded session and submitting questions before Friday. What does the instructor recommend?',
+    opts:['Skip the seminar without following up.','Watch the recording and send questions before Friday.','Ask to cancel the course.','Attend a different university.'],
+    a:1, seconds:75, source:'ISOMO original practice · listening for action and detail'
+  },
+  {
+    id:'isomo-listening-purpose-02', type:'Interactive Listening', area:'Listening',
+    q:'A speaker says: “We planned to hold the event outdoors, but the weather forecast predicts heavy rain. The community hall is available, so we will move the programme there and keep the original start time.” What is the main purpose of the announcement?',
+    opts:['To cancel the event.','To announce a change of venue while keeping the schedule.','To postpone the event until next month.','To ask participants to bring outdoor equipment.'],
+    a:1, seconds:75, source:'ISOMO original practice · main idea and purpose'
+  },
+  {
+    id:'isomo-writing-01', type:'Writing Sample', area:'Writing',
+    q:'Some people believe that universities should prioritise practical skills, while others value theoretical knowledge. Discuss both perspectives and explain your position.',
+    seconds:210, open:true, source:'ISOMO original practice · extended academic writing'
+  },
+  {
+    id:'isomo-writing-02', type:'Interactive Writing', area:'Writing',
+    q:'Describe one change that could improve public transport in your community. Explain why it is needed, who would benefit and one challenge that decision-makers should consider.',
+    seconds:210, open:true, source:'ISOMO original practice · problem and solution'
+  },
+  {
+    id:'isomo-speaking-01', type:'Speaking Sample', area:'Speaking',
+    q:'Describe a time when you had to learn something difficult. What strategy helped you, and what would you do differently next time?',
+    seconds:150, open:true, source:'ISOMO original practice · personal experience and reflection'
+  },
+  {
+    id:'isomo-speaking-02', type:'Read, Then Speak', area:'Speaking',
+    q:'“Technology makes education more accessible, but it cannot replace human interaction.” Do you agree or disagree? Explain your position with examples.',
+    seconds:150, open:true, source:'ISOMO original practice · argument and support'
+  },
+  {
+    id:'isomo-photo-speaking-01', type:'Speak About the Photo', area:'Speaking',
+    q:'Imagine a photograph showing volunteers planting young trees along a riverbank. Describe the people, their actions, the setting and the possible purpose of the activity.',
+    seconds:120, open:true, source:'ISOMO original practice · structured visual description'
+  },
   {
     type: 'Read and Select',
     area: 'Reading',
