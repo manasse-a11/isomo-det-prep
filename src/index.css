@@ -2081,3 +2081,21 @@ html[data-theme="dark"] .ai-edge-tip,html[data-theme="dark"] .ai-prompt-preview{
 html[data-theme="dark"] .ai-prompt-preview p{color:#d0e0d8}
 @media(max-width:900px){.ai-free-layout{grid-template-columns:1fr}}
 @media(max-width:640px){.ai-provider-grid{grid-template-columns:1fr}.ai-task-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ai-provider-action{align-items:stretch;flex-direction:column}.ai-provider-action .btn{align-self:flex-start}}
+
+
+.ai-study-profile{background:var(--panel,#fff);border:1px solid var(--isomo-line);border-radius:14px;padding:17px 19px;margin:0 0 17px}
+.ai-study-profile-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ai-study-profile-head h3{display:flex;align-items:center;gap:8px;font:800 16px Manrope;color:var(--text,#203849);margin:6px 0}
+.ai-profile-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:13px}
+.ai-profile-fields label{display:grid;gap:6px;font-size:10px;font-weight:800;color:var(--muted,#75847d)}
+.ai-profile-fields select{width:100%;padding:10px;border:1px solid var(--isomo-line);border-radius:9px;background:var(--panel,#fff);color:inherit;font:inherit;font-size:12px}
+.ai-score-context{margin-top:13px;padding:13px;border-radius:10px;background:#f5f8f6}
+.ai-score-context strong{font-size:11px;color:#315e50}.ai-score-context p{font-size:11px;line-height:1.6;color:#64766d;margin:5px 0 10px}.ai-score-context small{font-size:10px;line-height:1.5;color:#84938b}
+.ai-prompt-panel .panel-head{gap:10px}
+.ai-prompt-panel .panel-head .ai-free-pill{display:flex;align-items:center;gap:5px}
+html[data-theme="dark"] .ai-study-profile{background:#14232d;border-color:#3a505c}
+html[data-theme="dark"] .ai-study-profile-head h3{color:#e5edf0}
+html[data-theme="dark"] .ai-profile-fields select{background:#14232d;color:#e5edf0;border-color:#3a505c}
+html[data-theme="dark"] .ai-score-context{background:#1c302a}
+html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-context small{color:#c0d1c9}
+@media(max-width:640px){.ai-profile-fields{grid-template-columns:1fr}.ai-study-profile-head{align-items:flex-start;flex-direction:column}}
