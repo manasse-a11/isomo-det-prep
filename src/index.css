@@ -1952,3 +1952,40 @@ html[data-theme="dark"] .panel h3,
 html[data-theme="dark"] .page-intro h1,
 html[data-theme="dark"] .practice-head h1,
 html[data-theme="dark"] .entry-card h1 { color:#edf2ef; }
+
+
+/* Timed skill checkpoints and private practice evidence */
+.checkpoint-backdrop{position:fixed;inset:0;z-index:1200;background:rgba(10,25,31,.76);display:grid;place-items:center;padding:16px;overflow:auto}
+.checkpoint-modal{width:min(100%,760px);max-height:92vh;overflow:auto;background:#fffdf8;color:#173b45;border-radius:12px;padding:24px;box-shadow:0 25px 90px rgba(0,0,0,.35)}
+.checkpoint-top,.checkpoint-actions,.checkpoint-clock,.submission-review-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.checkpoint-top>span{display:flex;align-items:center;gap:8px;color:#397d78;font-size:11px;font-weight:800;letter-spacing:.08em}
+.checkpoint-modal h2{margin:14px 0 8px;font-size:24px}
+.checkpoint-modal>p{font-size:13px;line-height:1.65;color:#657a7c}
+.checkpoint-clock,.study-timer{justify-content:flex-start;padding:13px 16px;margin:16px 0;border:1px solid #e6e3d9;background:#f7f5ed;color:#173b45;border-radius:8px}
+.checkpoint-clock strong,.study-timer strong{font-size:24px;font-variant-numeric:tabular-nums}
+.checkpoint-clock span,.study-timer span{font-size:12px;color:#647b7d}
+.checkpoint-questions{display:grid;gap:10px;margin:14px 0}
+.checkpoint-questions fieldset{border:1px solid #e6e3d9;border-radius:8px;padding:12px 14px}
+.checkpoint-questions legend{font-size:13px;font-weight:800;padding:0 4px}
+.checkpoint-questions label{display:flex;gap:8px;align-items:flex-start;padding:6px 0;font-size:12px;line-height:1.45;cursor:pointer}
+.checkpoint-actions{padding-top:12px;border-top:1px solid #e6e3d9;font-size:12px;color:#647b7d}
+.study-submission-panel{margin:22px 0;border-left:4px solid #e0a83e}
+.study-submission-panel h3{margin:8px 0}
+.study-submission-panel>p{line-height:1.65}
+.study-submission-panel input[type=file]{display:block;width:100%;margin:8px 0 14px;padding:10px;border:1px dashed #bdcbc5;border-radius:7px;font-size:12px}
+.study-submission-panel .teacher-input{width:100%;box-sizing:border-box;margin:7px 0 12px}
+.study-timer{display:flex;align-items:center;gap:10px}
+.submission-review-panel{margin:20px 0}
+.submission-review-list{display:grid;gap:12px}
+.submission-review-item{display:grid;gap:9px;padding:15px;border:1px solid #e6e3d9;border-radius:9px;background:#fffefa}
+.submission-review-heading strong{display:block;color:#173b45}
+.submission-review-heading span{display:block;margin-top:4px;font-size:11px;color:#647b7d}
+.submission-review-item p{margin:0;font-size:12px;line-height:1.6}
+.submission-review-item small{font-size:10px;color:#73827e}
+.submission-review-item .teacher-input{width:100%;box-sizing:border-box}
+.submission-evidence-link{font-size:12px;font-weight:700;color:#287b70}
+html[data-theme="dark"] .checkpoint-modal{background:#1b2a35;color:#e5edf0}
+html[data-theme="dark"] .checkpoint-modal>p,html[data-theme="dark"] .checkpoint-clock span,html[data-theme="dark"] .study-timer span{color:#a9bac2}
+html[data-theme="dark"] .checkpoint-questions fieldset,html[data-theme="dark"] .checkpoint-clock,html[data-theme="dark"] .study-timer,html[data-theme="dark"] .submission-review-item{background:#14232d;border-color:#3a505c;color:#e5edf0}
+html[data-theme="dark"] .submission-review-heading strong{color:#e5edf0}
+@media(max-width:600px){.checkpoint-modal{padding:17px}.checkpoint-modal h2{font-size:20px}.checkpoint-actions{align-items:flex-start;flex-direction:column}.study-timer{flex-wrap:wrap}}
