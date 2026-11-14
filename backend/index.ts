@@ -15,6 +15,40 @@ const schema = {
 
 export const handler = router({
   'GET /api/_healthcheck': [async () => json({ message: 'ISOMO DET Prep ready' })],
+  'POST /api/ai-coach': [
+    requireAuth(),
+    async ({ body }) => {
+      const input = body as { action?: string; messages?: Array<{ role?: string; content?: string }>; context?: Record<string, unknown> };
+      const action = input?.action === 'plan' ? 'plan' : 'chat';
+      const context = JSON.stringify(input?.context || {}).slice(0, 4500);
+      const history = Array.isArray(input?.messages) ? input.messages.slice(-10).map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content || '').slice(0, 1600) })).filter(m => m.content) : [];
+      if (action === 'chat' && (!history.length || history[history.length - 1].role !== 'user')) return error('Write a question for your AI coach first.', 400);
+      const instructions = [
+        'You are ISOMO Academy’s warm, rigorous English tutor and Duolingo English Test preparation coach.',
+        'Teach interactively: diagnose misunderstanding, explain clearly, ask one focused follow-up question, give a short exercise, wait for the learner attempt, then give specific feedback and a stronger model answer.',
+        'Adapt to saved learner practice and previous scores, but treat self-reported scores as unverified.',
+        'Support reading, listening, writing, speaking, vocabulary, grammar, pronunciation and current DET task formats.',
+        'When reviewing writing or speaking, provide criterion-based formative feedback on task fulfilment, coherence, grammar, vocabulary, fluency and intelligibility as evidence allows.',
+        'Never claim to reproduce the official DET scoring engine, guarantee a score, or fabricate official test questions or rules.',
+        'Never provide answers for a live, proctored, graded or active assessment. Teach the underlying skill with a different example instead.',
+        'Be encouraging but honest. Correct errors and explain why. Keep the next step actionable.',
+        'Learner context: ' + context
+      ].join('\\n');
+      const prompt = action === 'plan'
+        ? instructions + '\\nCreate a realistic seven-day DET improvement plan. Prioritise weakest evidenced skills, balance all four skills, include daily 30–60 minute blocks, exact activities, review, one checkpoint and measurable goals. If evidence is missing, start with a diagnostic rather than inventing weaknesses. Use clear day-by-day headings.'
+        : instructions + '\\nConversation:\\n' + history.map(m => (m.role === 'assistant' ? 'COACH: ' : 'LEARNER: ') + m.content).join('\\n') + '\\nRespond to the latest learner message and move the interaction forward without overwhelming them.';
+      try {
+        const result = await ai.generate({ prompt, maxTokens: action === 'plan' ? 1200 : 800, temperature: 0.35, thinkingMode: 'FAST' });
+        const answer = String(result.text || '').trim().slice(0, 9000);
+        if (!answer) return error('The AI coach returned an empty response. Please try again.', 503);
+        return action === 'plan' ? json({ plan: answer }) : json({ reply: answer });
+      } catch (e) {
+        console.error('ISOMO AI coach failed', e);
+        return error('The AI coach is temporarily unavailable. Please try again shortly.', 503);
+      }
+    },
+  ],
+
   'POST /api/assess': [
     requireAuth(),
     async ({ body }) => {
