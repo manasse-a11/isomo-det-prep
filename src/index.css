@@ -2108,3 +2108,8 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .source-question-links{display:flex;flex-wrap:wrap;gap:8px}
 .source-question-links a{display:inline-flex;align-items:center;padding:8px 11px;border:1px solid var(--line,#dce5e3);border-radius:9px;color:var(--teal,#397d78);font-size:12px;font-weight:650;text-decoration:none;background:var(--surface,#fff)}
 .source-question-links a:hover{text-decoration:underline}
+
+
+/* In-app source attribution for published DET sample questions */
+.question-source-note{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 16px;padding:9px 12px;border-left:3px solid var(--gold,#e0a83e);border-radius:7px;background:rgba(224,168,62,.09);color:var(--muted,#647579);font-size:12px;line-height:1.45}
+.question-source-note span{font-weight:600}
