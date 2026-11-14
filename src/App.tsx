@@ -3,6 +3,7 @@ import { api, auth, supabase } from './lib';
 import TeacherDashboard from './TeacherDashboard';
 import StudentGrowthDashboard from './StudentGrowthDashboard';
 import LearningToolkit from './LearningToolkit';
+import AIStudyCoach from './AIStudyCoach';
 import SkillCheckpoint from './SkillCheckpoint';
 import StudySubmission from './StudySubmission';
 import {
@@ -1706,6 +1707,7 @@ function App() {
     ['Skill practice', BookOpen],
     ['Learning library', GraduationCap],
     ['Study toolkit', Sparkles],
+    ['AI Study Coach', Brain],
     ['Mock test', Target],
     ['Results', BarChart3],
     ['Contact teacher', ExternalLink],
@@ -1722,7 +1724,7 @@ function App() {
   const go = (name: string) => {
     if (studentPreview && ['Skill practice','Mock test','Results'].includes(name)) { setNotice('Student preview is read-only. Sign in with a student account to practise, take tests and view private progress.'); return; }
     if (isTeacher && name !== 'Teacher dashboard') { setNotice('The teacher workspace is separate. Teachers manage learners and assign materials here; tests and student lessons are not available on teacher accounts.'); return; }
-    if (['Skill practice','Mock test','Results','My dashboard','Study toolkit'].includes(name) && !user) { setNotice('Create a student account or sign in to practise and save your private progress.'); return; }
+    if (['Skill practice','Mock test','Results','My dashboard','Study toolkit','AI Study Coach'].includes(name) && !user) { setNotice('Create a student account or sign in to practise and save your private progress.'); return; }
     if (['Skill practice','Mock test','Results'].includes(name) && ['baseline','midline','endline'].includes(assessmentStage)) { beginMock(assessmentStage); return; }
     setTab(name);
     setActive(null);
@@ -1922,6 +1924,7 @@ function App() {
         )}
         {isTeacher && tab === 'Teacher dashboard' && <TeacherDashboard user={user} progress={{}} onViewAsStudent={() => { setStudentPreview(true); setTab('Home'); setNotice('You are viewing the student experience in read-only preview mode. No student scores or activity will be changed.'); }} />}
         {!isTeacher && !guestMode && tab === 'My dashboard' && <StudentGrowthDashboard progress={progress} history={history} user={user} onPractice={() => go('Skill practice')} />}
+        {!isTeacher && !guestMode && tab === 'AI Study Coach' && <AIStudyCoach user={user} priorMarks={priorMarks} progress={progress} onPractice={(skill?:string)=>{const s=skills.find(x=>x.area.toLowerCase()===String(skill||'').toLowerCase());if(s)startSkill(s);else go('Skill practice')}} />}
         {!isTeacher && !guestMode && tab === 'Study toolkit' && <LearningToolkit user={user} progress={progress} history={history} onPractice={(skill?:string)=>{if(skill){const s=skills.find(x=>x.area.toLowerCase()===skill.toLowerCase());if(s)startSkill(s);else go('Skill practice')}else go('Skill practice')}} />}
         {!isTeacher && tab === 'Home' && (
           <div className="page">
