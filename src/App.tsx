@@ -1167,6 +1167,7 @@ function App() {
   const [pendingSkill, setPendingSkill] = useState<Skill | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
   const [selectedLesson, setSelectedLesson] = useState<any>(null);
+  const [lessonPendingSkill, setLessonPendingSkill] = useState<Skill | null>(null);
   const selectedLessonRef = useRef<HTMLElement | null>(null);
   useEffect(() => { if (selectedLesson) selectedLessonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, [selectedLesson]);
   const [answer, setAnswer] = useState('');
@@ -1601,22 +1602,67 @@ function App() {
     if (assessmentStage === 'skills' && attempted.size >= skills.length) updateJourney('endline');
     else if (assessmentStage === 'skills' && attempted.size >= Math.ceil(skills.length / 2)) updateJourney('midline');
   };
-  const startSkill = (s: Skill) => {
-    if (studentPreview) { setNotice('Student preview is read-only. Sign in with a student account to complete practice and save scores.'); return; }
-    if (!user) { setNotice('Please sign in before starting your private baseline assessment and saving your progress.'); return; }
-    if (['baseline','midline','endline'].includes(assessmentStage)) { beginMock(assessmentStage); return; }
-    const previousArea = String(progress._last_skill_area || '');
-    if (previousArea && previousArea !== s.area && !progress['_checkpoint_' + previousArea]) {
-      setPendingSkill(s);
-      setCheckpointArea(previousArea);
-      return;
-    }
+  const lessonForSkill: Record<string, string> = {
+    'read-select': 'read-select',
+    'fill-blanks': 'fill-blanks',
+    'read-complete': 'read-complete',
+    'interactive-reading': 'academic-reading',
+    'listen-type': 'listening',
+    'interactive-listening': 'listening',
+    'write-photo': 'photo-description',
+    'interactive-writing': 'writing',
+    'writing-sample': 'writing',
+    'speak-photo': 'photo-description',
+    'read-speak': 'speaking',
+    'interactive-speaking': 'speaking',
+    'speaking-sample': 'speaking',
+  };
+  const openSkillPractice = (s: Skill) => {
     setActive(s);
     setAnswer('');
     setChecked([]);
     setResult(null);
     setAudioUrl('');
     setTab('Practice');
+  };
+  const markLessonStudied = async (lessonId: string) => {
+    const next = { ...progress, _lessons_studied: { ...(progress._lessons_studied || {}), [lessonId]: new Date().toISOString() } };
+    setProgress(next);
+    try {
+      await api.post('/api/progress', { progress: next });
+      setNotice('Lesson marked as studied. The related assessment is now unlocked.');
+      if (lessonPendingSkill && lessonForSkill[lessonPendingSkill.id] === lessonId) {
+        const nextSkill = lessonPendingSkill;
+        setLessonPendingSkill(null);
+        setSelectedLesson(null);
+        openSkillPractice(nextSkill);
+      }
+    } catch {
+      setNotice('We could not sync your lesson completion. Please try again before starting the assessment.');
+    }
+  };
+  const startSkill = (s: Skill) => {
+    if (studentPreview) { setNotice('Student preview is read-only. Sign in with a student account to complete practice and save scores.'); return; }
+    if (!user) { setNotice('Please sign in before starting your private baseline assessment and saving your progress.'); return; }
+    if (['baseline','midline','endline'].includes(assessmentStage)) { beginMock(assessmentStage); return; }
+    const requiredLessonId = lessonForSkill[s.id];
+    if (requiredLessonId && !progress._lessons_studied?.[requiredLessonId]) {
+      const requiredLesson = internalLessons.find(lesson => lesson.id === requiredLessonId);
+      if (requiredLesson) {
+        setLessonPendingSkill(s);
+        setSelectedLesson(requiredLesson);
+        setTab('Learning library');
+        setNotice('Study the required teaching material and mark it as studied before this skill assessment can begin.');
+      }
+      return;
+    }
+    const previousArea = String(progress._last_skill_area || '');
+    if (previousArea && previousArea !== s.area && !progress['_checkpoint_' + previousArea]) {
+      setPendingSkill(s);
+      setCheckpointArea(previousArea);
+      return;
+    }
+    openSkillPractice(s);
   };
   const assess = async (
     kind: string,
@@ -2632,7 +2678,12 @@ function App() {
                 {section.bullets && <ul>{section.bullets.map((item: string, itemIndex: number) => <li key={itemIndex}>{item}</li>)}</ul>}
               </article>)}
               <div className="internal-source-note"><strong>Source acknowledgement</strong><p>{selectedLesson.source}</p></div>
-              <button className="btn primary" type="button" onClick={() => { setSelectedLesson(null); setTab('Mock test'); }}>Practise this skill</button>
+              <div className="lesson-completion-panel">
+                {progress._lessons_studied?.[selectedLesson.id] ? <p className="lesson-complete-message"><CheckCircle2 size={16}/> Teaching material studied · assessment unlocked</p> : <p>Before attempting the related assessment, study this material and confirm that you have completed it.</p>}
+                <button className="btn primary" type="button" onClick={() => markLessonStudied(selectedLesson.id)}>{progress._lessons_studied?.[selectedLesson.id] ? 'Review and confirm lesson' : 'I have studied this material — unlock assessment'}</button>
+                {lessonPendingSkill && lessonForSkill[lessonPendingSkill.id] === selectedLesson.id && <p className="lesson-next-step">Your selected assessment, {lessonPendingSkill.title}, will open after you confirm.</p>}
+              </div>
+              <button className="btn outline" type="button" onClick={() => { setSelectedLesson(null); setTab('Mock test'); }}>Go to full mock test</button>
                     </section>}
                 </Fragment>
               ))}
