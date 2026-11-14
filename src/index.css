@@ -2113,3 +2113,18 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 /* In-app source attribution for published DET sample questions */
 .question-source-note{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 16px;padding:9px 12px;border-left:3px solid var(--gold,#e0a83e);border-radius:7px;background:rgba(224,168,62,.09);color:var(--muted,#647579);font-size:12px;line-height:1.45}
 .question-source-note span{font-weight:600}
+
+/* In-app learning library */
+.internal-resource-card{appearance:none;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%;min-height:180px}
+.internal-resource-card .resource-open{display:flex;align-items:center;gap:7px}
+.internal-lesson-view{margin-top:22px;padding:clamp(18px,3vw,30px);scroll-margin-top:24px}
+.internal-lesson-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.internal-lesson-heading h2{margin:5px 0 0;color:var(--ink,#173b45)}
+.internal-lesson-section{padding:18px 0;border-top:1px solid var(--line,#dce5e3)}
+.internal-lesson-section h3{margin:0 0 9px;color:var(--ink,#173b45);font-size:16px}
+.internal-lesson-section p{white-space:pre-line;line-height:1.72;color:var(--text,#40565a);margin:8px 0}
+.internal-lesson-section ul{padding-left:22px;margin:10px 0}
+.internal-lesson-section li{padding:4px 0;line-height:1.6;color:var(--text,#40565a)}
+.internal-source-note{margin:18px 0;padding:14px 16px;border-left:3px solid var(--gold,#e0a83e);background:rgba(224,168,62,.09);border-radius:8px}
+.internal-source-note p{margin:5px 0 0;line-height:1.6;font-size:13px;color:var(--muted,#647579)}
+@media(max-width:600px){.internal-lesson-heading{flex-direction:column}.internal-lesson-heading .btn{width:100%}.internal-resource-card{min-height:unset}}
