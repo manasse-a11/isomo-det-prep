@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { api, auth, supabase } from './lib';
 import TeacherDashboard from './TeacherDashboard';
 import StudentGrowthDashboard from './StudentGrowthDashboard';
@@ -1158,6 +1158,8 @@ function App() {
   const [pendingSkill, setPendingSkill] = useState<Skill | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
   const [selectedLesson, setSelectedLesson] = useState<any>(null);
+  const selectedLessonRef = useRef<HTMLElement | null>(null);
+  useEffect(() => { if (selectedLesson) selectedLessonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, [selectedLesson]);
   const [answer, setAnswer] = useState('');
   const [checked, setChecked] = useState<number[]>([]);
   const [result, setResult] = useState<Result | null>(null);
@@ -2605,15 +2607,14 @@ function App() {
             <div className="lesson-pathway"><div className="eyebrow dark">ISOMO IN-APP LEARNING LIBRARY</div><h2>Study the lesson without leaving ISOMO.</h2><p>These original learning notes, examples and practice activities are organised around DET task types and transferable academic English skills. Source references are credited in each lesson.</p><div className="lesson-steps"><span>1 · Read the lesson</span><span>2 · Study the example</span><span>3 · Complete the practice</span><span>4 · Apply the skill in Mock Test</span></div></div>
             <div className="resource-grid">
               {internalLessons.map(lesson => (
-                <button key={lesson.id} type="button" className="resource-card internal-resource-card" onClick={() => { setSelectedLesson(lesson); api.post('/api/activity', { activityType: 'resource_opened', details: lesson.name }).catch(() => {}); }}>
-                  <span className="resource-kind">{lesson.kind}</span>
-                  <strong>{lesson.name}</strong>
-                  <p>{lesson.detail}</p>
-                  <span className="resource-open">Study inside ISOMO <ArrowRight size={14} /></span>
-                </button>
-              ))}
-            </div>
-            {selectedLesson && <section className="panel internal-lesson-view">
+                <Fragment key={lesson.id}>
+                  <button type="button" className="resource-card internal-resource-card" onClick={() => { setSelectedLesson(current => current?.id === lesson.id ? null : lesson); api.post('/api/activity', { activityType: 'resource_opened', details: lesson.name }).catch(() => {}); }}>
+                    <span className="resource-kind">{lesson.kind}</span>
+                    <strong>{lesson.name}</strong>
+                    <p>{lesson.detail}</p>
+                    <span className="resource-open">Study inside ISOMO <ArrowRight size={14} /></span>
+                  </button>
+                    {selectedLesson?.id === lesson.id && <section ref={selectedLessonRef} className="panel internal-lesson-view internal-lesson-inline">
               <div className="internal-lesson-heading"><div><div className="eyebrow dark">IN-APP LESSON</div><h2>{selectedLesson.name}</h2></div><button className="btn outline" type="button" onClick={() => setSelectedLesson(null)}>Close lesson</button></div>
               {selectedLesson.sections.map((section: any, index: number) => <article className="internal-lesson-section" key={index}>
                 <h3>{section.heading}</h3>
@@ -2622,7 +2623,10 @@ function App() {
               </article>)}
               <div className="internal-source-note"><strong>Source acknowledgement</strong><p>{selectedLesson.source}</p></div>
               <button className="btn primary" type="button" onClick={() => { setSelectedLesson(null); setTab('Mock test'); }}>Practise this skill</button>
-            </section>}
+                    </section>}
+                </Fragment>
+              ))}
+            </div>
 
             {selectedVideo && user && !isTeacher && !guestMode && <StudySubmission key={selectedVideo.url} user={user} cohort={cohort} resourceTitle={selectedVideo.name} resourceUrl={selectedVideo.url} onSubmitted={() => setNotice('Your screenshot submission has reached the teacher dashboard.')} />}
 
