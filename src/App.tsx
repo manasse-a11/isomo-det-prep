@@ -3,6 +3,8 @@ import { api, auth, supabase } from './lib';
 import TeacherDashboard from './TeacherDashboard';
 import StudentGrowthDashboard from './StudentGrowthDashboard';
 import LearningToolkit from './LearningToolkit';
+import SkillCheckpoint from './SkillCheckpoint';
+import StudySubmission from './StudySubmission';
 import {
   ArrowLeft,
   ArrowRight,
@@ -269,6 +271,27 @@ const resources = [
     kind: 'Arno · YouTube lesson',
     detail: 'Watch Arno work through a full DET practice test and explain strategies across the major question types.',
     url: 'https://www.youtube.com/watch?v=uVu3L63evW0',
+  },
+  {
+    name: 'ISOMO recommended DET video lesson',
+    kind: 'YouTube · ISOMO selected lesson',
+    detail: 'A recommended DET preparation lesson. After watching, complete the 45-minute independent practice task and submit a screenshot.',
+    url: 'https://youtu.be/xu6Zq-K7Uwo?si=pIkH5pvnNeHpcLJf',
+    longVideo: true,
+  },
+  {
+    name: 'Teacher Luke · Full DET practice and strategy lessons',
+    kind: 'Teacher Luke · YouTube channel',
+    detail: 'Explore full-length DET practice tests, answer explanations and skill-specific lessons. Choose a full lesson, then complete the 45-minute independent practice task.',
+    url: 'https://www.youtube.com/@teacherluke-det/videos',
+    longVideo: true,
+  },
+  {
+    name: 'Arno · Full-length DET walkthroughs and tutorials',
+    kind: 'Arno · YouTube channel',
+    detail: 'Explore DET question-type walkthroughs, mock-test explanations and preparation strategies from Arno.',
+    url: 'https://www.youtube.com/@ArnoLearning/videos',
+    longVideo: true,
   },
   {
     name: 'Arno: All DET Question Types Explained',
@@ -896,6 +919,9 @@ function App() {
   const [assessmentStage, setAssessmentStage] = useState('baseline');
   const [assessmentType, setAssessmentType] = useState('baseline');
   const [active, setActive] = useState<Skill | null>(null);
+  const [checkpointArea, setCheckpointArea] = useState('');
+  const [pendingSkill, setPendingSkill] = useState<Skill | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<any>(null);
   const [answer, setAnswer] = useState('');
   const [checked, setChecked] = useState<number[]>([]);
   const [result, setResult] = useState<Result | null>(null);
@@ -1279,7 +1305,12 @@ function App() {
     if (user) api.post('/api/journey', { stage }).catch(() => setNotice('Your learning stage could not be synced. Please refresh while signed in.'));
   };
   const saveSkillScore = (skillId: string, score: number) => {
-    setProgress(p => ({ ...p, [skillId]: Math.max(p[skillId] || 0, score) }));
+    const area = skills.find(s => s.id === skillId)?.area || '';
+    setProgress(p => {
+      const next = { ...p, [skillId]: Math.max(p[skillId] || 0, score), ...(area ? { _last_skill_area: area } : {}) };
+      api.post('/api/progress', { progress: next }).catch(() => setNotice('Your practice score is saved locally, but cloud sync needs another attempt.'));
+      return next;
+    });
     api.post('/api/activity', { activityType: 'skill_practice', skill: skillId, score }).catch(() => {});
     const attempted = new Set([...Object.keys(progress).filter(k => skills.some(s => s.id === k)), skillId]);
     if (assessmentStage === 'skills' && attempted.size >= skills.length) updateJourney('endline');
@@ -1289,6 +1320,12 @@ function App() {
     if (studentPreview) { setNotice('Student preview is read-only. Sign in with a student account to complete practice and save scores.'); return; }
     if (!user) { setNotice('Please sign in before starting your private baseline assessment and saving your progress.'); return; }
     if (['baseline','midline','endline'].includes(assessmentStage)) { beginMock(assessmentStage); return; }
+    const previousArea = String(progress._last_skill_area || '');
+    if (previousArea && previousArea !== s.area && !progress['_checkpoint_' + previousArea]) {
+      setPendingSkill(s);
+      setCheckpointArea(previousArea);
+      return;
+    }
     setActive(s);
     setAnswer('');
     setChecked([]);
@@ -1663,6 +1700,15 @@ function App() {
         </div>
       </aside>
       <main className="main">
+        {checkpointArea && <SkillCheckpoint area={checkpointArea} onCancel={() => { setCheckpointArea(''); setPendingSkill(null); }} onPass={() => {
+          const target = pendingSkill;
+          const next = { ...progress, ['_checkpoint_' + checkpointArea]: true };
+          setProgress(next);
+          api.post('/api/progress', { progress: next }).catch(() => setNotice('Checkpoint passed, but cloud progress sync needs another attempt.'));
+          setCheckpointArea(''); setPendingSkill(null);
+          if (target) { setActive(target); setAnswer(''); setChecked([]); setResult(null); setAudioUrl(''); setTab('Practice'); }
+        }} />}
+
         {studentPreview && <div className="note-box" style={{margin:'14px 24px 0',display:'flex',justifyContent:'space-between',alignItems:'center',gap:12}}><span><strong>Student preview · Read only</strong><br/>You are viewing the learner experience. Practice submissions, tests and student data changes are disabled.</span><button className="btn outline" onClick={() => { setStudentPreview(false); setTab('Teacher dashboard'); setNotice('You have returned to the teacher management portal.'); }}>Return to teacher portal</button></div>}
         <header className="topbar">
           <div className="mobile-brand">
@@ -2293,7 +2339,7 @@ function App() {
                   href={r.url}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={() => api.post('/api/activity', { activityType: 'resource_opened', details: r.name }).catch(() => {})}
+                  onClick={() => { api.post('/api/activity', { activityType: 'resource_opened', details: r.name }).catch(() => {}); if ((r as any).longVideo) setSelectedVideo(r); }}
                 >
                   <span className="resource-kind">{r.kind}</span>
                   <strong>{r.name}</strong>
@@ -2304,6 +2350,8 @@ function App() {
                 </a>
               ))}
             </div>
+
+            {selectedVideo && user && !isTeacher && !guestMode && <StudySubmission key={selectedVideo.url} user={user} cohort={cohort} resourceTitle={selectedVideo.name} resourceUrl={selectedVideo.url} onSubmitted={() => setNotice('Your screenshot submission has reached the teacher dashboard.')} />}
 
             {history.length > 0 && <div className="panel results-main" style={{marginTop:20}}><div className="eyebrow dark">PAST PRACTICE REPORTS</div><h3>Download a report for each practice</h3><div className="subscore-list">{history.map((item: any, index: number) => <div className="subscore" key={item.id || item.date || index}><span>{String(item.stage || 'Mock practice').toUpperCase()} · {new Date(item.date || Date.now()).toLocaleDateString()}</span><strong>{item.overall ?? '—'} / 160</strong><button className="btn outline" onClick={() => downloadPracticePdf('Mock practice score report', item)}>Download PDF</button></div>)}</div></div>}
             <div className="note-box">
