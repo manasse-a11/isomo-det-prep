@@ -5,12 +5,14 @@ import StudentGrowthDashboard from './StudentGrowthDashboard';
 import LearningToolkit from './LearningToolkit';
 import AIStudyCoach from './AIStudyCoach';
 import MotivationHub from './MotivationHub';
+import WordArcade from './WordArcade';
 import SkillCheckpoint from './SkillCheckpoint';
 import StudySubmission from './StudySubmission';
 import {
   ArrowLeft,
   ArrowRight,
   Award,
+  Gamepad2,
   BookOpen,
   Brain,
   CheckCircle2,
@@ -2043,7 +2045,7 @@ function App() {
   const go = (name: string) => {
     if (studentPreview && ['Skill practice','Mock test','Results'].includes(name)) { setNotice('Student preview is read-only. Sign in with a student account to practise, take tests and view private progress.'); return; }
     if (isTeacher && name !== 'Teacher dashboard') { setNotice('The teacher workspace is separate. Teachers manage learners and assign materials here; tests and student lessons are not available on teacher accounts.'); return; }
-    if (['Skill practice','Mock test','Results','My dashboard','Study toolkit','AI Study Coach'].includes(name) && !user) { setNotice('Create a student account or sign in to practise and save your private progress.'); return; }
+    if (['Skill practice','Mock test','Results','My dashboard','Study toolkit','AI Study Coach','Word Arcade'].includes(name) && !user) { setNotice('Create a student account or sign in to practise and save your private progress.'); return; }
     if (['Skill practice','Mock test','Results'].includes(name) && ['baseline','midline','endline'].includes(assessmentStage)) { beginMock(assessmentStage); return; }
     setTab(name);
     setActive(null);
@@ -2249,7 +2251,7 @@ function App() {
         {!isTeacher && !guestMode && tab === 'AI Study Coach' && <AIStudyCoach user={user} priorMarks={priorMarks} progress={progress} onPractice={(skill?:string)=>{const s=skills.find(x=>x.area.toLowerCase()===String(skill||'').toLowerCase());if(s)startSkill(s);else go('Skill practice')}} />}
         {!isTeacher && !guestMode && tab === 'Study toolkit' && <LearningToolkit user={user} progress={progress} history={history} onPractice={(skill?:string)=>{if(skill){const s=skills.find(x=>x.area.toLowerCase()===skill.toLowerCase());if(s)startSkill(s);else go('Skill practice')}else go('Skill practice')}} />}
         {!isTeacher && tab === 'Home' && user && !guestMode && (
-          <div className="page"><MotivationHub userId={user.userId} name={user.name || user.email || 'Scholar'} /></div>
+          <div className="page"><MotivationHub userId={user.userId} name={user.name || user.email || 'Scholar'} onOpenGame={() => go('Word Arcade')} /></div>
         )}
         {!isTeacher && tab === 'Home' && (
           <div className="page">
@@ -2466,8 +2468,10 @@ function App() {
                 Explore resources <ArrowRight size={15} />
               </button>
             </section>
+            <button className="arcade-scroll-launch" type="button" onClick={() => go('Word Arcade')}><span className="arcade-launch-icon"><Gamepad2 size={30}/></span><span><small>READY FOR A QUICK BREAK?</small><strong>Play the ISOMO Word Arcade</strong><em>Find this game whenever you reach the end of your Home page scroll.</em></span><ArrowRight size={23}/></button>
           </div>
         )}
+        {!isTeacher && !guestMode && tab === 'Word Arcade' && user && <WordArcade userId={user.userId} name={user.name || user.email || 'Scholar'} progress={progress} onBack={() => go('Home')} onStudySkill={(area:string)=>{const skill=skills.find(x=>x.area.toLowerCase()===area.toLowerCase());if(skill)startSkill(skill);else go('Skill practice')}} />}
         {!isTeacher && !guestMode && tab === 'Skill practice' && (
           <div className="page">
             <div className="page-intro">
