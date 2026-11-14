@@ -2244,6 +2244,23 @@ function App() {
             )}
           </div>
         )}
+        {!isTeacher && !guestMode && tab === 'Home' && (
+          <section className="page">
+            <div className="panel teacher-panel">
+              <div className="eyebrow dark">COHORT COMMUNITY</div>
+              <h2>Your cohort’s Google Chat group</h2>
+              <p>Join the optional discussion space for your cohort. Each cohort has its own group so conversations stay within the same cohort.</p>
+              {String(cohort || '').toLowerCase().includes('cohort iv') || String(cohort || '').toLowerCase() === 'cohort 4' ? (
+                <a className="btn primary" href="https://chat.google.com/app/chat/AAQA4knjV9o" target="_blank" rel="noreferrer">Join Cohort IV on Google Chat <ExternalLink size={15}/></a>
+              ) : String(cohort || '').toLowerCase().includes('cohort v') || String(cohort || '').toLowerCase() === 'cohort 5' ? (
+                <a className="btn primary" href="https://chat.google.com/app/chat/AAQAL5tQD2k" target="_blank" rel="noreferrer">Join Cohort V on Google Chat <ExternalLink size={15}/></a>
+              ) : (
+                <p className="score-disclaimer">{cohort ? 'The Google Chat invitation for ' + cohort + ' has not been added yet. Your cohort group will appear here when its link is available.' : 'Select your cohort in your profile to see its group invitation.'}</p>
+              )}
+              <p className="score-disclaimer">Joining is optional. Please use your assigned cohort’s group only.</p>
+            </div>
+          </section>
+        )}
         {!isTeacher && tab === 'Learning library' && (
           <div className="page">
             <div className="page-intro">
