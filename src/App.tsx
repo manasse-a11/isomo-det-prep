@@ -2111,7 +2111,7 @@ function App() {
               <div className="area-heading">
                 <h2>{area}</h2>
                 <span>{area==='Reading'?'Comprehension · Vocabulary · Accuracy':area==='Listening'?'Understanding · Detail · Interaction':area==='Writing'?'Ideas · Organisation · Language control':'Fluency · Clarity · Pronunciation'}</span>
-                {adaptiveAreas.findIndex(x=>x.area===area)===0 && <span className="adaptive-focus-tag">Priority skill</span>}
+                {adaptiveAreas.findIndex(x=>x.area===area)===0 && adaptiveAreas.find(x=>x.area===area)?.evidence>0 && <span className="adaptive-focus-tag">Priority skill</span>}
               </div>
               <div className="skill-cards">
                 {skills.filter(s=>s.area===area).sort((x,y)=>(Number(progress[x.id]||0)||0)-(Number(progress[y.id]||0)||0)).map(s=>(
