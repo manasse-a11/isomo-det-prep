@@ -285,6 +285,12 @@ const resources = [
     kind: 'Teacher Luke · YouTube channel',
     detail: 'Explore full-length DET practice tests, answer explanations and skill-specific lessons. Choose a full lesson, then complete the 45-minute independent practice task.',
     url: 'https://www.youtube.com/@teacherluke-det/videos',
+  },
+  {
+    name: 'Teacher Luke · Full DET practice test (2026 format)',
+    kind: 'Teacher Luke · long-form YouTube lesson',
+    detail: 'Find the full-length 2026-format DET practice test with answers and strategy explanations. This long lesson is followed by 45 minutes of independent practice and screenshot submission.',
+    url: 'https://www.youtube.com/results?search_query=Teacher+Luke+Full+Duolingo+English+Test+November+2026+Format',
     longVideo: true,
   },
   {
@@ -292,7 +298,6 @@ const resources = [
     kind: 'Arno · YouTube channel',
     detail: 'Explore DET question-type walkthroughs, mock-test explanations and preparation strategies from Arno.',
     url: 'https://www.youtube.com/@ArnoLearning/videos',
-    longVideo: true,
   },
   {
     name: 'Arno: All DET Question Types Explained',
