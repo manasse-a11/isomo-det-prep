@@ -2215,6 +2215,17 @@ function App() {
               <div className="task-label">YOUR TASK</div>
               <h2>{active.task}</h2>
               <div className="prompt-box">{active.prompt}</div>
+              <div className="source-question-panel">
+                <strong>Explore published DET practice questions</strong>
+                <p>Practise with question sets published by established preparation providers. Some offer free samples; others limit access or require an account. ISOMO links to these providers rather than copying or claiming ownership of their question banks.</p>
+                <div className="source-question-links">
+                  <a href="https://www.detpractice.com/practice" target="_blank" rel="noreferrer">DETPractice · free sample questions ↗</a>
+                  <a href="https://www.detready.com/practice" target="_blank" rel="noreferrer">DET Ready · free sample questions ↗</a>
+                  <a href="https://www.preppassport.com/duolingo-practice" target="_blank" rel="noreferrer">Prep Passport · practice sets ↗</a>
+                  <a href="https://vmapu.com/duolingo-practice-tests" target="_blank" rel="noreferrer">VmapU · free practice questions ↗</a>
+                  <a href="https://www.effortlessmath.com/duolingo-english-test/" target="_blank" rel="noreferrer">Effortless Math · public sample questions ↗</a>
+                </div>
+              </div>
               {active.id === 'read-select' ? (
                 <div className="word-grid">
                   {active.options?.map((o, i) => (
