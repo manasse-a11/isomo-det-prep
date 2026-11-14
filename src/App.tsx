@@ -1119,6 +1119,10 @@ function downloadPracticePdf(title: string, report: any) {
 function App() {
   const [tab, setTab] = useState('Home');
   const [exitPromptOpen, setExitPromptOpen] = useState(false);
+  const exitPromptOpenRef = useRef(false);
+  const backTabRef = useRef(tab);
+  backTabRef.current = tab;
+  exitPromptOpenRef.current = exitPromptOpen;
   const allowExitRef = useRef(false);
   const pageHistoryRef = useRef<string[]>([]);
   const currentTabRef = useRef(tab);
@@ -1983,30 +1987,33 @@ function App() {
     setActive(null);
     setResult(null);
   };
-  // Keep Android/iOS browser-back actions inside the app. Only leave after an explicit confirmation.
+  // Install one stable browser-back guard. On Home, always ask before leaving,
+  // even if the in-app navigation history contains older pages.
   useEffect(() => {
     window.history.pushState({ isomoBackGuard: true }, '', window.location.href);
     const handleAppBack = () => {
       if (allowExitRef.current) return;
       window.history.pushState({ isomoBackGuard: true }, '', window.location.href);
-      if (exitPromptOpen) {
+      if (exitPromptOpenRef.current) {
         setExitPromptOpen(false);
+        return;
+      }
+      if (backTabRef.current === 'Home') {
+        setExitPromptOpen(true);
         return;
       }
       if (pageHistoryRef.current.length > 0) {
         goBack();
-      } else if (tab !== 'Home') {
+      } else {
         setTab('Home');
         setActive(null);
         setResult(null);
         setMock(false);
-      } else {
-        setExitPromptOpen(true);
       }
     };
     window.addEventListener('popstate', handleAppBack);
     return () => window.removeEventListener('popstate', handleAppBack);
-  }, [tab, exitPromptOpen]);
+  }, []);
   const confirmAppExit = () => {
     allowExitRef.current = true;
     setExitPromptOpen(false);
