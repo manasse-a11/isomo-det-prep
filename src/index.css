@@ -2009,3 +2009,12 @@ html[data-theme="dark"] .adaptive-mark-field input{background:#14232d;border-col
 html[data-theme="dark"] .adaptive-priority-row{border-color:#3a505c}
 html[data-theme="dark"] .adaptive-focus-tag{background:#493b20;color:#f5d99a}
 @media(max-width:760px){.adaptive-mark-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.adaptive-marks-panel,.adaptive-plan-panel{padding:16px}}
+
+
+/* First-login official DET baseline form */
+.det-baseline-backdrop{z-index:1200;overflow-y:auto;align-items:flex-start;padding:22px 14px}
+.det-baseline-card{width:min(760px,100%);max-height:calc(100vh - 44px);overflow-y:auto;margin:auto}
+.det-baseline-card h3{margin:18px 0 8px;font-size:14px;color:var(--ink,#173b45)}
+.det-baseline-card .adaptive-mark-grid{margin:10px 0 16px}
+.det-baseline-card .profile-field-label{display:block;margin:12px 0 7px}
+@media(max-width:600px){.det-baseline-backdrop{padding:10px}.det-baseline-card{max-height:calc(100vh - 20px);padding:18px}.det-baseline-card .adaptive-mark-grid{gap:9px}}
