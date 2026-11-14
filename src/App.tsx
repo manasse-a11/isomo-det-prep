@@ -923,6 +923,37 @@ function App() {
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
   const [authBusy, setAuthBusy] = useState(false);
+  const [teacherEmails, setTeacherEmails] = useState<string[]>([]);
+  const [contactTeacher, setContactTeacher] = useState('');
+  const [contactSubject, setContactSubject] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [teachersLoading, setTeachersLoading] = useState(false);
+  const [contactNotice, setContactNotice] = useState('');
+  useEffect(() => {
+    if (tab !== 'Contact teacher' || !user || isTeacher) return;
+    let active = true;
+    setTeachersLoading(true);
+    api.get('/api/contact/teachers').then(({ data }) => {
+      if (!active) return;
+      const emails = Array.isArray(data.teachers) ? data.teachers : [];
+      setTeacherEmails(emails);
+      setContactTeacher(current => current && emails.includes(current) ? current : (emails[0] || ''));
+    }).catch(() => {
+      if (active) setContactNotice('We could not load the teacher email list. Please try again later.');
+    }).finally(() => { if (active) setTeachersLoading(false); });
+    return () => { active = false; };
+  }, [tab, user?.userId, isTeacher]);
+  const sendTeacherEmail = (event: any) => {
+    event.preventDefault();
+    if (!contactTeacher || !contactMessage.trim()) {
+      setContactNotice('Choose a teacher and write your question before continuing.');
+      return;
+    }
+    const subject = encodeURIComponent(contactSubject.trim() || 'Question from an ISOMO DET Prep student');
+    const body = encodeURIComponent(contactMessage.trim() + '\\n\\nFrom: ' + (user?.name || user?.email || 'ISOMO DET Prep student') + (user?.email ? ' (' + user.email + ')' : ''));
+    window.location.href = 'mailto:' + contactTeacher + '?subject=' + subject + '&body=' + body;
+    setContactNotice('Your email draft is ready in your device’s default email application. Review it and press Send there.');
+  };
   const [themePreference, setThemePreference] = useState<'light' | 'dark' | 'default'>(() => {
     try {
       const saved = localStorage.getItem('isomo_theme_preference');
@@ -1555,6 +1586,7 @@ function App() {
     ['Study toolkit', Sparkles],
     ['Mock test', Target],
     ['Results', BarChart3],
+    ['Contact teacher', ExternalLink],
     ['Teacher dashboard', GraduationCap],
   ] as const;
   const go = (name: string) => {
@@ -1687,6 +1719,38 @@ function App() {
               <p>{integrityWarning}</p>
               <small>Warning {warningCount} · This is an ISOMO practice simulation. No automatic cancellation.</small>
               <button className="btn primary full" onClick={() => { warningOpenRef.current = false; setIntegrityWarning(''); }}>I understand — continue test</button>
+            </div>
+          </div>
+        )}
+        {!isTeacher && !guestMode && tab === 'Contact teacher' && (
+          <div className="page">
+            <div className="page-intro">
+              <div className="eyebrow dark">STUDENT SUPPORT</div>
+              <h1>Contact your teacher.</h1>
+              <p>Write your question here and prepare an email addressed to a teacher registered on the ISOMO platform.</p>
+            </div>
+            <div className="panel" style={{maxWidth:820}}>
+              <div className="panel-head"><div><div className="eyebrow dark">EMAIL YOUR TEACHER</div><h3>Write a question</h3></div><GraduationCap size={24}/></div>
+              <form className="auth-form" onSubmit={sendTeacherEmail}>
+                <label className="profile-field-label" htmlFor="contact-teacher">Choose a teacher</label>
+                <select id="contact-teacher" className="teacher-input" value={contactTeacher} onChange={e => setContactTeacher(e.target.value)} disabled={teachersLoading || !teacherEmails.length}>
+                  {teachersLoading && <option value="">Loading teachers…</option>}
+                  {!teachersLoading && !teacherEmails.length && <option value="">No approved teacher email is available yet</option>}
+                  {teacherEmails.map(email => <option key={email} value={email}>{email}</option>)}
+                </select>
+                <label className="profile-field-label" htmlFor="contact-subject">Subject</label>
+                <input id="contact-subject" className="teacher-input" value={contactSubject} onChange={e => setContactSubject(e.target.value)} placeholder="What is your question about?"/>
+                <label className="profile-field-label" htmlFor="contact-message">Your question</label>
+                <textarea id="contact-message" className="teacher-input" rows={7} value={contactMessage} onChange={e => setContactMessage(e.target.value)} placeholder="Write your question or explain where you need help…" required/>
+                <button className="btn primary full" type="submit" disabled={!contactTeacher || !contactMessage.trim() || teachersLoading}>Prepare email <ArrowRight size={16}/></button>
+              </form>
+              {contactNotice && <div className="note-box" role="status" style={{marginTop:14}}>{contactNotice}</div>}
+              <p style={{marginTop:14,color:'var(--muted)',fontSize:13}}>Your message is written in ISOMO. When you continue, your device opens its default email application with the teacher’s address, subject and message already filled in. You can review and send it there; Gmail is not required.</p>
+            </div>
+            <div className="panel" style={{maxWidth:820,marginTop:18}}>
+              <div className="panel-head"><div><div className="eyebrow dark">DIRECT ADMIN SUPPORT</div><h3>Need help from the administrator?</h3></div><span style={{fontSize:24}}>💬</span></div>
+              <p>Contact the ISOMO administrator directly on WhatsApp for account or platform support.</p>
+              <a className="btn primary" href="https://wa.me/250798597486?text=Hello%20ISOMO%20Administrator%2C%20I%20need%20help%20with%20ISOMO%20DET%20Prep." target="_blank" rel="noreferrer">Message administrator on WhatsApp <ArrowRight size={16}/></a>
             </div>
           </div>
         )}
