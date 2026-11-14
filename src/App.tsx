@@ -922,26 +922,29 @@ function App() {
   }, [tab]);
   const [progress, setProgress] = useState<Record<string, any>>({});
   const priorMarks = (progress._prior_skill_marks || {}) as Record<string, number | ''>;
-  const skillAreas = ['Reading', 'Listening', 'Writing', 'Speaking'];
-  const adaptiveAreas = skillAreas.map(area => {
-    const prior = Number(priorMarks[area] || 0);
+  const skillAreas = ['Reading', 'Writing', 'Listening', 'Speaking', 'Literacy', 'Comprehension', 'Conversation', 'Production'];
+  const skillEvidence: Record<string, string[]> = {
+    Reading: ['Reading', 'Literacy', 'Comprehension'],
+    Listening: ['Listening', 'Comprehension', 'Conversation'],
+    Writing: ['Writing', 'Literacy', 'Production'],
+    Speaking: ['Speaking', 'Conversation', 'Production'],
+  };
+  const adaptiveAreas = ['Reading', 'Listening', 'Writing', 'Speaking'].map(area => {
+    const priorScores = (skillEvidence[area] || [area]).map(key => Number(priorMarks[key] || 0)).filter(v => v >= 10);
+    const priorPct = priorScores.length ? priorScores.reduce((n,v)=>n+((v-10)/150)*100,0)/priorScores.length : null;
     const related = skills.filter(s => s.area === area).map(s => Number(progress[s.id] || 0)).filter(v => v > 0);
     const practice = related.length ? related.reduce((n,v)=>n+v,0)/related.length : 0;
-    const priorPct = prior > 0 ? Math.max(0,Math.min(100,((prior-10)/150)*100)) : null;
-    const indicators = [priorPct, ...(related.length ? [practice] : [])];
+    const indicators = [priorPct, ...(related.length ? [practice] : [])].filter((v): v is number => v !== null);
     const score = indicators.length ? indicators.reduce((n,v)=>n+v,0)/indicators.length : null;
-    return { area, prior, practice, score, evidence: indicators.length };
+    return { area, prior: priorScores.length ? Math.round(priorScores.reduce((n,v)=>n+v,0)/priorScores.length) : 0, practice, score, evidence: indicators.length };
   }).sort((x,y) => (x.score ?? 101) - (y.score ?? 101));
   const weakestArea = adaptiveAreas.find(x => x.evidence > 0);
   const savePriorMark = (area: string, raw: string) => {
     const value = raw === '' ? '' : Math.max(10,Math.min(160,Number(raw)));
-    setProgress(current => {
-      const next = { ...current, _prior_skill_marks: { ...(current._prior_skill_marks || {}), [area]: value } };
-      return next;
-    });
+    setProgress(current => ({ ...current, _prior_skill_marks: { ...(current._prior_skill_marks || {}), [area]: value } }));
   };
   const persistPriorMarks = () => {
-    api.post('/api/progress', { progress }).then(() => setNotice('Your previous skill marks have been saved. They will help ISOMO adapt your practice.')).catch(() => setNotice('Your marks are saved on this device, but cloud synchronisation failed. Please try again.'));
+    api.post('/api/progress', { progress }).then(() => setNotice('Your official DET subscores have been saved and will guide your personalised study priorities.')).catch(() => setNotice('Your marks are saved on this device, but cloud synchronisation failed. Please try again.'));
   };
 
   const [history, setHistory] = useState<any[]>([]);
@@ -975,6 +978,9 @@ function App() {
   const [user, setUser] = useState<any>(null);
   const [accountReady, setAccountReady] = useState(false);
   const [cloudLoaded, setCloudLoaded] = useState(false);
+  const [detBaselineOpen, setDetBaselineOpen] = useState(false);
+  const [detBaselineSaving, setDetBaselineSaving] = useState(false);
+  const [detOverallScore, setDetOverallScore] = useState('');
   const [sessionItems, setSessionItems] = useState<any[]>(mockItems);
   const [guestMode, setGuestMode] = useState(false);
   const [studentPreview, setStudentPreview] = useState(false);
@@ -1246,6 +1252,41 @@ function App() {
       subscription.unsubscribe();
     };
   }, []);
+  useEffect(() => {
+    if (user && user.role !== 'teacher' && user.role !== 'admin' && accountReady && cloudLoaded && !guestMode) {
+      const baseline = progress._det_baseline;
+      if (!baseline || (!baseline.completedAt && !baseline.skippedAt)) setDetBaselineOpen(true);
+    } else {
+      setDetBaselineOpen(false);
+    }
+  }, [user?.userId, user?.role, accountReady, cloudLoaded, guestMode, progress._det_baseline]);
+  const saveDetBaseline = async (skip = false) => {
+    setDetBaselineSaving(true);
+    const marks = { ...(progress._prior_skill_marks || {}) };
+    const valid = skillAreas.filter(key => marks[key] !== '' && Number(marks[key]) >= 10 && Number(marks[key]) <= 160);
+    if (!skip && !valid.length) {
+      setNotice('Enter at least one DET subscore, or choose to do this later.');
+      setDetBaselineSaving(false);
+      return;
+    }
+    const next = {
+      ...progress,
+      _prior_skill_marks: marks,
+      _det_baseline: skip
+        ? { skippedAt: new Date().toISOString() }
+        : { overall: detOverallScore ? Math.max(10, Math.min(160, Number(detOverallScore))) : null, completedAt: new Date().toISOString(), source: 'student-reported-official-DET-result' },
+    };
+    setProgress(next);
+    try {
+      await api.post('/api/progress', { progress: next });
+      setDetBaselineOpen(false);
+      setNotice(skip ? 'You can add your DET results any time from Skill Practice.' : 'Your DET results are saved. Your study priorities have been personalised.');
+    } catch {
+      setNotice('We could not sync your DET results. Please try saving again.');
+    } finally {
+      setDetBaselineSaving(false);
+    }
+  };
   useEffect(() => {
     if (user && accountReady && cloudLoaded) {
       api.post('/api/progress', { progress }).catch(() =>
@@ -1811,6 +1852,30 @@ function App() {
             </button>
           </div>
         )}
+        {detBaselineOpen && user && !isTeacher && !guestMode && (
+          <div className="avatar-preview-backdrop det-baseline-backdrop" role="dialog" aria-modal="true" aria-labelledby="det-baseline-title">
+            <div className="profile-editor-card det-baseline-card">
+              <div className="eyebrow dark">YOUR STARTING POINT</div>
+              <h2 id="det-baseline-title">Have you taken the Duolingo English Test?</h2>
+              <p>Enter the scores from your latest official DET score report. ISOMO will use all eight subscores to identify where you should focus first. Your results are self-reported and are not independently verified.</p>
+              <label className="profile-field-label" htmlFor="det-overall-score">Overall score (optional)</label>
+              <input id="det-overall-score" className="teacher-input" type="number" min="10" max="160" step="1" placeholder="10–160" value={detOverallScore} onChange={e=>setDetOverallScore(e.target.value)} />
+              <h3>Individual subscores</h3>
+              <div className="adaptive-mark-grid">
+                {['Reading','Writing','Listening','Speaking'].map(area => <label key={area} className="adaptive-mark-field"><span>{area}</span><input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} /></label>)}
+              </div>
+              <h3>Integrated subscores</h3>
+              <div className="adaptive-mark-grid">
+                {['Literacy','Comprehension','Conversation','Production'].map(area => <label key={area} className="adaptive-mark-field"><span>{area}</span><input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} /></label>)}
+              </div>
+              <p className="score-disclaimer">Enter at least one subscore. You can skip this step and add your results later in Skill Practice. Scores are on the official 10–160 DET scale.</p>
+              <div className="avatar-preview-actions">
+                <button className="btn outline" onClick={()=>saveDetBaseline(true)} disabled={detBaselineSaving}>Do this later</button>
+                <button className="btn primary" onClick={()=>saveDetBaseline(false)} disabled={detBaselineSaving}>{detBaselineSaving ? 'Saving…' : 'Save my DET results'}</button>
+              </div>
+            </div>
+          </div>
+        )}
         {integrityWarning && mock && (
           <div className="integrity-overlay">
             <div className="integrity-dialog" role="alertdialog" aria-modal="true" aria-labelledby="integrity-title">
@@ -2092,6 +2157,7 @@ function App() {
                   <input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} onBlur={persistPriorMarks}/>
                 </label>)}
               </div>
+              <p className="score-disclaimer">Individual subscores: Reading, Writing, Listening and Speaking. Integrated subscores: Literacy, Comprehension, Conversation and Production. Each is scored from 10–160.</p>
               <p className="score-disclaimer">Your marks are private to your account. You can update them as your performance changes.</p>
             </section>
             <section className="panel adaptive-plan-panel">
