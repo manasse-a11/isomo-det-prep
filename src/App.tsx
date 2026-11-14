@@ -1987,12 +1987,18 @@ function App() {
     setActive(null);
     setResult(null);
   };
-  // Install one stable browser-back guard. On Home, always ask before leaving,
-  // even if the in-app navigation history contains older pages.
+  // Keep a pair of same-document history entries so Android/browser Back
+  // produces popstate even when the installed PWA is on its launch page.
   useEffect(() => {
-    window.history.pushState({ isomoBackGuard: true }, '', window.location.href);
+    const armBackGuard = () => {
+      window.history.pushState({ isomoBackGuard: true, guard: 1 }, '', window.location.href);
+      window.history.pushState({ isomoBackGuard: true, guard: 2 }, '', window.location.href);
+    };
+    armBackGuard();
     const handleAppBack = () => {
       if (allowExitRef.current) return;
+      // Re-arm immediately before changing the React view. This prevents the
+      // next hardware Back press from falling through to the browser by accident.
       window.history.pushState({ isomoBackGuard: true }, '', window.location.href);
       if (exitPromptOpenRef.current) {
         setExitPromptOpen(false);
@@ -2017,7 +2023,9 @@ function App() {
   const confirmAppExit = () => {
     allowExitRef.current = true;
     setExitPromptOpen(false);
-    window.history.back();
+    // A web app cannot forcibly close its own installed PWA window. Sending
+    // the user to the Academy's external site hands navigation back to Chrome.
+    window.location.assign('https://www.isomo-rw.com/isomo-academy/');
   };
   const returnHomeFromExitPrompt = () => {
     setExitPromptOpen(false);
