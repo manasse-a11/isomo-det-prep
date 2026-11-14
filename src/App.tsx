@@ -940,7 +940,7 @@ function App() {
   }).sort((x,y) => (x.score ?? 101) - (y.score ?? 101));
   const weakestArea = adaptiveAreas.find(x => x.evidence > 0);
   const savePriorMark = (area: string, raw: string) => {
-    const value = raw === '' ? '' : Math.max(10,Math.min(160,Math.round(Number(raw) / 5) * 5));
+    const value = raw === '' ? '' : Math.max(10,Math.min(160,Math.round(Number(raw))));
     setProgress(current => ({ ...current, _prior_skill_marks: { ...(current._prior_skill_marks || {}), [area]: value } }));
   };
   const persistPriorMarks = () => {
@@ -1274,7 +1274,7 @@ function App() {
       _prior_skill_marks: marks,
       _det_baseline: skip
         ? { skippedAt: new Date().toISOString() }
-        : { overall: detOverallScore ? Math.max(10, Math.min(160, Math.round(Number(detOverallScore) / 5) * 5)) : null, completedAt: new Date().toISOString(), source: 'student-reported-official-DET-result' },
+        : { overall: detOverallScore ? Math.max(10, Math.min(160, Math.round(Number(detOverallScore)))) : null, completedAt: new Date().toISOString(), source: 'student-reported-official-DET-result' },
     };
     setProgress(next);
     try {
@@ -1859,7 +1859,7 @@ function App() {
               <h2 id="det-baseline-title">Have you taken the Duolingo English Test?</h2>
               <p>Enter the scores from your latest official DET score report. ISOMO will use all eight subscores to identify where you should focus first. Your results are self-reported and are not independently verified.</p>
               <label className="profile-field-label" htmlFor="det-overall-score">Overall score (optional)</label>
-              <input id="det-overall-score" className="teacher-input" type="number" min="10" max="160" step="5" placeholder="10–160" value={detOverallScore} onChange={e=>setDetOverallScore(e.target.value)} />
+              <input id="det-overall-score" className="teacher-input" type="number" min="10" max="160" step="1" placeholder="10–160" value={detOverallScore} onChange={e=>setDetOverallScore(e.target.value)} />
               <h3>Individual subscores</h3>
               <div className="adaptive-mark-grid">
                 {['Reading','Writing','Listening','Speaking'].map(area => <label key={area} className="adaptive-mark-field"><span>{area}</span><input type="number" min="10" max="160" step="5" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} /></label>)}
