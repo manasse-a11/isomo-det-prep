@@ -1864,7 +1864,7 @@ function App() {
               <input id="det-overall-score" className="teacher-input" type="number" min="10" max="160" step="1" placeholder="10–160" value={detOverallScore} onChange={e=>setDetOverallScore(e.target.value)} />
               <h3>Individual subscores</h3>
               <div className="adaptive-mark-grid">
-                {['Reading','Writing','Listening','Speaking'].map(area => <label key={area} className="adaptive-mark-field"><span>{area}</span><input type="number" min="10" max="160" step="5" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} /></label>)}
+                {['Reading','Writing','Listening','Speaking'].map(area => <label key={area} className="adaptive-mark-field"><span>{area}</span><input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} /></label>)}
               </div>
               <h3>Integrated subscores</h3>
               <div className="adaptive-mark-grid">
