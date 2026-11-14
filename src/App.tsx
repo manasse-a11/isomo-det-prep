@@ -271,6 +271,7 @@ const resources = [
     kind: 'Arno · YouTube lesson',
     detail: 'Watch Arno work through a full DET practice test and explain strategies across the major question types.',
     url: 'https://www.youtube.com/watch?v=uVu3L63evW0',
+    longVideo: true,
   },
   {
     name: 'ISOMO recommended DET video lesson',
