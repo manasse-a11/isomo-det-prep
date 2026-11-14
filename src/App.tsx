@@ -29,6 +29,7 @@ import {
   X,
   GraduationCap,
   ExternalLink,
+  LogOut,
   Pause,
   BarChart3,
 } from 'lucide-react';
@@ -2106,6 +2107,9 @@ function App() {
           <div className="breadcrumb">
             <button className="btn outline" type="button" onClick={goBack} disabled={pageHistoryRef.current.length === 0} aria-label="Go back to previous page" title="Go back to previous page" style={{padding:'8px 11px',marginRight:10,display:'inline-flex',alignItems:'center',gap:6}}>
               <ArrowLeft size={16} /> Back
+            </button>
+            <button className="btn outline mobile-exit-button" type="button" onClick={() => setExitPromptOpen(true)} aria-label="Exit app" title="Exit app">
+              <LogOut size={15} /> Exit
             </button>
             Learning space <ChevronRight size={14} /> <b>{tab}</b>
           </div>
