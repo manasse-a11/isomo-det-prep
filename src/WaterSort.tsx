@@ -50,7 +50,7 @@ export default function WaterSort({onBack}:{onBack:()=>void}){
  const showHint=()=>{for(let a=0;a<tubes.length;a++)for(let b=0;b<tubes.length;b++)if(valid(tubes,a,b)){setHint([a,b]);setSelected(a);return;}};
  useEffect(()=>{if(complete(tubes)&&!won){setWon(true);setSelected(null);play();}},[tubes,won,play]);
  const next=()=>{const l=level+1;setLevel(l);setTubes(puzzle(l));setMoves(0);setHistory([]);setSelected(null);setHint(null);setWon(false);};
- const count=Math.min(10,3+Math.floor((level-1)/2));
+ const count=colourCount(level);
  return <div className="page arcade-page"><style>{`
  .water-game{max-width:980px;margin:auto;padding:clamp(14px,3vw,26px);border-radius:28px;color:#26364b;background:linear-gradient(145deg,#f5fbff,#e8f4fa 55%,#f7faff);border:1px solid #d5e6ef;box-shadow:0 24px 65px #193c5520}
  .water-game button{font:inherit}.water-game button:focus-visible{outline:3px solid #ffe58b;outline-offset:4px}
