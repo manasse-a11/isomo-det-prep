@@ -1186,8 +1186,9 @@ function App() {
     try {
       await api.post('/api/progress', { progress: next });
       setNotice('Your previous SAT scores have been saved.');
-    } catch {
+    } catch (error) {
       setNotice('Your SAT scores are saved on this device, but cloud synchronisation failed.');
+      throw error;
     }
   };
   const persistPriorMarks = () => {
