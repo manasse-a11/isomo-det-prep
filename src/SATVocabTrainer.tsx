@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, BookOpen, Clock3, RotateCcw, Shuffle, Trophy, Upload } from 'lucide-react';
+import { ArrowLeft, BookOpen, Clock3, RotateCcw, Search, Shuffle, Trophy, Upload } from 'lucide-react';
 
 type Word = { word: string; pos: string; definition: string };
 type Stats = { passed: number; delayed: number; failed: number; totalTime: number; streak: number; best: number; missed: string[] };
@@ -27,6 +27,9 @@ export default function SATVocabTrainer({ userId, onBack }: { userId: string; on
   const [feedback, setFeedback] = useState<{ status: 'passed' | 'delayed' | 'failed'; elapsed: number; selected: string | null } | null>(null);
   const [importText, setImportText] = useState('');
   const [importMessage, setImportMessage] = useState('');
+  const [view, setView] = useState<'dashboard' | 'dictionary'>('dashboard');
+  const [dictionaryQuery, setDictionaryQuery] = useState('');
+  const [dictionaryLetter, setDictionaryLetter] = useState('*');
   const startedAt = useRef(0);
 
   useEffect(() => { try { localStorage.setItem(statsKey, JSON.stringify(stats)); } catch {} }, [stats, statsKey]);
@@ -124,6 +127,34 @@ export default function SATVocabTrainer({ userId, onBack }: { userId: string; on
   const letters = [...new Set(words.map(item => item.word[0].toUpperCase()))].sort();
   const progress = duration ? Math.max(0, Math.min(100, secondsLeft / duration * 100)) : 0;
 
+  const dictionaryWords = words.filter(item => (dictionaryLetter === '*' || item.word[0].toUpperCase() === dictionaryLetter) && (!dictionaryQuery.trim() || (item.word + ' ' + item.pos + ' ' + item.definition).toLowerCase().includes(dictionaryQuery.trim().toLowerCase())));
+  if (view === 'dictionary') return <div className="page arcade-page"><style>{`
+    .sat-vocab{max-width:920px;margin:0 auto;padding:clamp(14px,3vw,26px);border-radius:24px;background:radial-gradient(900px 380px at 85% -10%,#30256c88,transparent),#0b0d17;color:#e8eaf6;border:1px solid #ffffff18;box-shadow:0 20px 55px #080b1855}
+    .sat-vocab *{box-sizing:border-box}.sat-vocab button,.sat-vocab input{font:inherit;color:inherit}
+    .sv-btn{border:1px solid #ffffff24;background:#1b2038;padding:9px 13px;border-radius:11px;min-height:42px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:750}.sv-primary{background:linear-gradient(90deg,#7c5cff,#5b8cff);border:0}
+    .sv-muted{color:#aeb4d2;font-size:13px}.sv-title{font-size:clamp(24px,4vw,32px);font-weight:950;background:linear-gradient(90deg,#9b86ff,#42d5ed);background-clip:text;-webkit-background-clip:text;color:transparent}
+    .sv-dict-tools{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}.sv-dict-search{flex:1;min-width:210px;display:flex;align-items:center;gap:9px;background:#141828;border:1px solid #ffffff20;border-radius:12px;padding:0 12px}.sv-dict-search input{width:100%;min-height:46px;background:transparent;border:0;outline:none}.sv-alpha{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 16px}.sv-alpha button{border:1px solid #ffffff20;background:#141828;border-radius:9px;min-width:34px;height:34px;cursor:pointer}.sv-alpha button.active{background:#6954ce;border-color:#a99aff}
+    .sv-word-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:9px;max-height:65vh;overflow:auto;padding:2px 5px 2px 2px;overscroll-behavior:contain}.sv-word-card{background:#141828;border:1px solid #ffffff14;border-radius:13px;padding:13px}.sv-word-card h3{margin:0 0 6px;font-size:16px;display:flex;justify-content:space-between;gap:8px}.sv-word-card p{margin:0;line-height:1.5;color:#cbd1e8;font-size:14px}.sv-pos{font-size:10px;letter-spacing:.08em;color:#9aabff;background:#747bff20;border-radius:7px;padding:4px 6px;white-space:nowrap}
+    @media(max-width:520px){.sv-word-list{grid-template-columns:1fr;max-height:68vh}}
+  `}</style>
+  <section className="sat-vocab">
+    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,flexWrap:'wrap'}}>
+      <button className="sv-btn" onClick={()=>setView('dashboard')}><ArrowLeft size={16}/> Dashboard</button>
+      <button className="sv-btn sv-primary" onClick={()=>{setView('dashboard');startRound();}}><BookOpen size={15}/> Start practice</button>
+    </div>
+    <div style={{marginTop:18}}><div className="sv-title">SAT Vocabulary Library</div><p className="sv-muted" style={{margin:'5px 0 0'}}>Study every word and its meaning before you begin a practice round.</p></div>
+    <div className="sv-dict-tools">
+      <div className="sv-dict-search"><Search size={18}/><input aria-label="Search vocabulary" value={dictionaryQuery} onChange={event=>setDictionaryQuery(event.target.value)} placeholder="Search words or meanings..."/></div>
+      <span className="sv-muted" style={{alignSelf:'center'}}>{dictionaryWords.length} of {words.length} words</span>
+    </div>
+    <div className="sv-alpha"><button className={dictionaryLetter==='*'?'active':''} onClick={()=>setDictionaryLetter('*')}>All</button>{letters.map(letter=><button key={letter} className={dictionaryLetter===letter?'active':''} onClick={()=>setDictionaryLetter(letter)}>{letter}</button>)}</div>
+    <div className="sv-word-list" aria-label="Complete SAT vocabulary list">
+      {dictionaryWords.map((item,index)=><article className="sv-word-card" key={item.word.toLowerCase()}><h3><span>{index+1}. {item.word}</span><span className="sv-pos">{item.pos.toUpperCase()}</span></h3><p>{item.definition}</p></article>)}
+      {!dictionaryWords.length&&<div className="sv-word-card"><p>No words match this search. Try another word or select “All”.</p></div>}
+    </div>
+    <div style={{display:'flex',justifyContent:'center',marginTop:18}}><button className="sv-btn sv-primary" onClick={()=>{setView('dashboard');startRound();}}><BookOpen size={15}/> I’m ready — start practice</button></div>
+  </section></div>;
+
   return <div className="page arcade-page"><style>{`
     .sat-vocab{max-width:920px;margin:0 auto;padding:clamp(14px,3vw,26px);border-radius:24px;background:radial-gradient(900px 380px at 85% -10%,#30256c88,transparent),#0b0d17;color:#e8eaf6;border:1px solid #ffffff18;box-shadow:0 20px 55px #080b1855}
     .sat-vocab *{box-sizing:border-box}.sat-vocab button,.sat-vocab select,.sat-vocab textarea{font:inherit;color:inherit}
@@ -141,6 +172,9 @@ export default function SATVocabTrainer({ userId, onBack }: { userId: string; on
       <div className="sv-stat pass"><b>{stats.passed}</b><span>Passed</span></div><div className="sv-stat delay"><b>{stats.delayed}</b><span>Delayed</span></div><div className="sv-stat fail"><b>{stats.failed}</b><span>Failed</span></div><div className="sv-stat"><b>{accuracy}%</b><span>Accuracy</span></div><div className="sv-stat"><b>{stats.streak}</b><span>Streak · best {stats.best}</span></div><div className="sv-stat"><b>{total ? (stats.totalTime / total).toFixed(1) : '0.0'}s</b><span>Average time</span></div>
     </div>
     <div className="sv-bar"><i style={{width:total ? stats.passed / total * 100 + '%' : '0%',background:'#34d399'}}/><i style={{width:total ? stats.delayed / total * 100 + '%' : '0%',background:'#fbbf24'}}/><i style={{width:total ? stats.failed / total * 100 + '%' : '0%',background:'#f87171'}}/></div>
+    <button className="sv-details" onClick={()=>{setView('dictionary');setDictionaryQuery('');setDictionaryLetter('*');}} style={{width:'100%',display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,textAlign:'left',cursor:'pointer',color:'inherit',font:'inherit',padding:15}}>
+      <span style={{display:'flex',alignItems:'center',gap:12}}><span style={{width:46,height:46,borderRadius:13,background:'#7762e533',display:'grid',placeItems:'center',color:'#b9aaff'}}><BookOpen size={24}/></span><span><strong style={{display:'block'}}>SAT Vocabulary Library</strong><span className="sv-muted">Browse and study all {words.length} words and definitions before practice</span></span></span><span style={{fontSize:22,color:'#9b86ff'}}>›</span>
+    </button>
     <div className="sv-controls">
       <select aria-label="Filter by first letter" value={letter} onChange={event=>setLetter(event.target.value)}><option value="*">A–Z · all letters</option>{letters.map(value=><option key={value} value={value}>{value}</option>)}</select>
       <select aria-label="Practice mode" value={mode} onChange={event=>setMode(event.target.value as 'all'|'missed')}><option value="all">All words</option><option value="missed">Missed & delayed only</option></select>
