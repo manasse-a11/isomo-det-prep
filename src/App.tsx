@@ -36,6 +36,7 @@ import {
   LogOut,
   Pause,
   BarChart3,
+  MessageCircle,
 } from 'lucide-react';
 
 type Skill = {
