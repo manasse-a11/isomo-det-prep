@@ -7,7 +7,37 @@ const copy=(t:Tubes):Tubes=>t.map(x=>[...x]);
 const run=(x:string[])=>{let n=1;for(let i=x.length-2;i>=0&&x[i]===x[x.length-1];i--)n++;return x.length?n:0;};
 const valid=(t:Tubes,a:number,b:number)=>a!==b&&t[a].length>0&&t[b].length<CAP&&(!t[b].length||t[a][t[a].length-1]===t[b][t[b].length-1]);
 const complete=(t:Tubes)=>t.every(x=>!x.length||(x.length===CAP&&x.every(v=>v===x[0])));
-function puzzle(level:number){const count=Math.min(10,3+Math.floor((level-1)/2));const t:Tubes=Array.from({length:count+2},(_,i)=>i<count?Array(CAP).fill(COLORS[i]):[]);let last=-1;for(let s=0;s<Math.min(100,22+level*8);s++){const opts:number[]=[];for(let a=0;a<t.length;a++)for(let b=0;b<t.length;b++){if(!valid(t,a,b)||b===last)continue;if(!t[b].length&&t[a].length===CAP&&t[a].every(v=>v===t[a][0]))continue;opts.push(a*t.length+b);}if(!opts.length)break;const p=opts[Math.floor(Math.random()*opts.length)],a=Math.floor(p/t.length),b=p%t.length,n=Math.min(run(t[a]),CAP-t[b].length,1+Math.floor(Math.random()*3)),c=t[a][t[a].length-1];for(let k=0;k<n;k++)t[a].pop();for(let k=0;k<n;k++)t[b].push(c);last=a;}return t;}
+function puzzle(level:number){
+ const count=Math.min(10,3+Math.floor((level-1)/2));
+ const t:Tubes=Array.from({length:count+2},(_,i)=>i<count?Array(CAP).fill(COLORS[i]):[]);
+ // Scramble a solved board only with moves whose exact reverse remains legal.
+ // This guarantees that every generated board has a known solution.
+ const target=22+level*8;
+ let lastFrom=-1,made=0,attempts=0;
+ while(made<target&&attempts<target*30){
+  attempts++;
+  const options:{a:number;b:number;max:number}[]=[];
+  for(let a=0;a<t.length;a++){
+   const length=run(t[a]);
+   const reversibleMax=length===t[a].length?length:length-1;
+   if(reversibleMax<1)continue;
+   for(let b=0;b<t.length;b++){
+    if(!valid(t,a,b)||b===lastFrom)continue;
+    const max=Math.min(reversibleMax,3,CAP-t[b].length);
+    if(max>0)options.push({a,b,max});
+   }
+  }
+  if(!options.length)break;
+  const move=options[Math.floor(Math.random()*options.length)];
+  const n=1+Math.floor(Math.random()*move.max);
+  const colour=t[move.a][t[move.a].length-1];
+  for(let k=0;k<n;k++)t[move.a].pop();
+  for(let k=0;k<n;k++)t[move.b].push(colour);
+  lastFrom=move.a;
+  made++;
+ }
+ return t;
+}
 export default function WaterSort({onBack}:{onBack:()=>void}){
  const [level,setLevel]=useState(1),[tubes,setTubes]=useState<Tubes>(()=>puzzle(1)),[selected,setSelected]=useState<number|null>(null),[moves,setMoves]=useState(0),[history,setHistory]=useState<Tubes[]>([]),[paused,setPaused]=useState(false),[won,setWon]=useState(false),[help,setHelp]=useState(false),[sound,setSound]=useState(true),[hint,setHint]=useState<[number,number]|null>(null),[pouring,setPouring]=useState<number|null>(null);
  const names=useMemo(()=>new Map(COLORS.map((c,i)=>[c,NAMES[i]])),[]);
