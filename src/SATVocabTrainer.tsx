@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, BookOpen, CheckCircle2, Clock3, RotateCcw, Shuffle, Trophy, Upload, XCircle } from 'lucide-react';
+import { ArrowLeft, BookOpen, Clock3, RotateCcw, Shuffle, Trophy, Upload } from 'lucide-react';
 
 type Word = { word: string; pos: string; definition: string };
 type Stats = { passed: number; delayed: number; failed: number; totalTime: number; streak: number; best: number; missed: string[] };
