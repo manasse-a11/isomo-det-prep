@@ -10,8 +10,8 @@ export default function SATCenter({userId,onBack}:{userId:string;onBack:()=>void
   return <main className="page sat-center-page">
     <div className="sat-center-heading">
       <button className="btn outline" onClick={onBack}><ArrowLeft size={16}/> Back</button>
-      <div className="sat-center-kicker"><GraduationCap size={17}/> ISOMO ACADEMY · SAT CENTER</div>
-      <h1>Prepare for the SAT.</h1>
+      <div className="sat-center-kicker"><GraduationCap size={17}/> ISOMO ACADEMY · SAT WORLD</div>
+      <h1>Welcome to SAT World.</h1>
       <p>Build confidence through focused practice, clear explanations and academic vocabulary.</p>
     </div>
     <div className="sat-center-grid">
@@ -21,7 +21,7 @@ export default function SATCenter({userId,onBack}:{userId:string;onBack:()=>void
       </button>
       <button className="sat-center-card sat-card-violet" onClick={()=>setSection('vocabulary')}>
         <span className="sat-card-icon"><Library size={27}/></span><span className="sat-card-label">ACADEMIC WORD POWER</span>
-        <strong>SAT Vocabulary</strong><span>Explore the full 611-word library, study definitions and train with timed vocabulary rounds.</span><em>Open vocabulary <span>→</span></em>
+        <strong>Vocabulary Rush</strong><span>Explore the full 611-word library, study definitions and train with timed vocabulary rounds.</span><em>Play Vocabulary Rush <span>→</span></em>
       </button>
     </div>
     <div className="sat-center-note"><Sparkles size={18}/><p><strong>Make every session count.</strong> Review explanations after each practice set and revisit unfamiliar words before moving to the next challenge.</p></div>
