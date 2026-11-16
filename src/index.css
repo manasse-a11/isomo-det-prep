@@ -2285,3 +2285,28 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .getting-started-steps p{margin:6px 0 0;color:#74858b;font-size:11px;line-height:1.65}
 .getting-started-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 @media(max-width:650px){.getting-started-panel{padding:18px}.getting-started-steps{grid-template-columns:1fr;gap:9px}.getting-started-steps>div{display:grid;grid-template-columns:30px 1fr;column-gap:10px;padding:12px}.getting-started-steps>div>span{grid-row:span 2;margin:0}.getting-started-steps p{margin-top:3px}}
+
+
+/* Editable previous-score fields and live overall calculations */
+.previous-overall-score{display:flex;flex-direction:column;gap:5px;margin:14px 0;padding:15px 17px;border:1px solid #dce9e4;border-radius:13px;background:#f0f7f3}
+.previous-overall-score>span{font-size:10px;font-weight:850;letter-spacing:.7px;color:#58796c;text-transform:uppercase}
+.previous-overall-score>strong{font:850 27px Manrope,system-ui,sans-serif;color:#245b4a}
+.previous-overall-score>small{font-size:11px;line-height:1.5;color:#71857b}
+.sat-previous-score-panel{display:grid;grid-template-columns:1.1fr 1.3fr .8fr;gap:17px;align-items:center;margin:10px 0 22px;padding:22px;border:1px solid #e1e8ed;border-radius:18px;background:linear-gradient(135deg,#fff,#f5f8fc);box-shadow:0 8px 24px #193c6809}
+.sat-previous-score-copy .sat-center-kicker{margin:0;font-size:9px}
+.sat-previous-score-copy h2{margin:7px 0;color:#203849;font:850 18px Manrope,system-ui,sans-serif}
+.sat-previous-score-copy p{margin:0;color:#74838e;font-size:11px;line-height:1.6}
+.sat-previous-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sat-previous-fields label{display:flex;flex-direction:column;gap:7px}
+.sat-previous-fields label span{font-size:11px;font-weight:800;color:#465e70}
+.sat-previous-fields input{width:100%;min-width:0;padding:12px;border:1px solid #d9e2e9;border-radius:10px;background:#fff;color:#203849;font:750 16px Manrope,system-ui,sans-serif;outline:none}
+.sat-previous-fields input:focus{border-color:#718fcb;box-shadow:0 0 0 3px #718fcb20}
+.sat-previous-total{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:13px;background:#edf1fb}
+.sat-previous-total>span{font-size:9px;font-weight:850;letter-spacing:.5px;color:#6679a2;text-transform:uppercase}
+.sat-previous-total>strong{font:850 27px Manrope,system-ui,sans-serif;color:#384f8b}
+.sat-previous-total>strong small{font-size:12px;color:#7786a8}
+.sat-previous-total p{margin:0;font-size:10px;line-height:1.45;color:#74819c}
+.sat-previous-save{grid-column:1/-1;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sat-previous-save>span{font-size:11px;color:#617d6d}
+@media(max-width:850px){.sat-previous-score-panel{grid-template-columns:1fr 1fr}.sat-previous-score-copy{grid-column:1/-1}.sat-previous-total{min-height:95px;justify-content:center}}
+@media(max-width:520px){.sat-previous-score-panel{grid-template-columns:1fr;padding:16px}.sat-previous-score-copy{grid-column:auto}.sat-previous-fields{grid-template-columns:1fr 1fr}.sat-previous-total{min-height:0}.sat-previous-save{grid-column:auto}}
