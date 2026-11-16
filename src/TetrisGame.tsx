@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Pause, Play, RotateCw, RotateCcw, ChevronLeft, ChevronRight, ChevronDown, Zap, Trophy, RotateCcw as Restart } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { ArrowLeft, Pause, Play, RotateCw, ChevronLeft, ChevronRight, ChevronDown, Zap, RotateCcw as Restart } from 'lucide-react';
 
 type Cell = string | null;
 type Piece = { shape: number[][]; color: string; x: number; y: number; type: string };
@@ -19,7 +19,7 @@ const randomPiece = (): Piece => { const type=Object.keys(SHAPES)[Math.floor(Mat
 const rotateShape = (shape:number[][]) => shape[0].map((_,i)=>shape.map(row=>row[i]).reverse());
 const fits = (board:Cell[][],p:Piece,x=p.x,y=p.y,shape=p.shape) => shape.every((row,dy)=>row.every((v,dx)=>!v || (x+dx>=0 && x+dx<W && y+dy<H && (y+dy<0 || !board[y+dy][x+dx]))));
 const merge = (board:Cell[][],p:Piece) => { const next=board.map(r=>[...r]); p.shape.forEach((row,dy)=>row.forEach((v,dx)=>{if(v && p.y+dy>=0 && p.y+dy<H) next[p.y+dy][p.x+dx]=p.color;})); return next; };
-const styles: Record<string,React.CSSProperties> = {
+const styles: Record<string,CSSProperties> = {
   control:{border:'1px solid var(--line,#d5dee5)',borderRadius:12,background:'var(--surface,#fff)',padding:'12px 15px',fontWeight:800,cursor:'pointer',display:'inline-flex',alignItems:'center',justifyContent:'center',gap:7,color:'var(--text,#172b3a)'},
   stat:{background:'var(--panel,#f1f5f7)',borderRadius:12,padding:'12px 15px',minWidth:85,textAlign:'center'},
 };
@@ -39,10 +39,10 @@ export default function TetrisGame({userId,onBack,onStudySkill}:{userId:string;o
  const gameOver=useCallback(()=>{setOver(true);setPlaying(false);setPaused(false);setBest(old=>{const n=Math.max(old,score);localStorage.setItem('isomo_tetris_best_'+userId,String(n));return n;});},[score,userId]);
  const spawn=useCallback((b:Cell[][],p:Piece)=>{const fresh={...p,x:Math.floor((W-p.shape[0].length)/2),y:0};if(!fits(b,fresh,fresh.x,fresh.y)){gameOver();return null;}return fresh;},[gameOver]);
  const lockPiece=useCallback((b:Cell[][],p:Piece)=>{const merged=merge(b,p);const kept=merged.filter(row=>row.some(cell=>!cell));const cleared=H-kept.length;const nextBoard=[...Array.from({length:cleared},()=>Array<Cell>(W).fill(null)),...kept];setBoard(nextBoard);if(cleared){const points=[0,100,300,500,800][cleared]||800;setScore(s=>s+points*level);setLines(n=>{const total=n+cleared;setLevel(Math.floor(total/10)+1);return total;});}const fresh=spawn(nextBoard,next);if(fresh){setPiece(fresh);setNext(randomPiece());}},[level,next,spawn]);
- const moveDown=useCallback(()=>{if(!playing||paused||over)return;setPiece(p=>{if(fits(board,p,p.x,p.y+1))return {...p,y:p.y+1};lockPiece(board,p);return p;});},[board,lockPiece,over,paused,playing]);
+ const moveDown=useCallback(()=>{if(!playing||paused||over)return;if(fits(board,piece,piece.x,piece.y+1))setPiece({...piece,y:piece.y+1});else lockPiece(board,piece);},[board,lockPiece,over,paused,piece,playing]);
  const move=(dx:number)=>{if(!playing||paused||over)return;setPiece(p=>fits(board,p,p.x+dx,p.y)?{...p,x:p.x+dx}:p);};
  const rotate=()=>{if(!playing||paused||over)return;setPiece(p=>{const shape=rotateShape(p.shape);for(const kick of [0,-1,1,-2,2])if(fits(board,p,p.x+kick,p.y,shape))return {...p,shape,x:p.x+kick};return p;});};
- const hardDrop=()=>{if(!playing||paused||over)return;setPiece(p=>{let y=p.y;while(fits(board,p,p.x,y+1))y++;const dropped={...p,y};const dist=y-p.y;setScore(s=>s+dist*2);lockPiece(board,dropped);return dropped;});};
+ const hardDrop=()=>{if(!playing||paused||over)return;let y=piece.y;while(fits(board,piece,piece.x,y+1))y++;setScore(s=>s+(y-piece.y)*2);lockPiece(board,{...piece,y});};
  useEffect(()=>{if(!playing||paused||over)return;const timer=window.setInterval(moveDown,speed);return()=>window.clearInterval(timer);},[moveDown,over,paused,playing,speed]);
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if(['ArrowLeft','ArrowRight','ArrowDown','ArrowUp',' ','a','A','d','D','s','S','w','W'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')move(-1);else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')move(1);else if(e.key==='ArrowDown'||e.key==='s'||e.key==='S')moveDown();else if(e.key==='ArrowUp'||e.key==='w'||e.key==='W')rotate();else if(e.key===' ')hardDrop();else if(e.key==='Escape')setPaused(v=>!v);};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);});
  const reset=()=>{setBoard(emptyBoard());setPiece(randomPiece());setNext(randomPiece());setScore(0);setLines(0);setLevel(1);setOver(false);setPaused(false);setPlaying(true);};
