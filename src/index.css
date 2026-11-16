@@ -2255,3 +2255,22 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 @media(max-width:900px){.about-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:780px){.primary-module-nav{position:sticky;top:0;justify-content:space-around;gap:3px;padding:8px 8px;background:var(--surface,#fff);box-shadow:0 5px 16px #1837470b}.primary-module-item{flex:1;min-width:0;flex-direction:column;gap:4px;padding:5px 2px;border-radius:11px;font-size:9px;letter-spacing:.25px}.primary-module-icon{width:32px;height:30px}.about-hero{border-radius:17px}.about-feature-grid{gap:9px}.about-feature-grid article{padding:15px}.sat-center-grid{grid-template-columns:1fr}.sat-center-card{min-height:250px;padding:22px}.sat-center-heading{padding-top:5px}}
 @media(max-width:420px){.about-feature-grid{grid-template-columns:1fr}.primary-module-item{font-size:8px}.primary-module-icon{width:29px;height:28px}}
+
+
+/* Balanced Prep Center program directory */
+.program-launchpad{scroll-margin-top:105px;margin:30px 0 34px}
+.program-launchpad-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:17px}
+.program-launchpad-heading h2{margin:6px 0 5px;color:#203849;font:850 clamp(21px,2.7vw,28px) Manrope,sans-serif;letter-spacing:-.6px}
+.program-launchpad-heading p{margin:0;color:#788990;font-size:12px;line-height:1.65}
+.program-count{flex:none;padding:9px 12px;border:1px solid #e4e9e9;border-radius:30px;color:#71848a;font-size:9px;font-weight:850;letter-spacing:1px;background:#fff}
+.program-launchpad-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.program-launch-card{position:relative;min-height:226px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:21px;border:1px solid #e4e9ec;border-radius:17px;background:#fff;color:#203849;text-align:left;box-shadow:0 7px 24px #16394b08;transition:transform .2s,box-shadow .2s,border-color .2s}
+.program-launch-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px #16394b12;border-color:#c9d8d9}
+.program-launch-icon{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:#eef3f4;color:#3d7180}
+.program-launch-tag{font-size:8px;font-weight:900;letter-spacing:1.2px;color:#8b9a9e}
+.program-launch-card strong{font:850 17px Manrope,sans-serif;color:#203849}
+.program-launch-card>span:not(.program-launch-icon):not(.program-launch-tag){font-size:11px;line-height:1.65;color:#71838a}
+.program-launch-card em{display:flex;align-items:center;gap:7px;margin-top:auto;font-size:10px;font-weight:850;font-style:normal;color:#386e69}
+.det-program .program-launch-icon{background:#e8f3ee;color:#387c68}.sat-program .program-launch-icon{background:#edf0fb;color:#536db0}.game-program .program-launch-icon{background:#f5edfb;color:#8961a8}.library-program .program-launch-icon{background:#fbf3e5;color:#aa813d}.coach-program .program-launch-icon{background:#eaf3f7;color:#477e9b}.group-program .program-launch-icon{background:#f9ecee;color:#a25e70}
+@media(max-width:900px){.program-launchpad-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.program-launchpad{margin:22px 0 27px}.program-launchpad-heading{align-items:flex-start;flex-direction:column;gap:9px}.program-count{font-size:8px}.program-launchpad-grid{grid-template-columns:1fr;gap:10px}.program-launch-card{min-height:190px;padding:18px}}
