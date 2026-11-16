@@ -8,6 +8,7 @@ import MotivationHub from './MotivationHub';
 import WordArcade from './WordArcade';
 import SkillCheckpoint from './SkillCheckpoint';
 import StudySubmission from './StudySubmission';
+import CohortChat from './CohortChat';
 import {
   ArrowLeft,
   ArrowRight,
@@ -1973,6 +1974,7 @@ function App() {
   };
   const nav = [
     ['Home', Home],
+    ['Cohort chat', MessageCircle],
     ['My dashboard', BarChart3],
     ['Skill practice', BookOpen],
     ['Learning library', GraduationCap],
@@ -2062,7 +2064,7 @@ function App() {
           <img className="isomo-logo" src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="Isomo Academy" />
         </div>
         <div className="side-label">LEARNING SPACE</div>
-        {(isTeacher ? nav.filter(([name]) => name === 'Teacher dashboard') : nav.filter(([name]) => name !== 'Teacher dashboard' && (!guestMode || ['Home','Learning library'].includes(name)))).map(([name, Icon]) => (
+        {(isTeacher ? nav.filter(([name]) => ['Teacher dashboard','Cohort chat'].includes(name)) : nav.filter(([name]) => name !== 'Teacher dashboard' && (!guestMode || ['Home','Learning library'].includes(name)))).map(([name, Icon]) => (
           <button
             key={name}
             className={'nav-item ' + (tab === name ? 'selected' : '')}
@@ -2688,6 +2690,7 @@ function App() {
             )}
           </div>
         )}
+        {user && !guestMode && tab === 'Cohort chat' && <CohortChat user={{...user, cohort}} isAdmin={String(user?.role||'') === 'admin' || String(user?.email||'').toLowerCase() === 'manasse@icircles.rw'} />}
         {!isTeacher && !guestMode && tab === 'Home' && (
           <section className="page">
             <div className="panel teacher-panel">
