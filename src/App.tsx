@@ -1151,6 +1151,10 @@ function App() {
   const [progress, setProgress] = useState<Record<string, any>>({});
   const priorMarks = (progress._prior_skill_marks || {}) as Record<string, number | ''>;
   const skillAreas = ['Reading', 'Writing', 'Listening', 'Speaking', 'Literacy', 'Comprehension', 'Conversation', 'Production'];
+  const detIndividualValues = ['Reading','Writing','Listening','Speaking'].map(key => Number(priorMarks[key] ?? 0));
+  const detOverallCalculated = detIndividualValues.every(value => value >= 10 && value <= 160)
+    ? Math.max(10, Math.min(160, Math.round((detIndividualValues.reduce((sum,value)=>sum+value,0)/4)/5)*5))
+    : null;
   const skillEvidence: Record<string, string[]> = {
     Reading: ['Reading', 'Literacy', 'Comprehension'],
     Listening: ['Listening', 'Comprehension', 'Conversation'],
@@ -1168,8 +1172,23 @@ function App() {
   }).sort((x,y) => (x.score ?? 101) - (y.score ?? 101));
   const weakestArea = adaptiveAreas.find(x => x.evidence > 0);
   const savePriorMark = (area: string, raw: string) => {
-    const value = raw === '' ? '' : Math.max(10,Math.min(160,Math.round(Number(raw))));
+    const numeric = Number(raw);
+    if (raw !== '' && (!Number.isFinite(numeric) || numeric > 160)) {
+      setNotice('DET skill marks cannot exceed 160.');
+      return;
+    }
+    const value = raw === '' ? '' : numeric;
     setProgress(current => ({ ...current, _prior_skill_marks: { ...(current._prior_skill_marks || {}), [area]: value } }));
+  };
+  const saveSatPreviousScores = async (scores: { readingWriting: number | ''; math: number | '' }) => {
+    const next = { ...progress, _sat_previous_scores: scores };
+    setProgress(next);
+    try {
+      await api.post('/api/progress', { progress: next });
+      setNotice('Your previous SAT scores have been saved.');
+    } catch {
+      setNotice('Your SAT scores are saved on this device, but cloud synchronisation failed.');
+    }
   };
   const persistPriorMarks = () => {
     api.post('/api/progress', { progress }).then(() => setNotice('Your official DET subscores have been saved and will guide your personalised study priorities.')).catch(() => setNotice('Your marks are saved on this device, but cloud synchronisation failed. Please try again.'));
@@ -1212,7 +1231,6 @@ function App() {
   const [cloudLoaded, setCloudLoaded] = useState(false);
   const [detBaselineOpen, setDetBaselineOpen] = useState(false);
   const [detBaselineSaving, setDetBaselineSaving] = useState(false);
-  const [detOverallScore, setDetOverallScore] = useState('');
   const [sessionItems, setSessionItems] = useState<any[]>(mockItems);
   const [guestMode, setGuestMode] = useState(false);
   const [studentPreview, setStudentPreview] = useState(false);
@@ -1495,9 +1513,14 @@ function App() {
   const saveDetBaseline = async (skip = false) => {
     setDetBaselineSaving(true);
     const marks = { ...(progress._prior_skill_marks || {}) };
-    const valid = skillAreas.filter(key => marks[key] !== '' && Number(marks[key]) >= 10 && Number(marks[key]) <= 160);
-    if (!skip && valid.length !== skillAreas.length) {
-      setNotice('Please enter all eight official DET subscores, or choose to do this later.');
+    const invalid = skillAreas.filter(key => marks[key] !== '' && marks[key] != null && (Number(marks[key]) < 10 || Number(marks[key]) > 160 || !Number.isFinite(Number(marks[key]))));
+    if (!skip && invalid.length) {
+      setNotice('Each DET subscore must be between 10 and 160. You may leave any fields blank.');
+      setDetBaselineSaving(false);
+      return;
+    }
+    if (!skip && !skillAreas.some(key => marks[key] !== '' && marks[key] != null)) {
+      setNotice('Enter at least one previous DET subscore, or choose to do this later.');
       setDetBaselineSaving(false);
       return;
     }
@@ -1506,7 +1529,7 @@ function App() {
       _prior_skill_marks: marks,
       _det_baseline: skip
         ? { skippedAt: new Date().toISOString() }
-        : { overall: detOverallScore ? Math.max(10, Math.min(160, Math.round(Number(detOverallScore)))) : null, completedAt: new Date().toISOString(), source: 'student-reported-official-DET-result' },
+        : { overall: detOverallCalculated, completedAt: new Date().toISOString(), source: 'student-reported-official-DET-result' },
     };
     setProgress(next);
     try {
@@ -2205,8 +2228,7 @@ function App() {
               <div className="eyebrow dark">YOUR STARTING POINT</div>
               <h2 id="det-baseline-title">Have you taken the Duolingo English Test?</h2>
               <p>Enter the scores from your latest official DET score report. ISOMO will use all eight subscores to identify where you should focus first. Your results are self-reported and are not independently verified.</p>
-              <label className="profile-field-label" htmlFor="det-overall-score">Overall score (optional)</label>
-              <input id="det-overall-score" className="teacher-input" type="number" min="10" max="160" step="1" placeholder="10–160" value={detOverallScore} onChange={e=>setDetOverallScore(e.target.value)} />
+              <div className="previous-overall-score"><span>Automatically calculated DET overall</span><strong>{detOverallCalculated ?? '—'}</strong><small>{detOverallCalculated !== null ? 'Average of Reading, Writing, Listening and Speaking, rounded to the nearest 5.' : 'Enter all four individual subscores to calculate your overall score.'}</small></div>
               <h3>Individual subscores</h3>
               <div className="adaptive-mark-grid">
                 {['Reading','Writing','Listening','Speaking'].map(area => <label key={area} className="adaptive-mark-field"><span>{area}</span><input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} /></label>)}
@@ -2215,7 +2237,7 @@ function App() {
               <div className="adaptive-mark-grid">
                 {['Literacy','Comprehension','Conversation','Production'].map(area => <label key={area} className="adaptive-mark-field"><span>{area}</span><input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} /></label>)}
               </div>
-              <p className="score-disclaimer">Complete all eight subscores from your score report. You can skip this step and add your results later in Skill Practice. Scores are on the official 10–160 DET scale.</p>
+              <p className="score-disclaimer">Enter any scores you have; blank fields are allowed. Each entered score must be within the official 10–160 DET scale. Your overall is calculated automatically when all four individual subscores are available.</p>
               <div className="avatar-preview-actions">
                 <button className="btn outline" onClick={()=>saveDetBaseline(true)} disabled={detBaselineSaving}>Do this later</button>
                 <button className="btn primary" onClick={()=>saveDetBaseline(false)} disabled={detBaselineSaving}>{detBaselineSaving ? 'Saving…' : 'Save my DET results'}</button>
@@ -2355,7 +2377,7 @@ function App() {
             </section>
           </div>
         )}
-        {!isTeacher && !guestMode && tab === 'SAT World' && user && <SATCenter userId={user.userId} onBack={()=>go('Home')}/>}
+        {!isTeacher && !guestMode && tab === 'SAT World' && user && <SATCenter userId={user.userId} scores={progress._sat_previous_scores || {readingWriting:'',math:''}} onSaveScores={saveSatPreviousScores} onBack={()=>go('Home')}/>}
         {tab === 'About' && (
           <div className="page about-page">
             <div className="about-hero">
@@ -2385,14 +2407,15 @@ function App() {
             <section className="panel adaptive-marks-panel">
               <div className="eyebrow dark">PERSONALISE YOUR LEARNING</div>
               <h2>Enter your previous skill marks</h2>
-              <p>Enter your latest marks for each skill. Use the DET 10–160 scale where available, or a comparable teacher-assessed mark converted to that scale. Leave a field blank if you have no result yet. These are learning inputs, not verified official scores.</p>
+              <p>Enter any previous skill marks you have. Each DET score must be between 10 and 160; leave unknown fields blank. Your overall DET score updates automatically when all four individual subscores are entered.</p>
               <div className="adaptive-mark-grid">
                 {skillAreas.map(area => <label key={area} className="adaptive-mark-field">
                   <span>{area}</span>
-                  <input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} onBlur={persistPriorMarks}/>
+                  <input type="number" min="10" max="160" step="1" inputMode="numeric" placeholder="10–160" value={priorMarks[area] ?? ''} onChange={e=>savePriorMark(area,e.target.value)} onBlur={e=>{if(e.target.value!=='' && Number(e.target.value)<10){setNotice('DET subscores must be at least 10.');return;}persistPriorMarks();}}/>
                 </label>)}
               </div>
               <p className="score-disclaimer">Individual subscores: Reading, Writing, Listening and Speaking. Integrated subscores: Literacy, Comprehension, Conversation and Production. Each is scored from 10–160.</p>
+              <div className="previous-overall-score"><span>Automatically calculated DET overall</span><strong>{detOverallCalculated ?? '—'}</strong><small>{detOverallCalculated !== null ? 'Based on the average of your four individual subscores, rounded to the nearest 5.' : 'Enter Reading, Writing, Listening and Speaking to calculate your overall score.'}</small></div>
               <p className="score-disclaimer">Your marks are private to your account. You can update them as your performance changes.</p>
             </section>
             <section className="panel adaptive-plan-panel">
