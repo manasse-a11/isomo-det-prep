@@ -2274,3 +2274,14 @@ html[data-theme="dark"] .ai-score-context p,html[data-theme="dark"] .ai-score-co
 .det-program .program-launch-icon{background:#e8f3ee;color:#387c68}.sat-program .program-launch-icon{background:#edf0fb;color:#536db0}.game-program .program-launch-icon{background:#f5edfb;color:#8961a8}.library-program .program-launch-icon{background:#fbf3e5;color:#aa813d}.coach-program .program-launch-icon{background:#eaf3f7;color:#477e9b}.group-program .program-launch-icon{background:#f9ecee;color:#a25e70}
 @media(max-width:900px){.program-launchpad-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.program-launchpad{margin:22px 0 27px}.program-launchpad-heading{align-items:flex-start;flex-direction:column;gap:9px}.program-count{font-size:8px}.program-launchpad-grid{grid-template-columns:1fr;gap:10px}.program-launch-card{min-height:190px;padding:18px}}
+
+
+.getting-started-panel{margin:28px 0 18px;padding:25px;border:1px solid #e4e9ec;border-radius:19px;background:linear-gradient(135deg,#fff,#f7faf9)}
+.getting-started-panel h2{margin:7px 0 18px;color:#203849;font:850 22px Manrope,sans-serif}
+.getting-started-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.getting-started-steps>div{padding:16px;border-radius:13px;background:#f1f6f4}
+.getting-started-steps>div>span{display:inline-grid;place-items:center;width:27px;height:27px;margin-bottom:10px;border-radius:8px;background:#dcebe4;color:#3b7767;font-size:10px;font-weight:900}
+.getting-started-steps strong{display:block;color:#294555;font:800 13px Manrope,sans-serif}
+.getting-started-steps p{margin:6px 0 0;color:#74858b;font-size:11px;line-height:1.65}
+.getting-started-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:650px){.getting-started-panel{padding:18px}.getting-started-steps{grid-template-columns:1fr;gap:9px}.getting-started-steps>div{display:grid;grid-template-columns:30px 1fr;column-gap:10px;padding:12px}.getting-started-steps>div>span{grid-row:span 2;margin:0}.getting-started-steps p{margin-top:3px}}
