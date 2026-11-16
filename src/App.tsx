@@ -6,6 +6,7 @@ import LearningToolkit from './LearningToolkit';
 import AIStudyCoach from './AIStudyCoach';
 import MotivationHub from './MotivationHub';
 import GameZone from './WordArcade';
+import SATCenter from './SATCenter';
 import SkillCheckpoint from './SkillCheckpoint';
 import StudySubmission from './StudySubmission';
 import CohortChat from './CohortChat';
@@ -37,6 +38,8 @@ import {
   Pause,
   BarChart3,
   MessageCircle,
+  Info,
+  Users,
 } from 'lucide-react';
 
 type Skill = {
@@ -1975,6 +1978,7 @@ function App() {
   };
   const nav = [
     ['Home', Home],
+    ['Groups', Users],
     ['Cohort chat', MessageCircle],
     ['My dashboard', BarChart3],
     ['Skill practice', BookOpen],
@@ -2143,6 +2147,19 @@ function App() {
             ) : <div className="avatar">IA</div>}
           </div>
         </header>
+        <nav className="primary-module-nav" aria-label="Main sections">
+          {[
+            ...(!isTeacher && !guestMode ? [
+              {label:'DET', icon:BookOpen, target:'DET', hint:'English Test preparation'},
+              {label:'SAT', icon:GraduationCap, target:'SAT', hint:'SAT practice and vocabulary'},
+              {label:'GAME', icon:Gamepad2, target:'Game Zone', hint:'Learning games'},
+            ] : []),
+            {label:'About', icon:Info, target:'About', hint:'About ISOMO Prep Center'},
+            {label:'Groups', icon:Users, target:'Cohort chat', hint:'Cohort community'},
+          ].map(item => <button key={item.label} type="button" className={'primary-module-item '+((tab===item.target || (item.target==='DET' && tab==='Skill practice') || (item.target==='Groups' && tab==='Cohort chat'))?'active':'')} onClick={()=>go(item.target)} aria-label={item.hint} title={item.hint}>
+            <span className="primary-module-icon"><item.icon size={20}/></span><span>{item.label}</span>
+          </button>)}
+        </nav>
         {profileOpen && (
           <div className="avatar-preview-backdrop" role="dialog" aria-modal="true" aria-label="Edit your profile">
             <div className="profile-editor-card">
@@ -2474,8 +2491,27 @@ function App() {
             <button className="arcade-scroll-launch" type="button" onClick={() => go('Game Zone')}><span className="arcade-launch-icon"><Gamepad2 size={30}/></span><span><small>READY FOR A QUICK BREAK?</small><strong>Play the ISOMO Game Zone</strong><em>Find this game whenever you reach the end of your Home page scroll.</em></span><ArrowRight size={23}/></button>
           </div>
         )}
+        {!isTeacher && !guestMode && tab === 'SAT' && user && <SATCenter userId={user.userId} onBack={()=>go('Home')}/>}
+        {tab === 'About' && (
+          <div className="page about-page">
+            <div className="about-hero">
+              <div className="about-mark"><img src="https://www.isomo-rw.com/wp-content/uploads/2024/01/isomo_academy_white-logo-1024x471.png" alt="ISOMO Academy"/></div>
+              <div className="eyebrow">ISOMO ACADEMY · LEARNING WITHOUT LIMITS</div>
+              <h1>Welcome to ISOMO Prep Center.</h1>
+              <p>A connected learning space for English proficiency, SAT readiness, purposeful practice and a supportive scholar community.</p>
+              <a className="about-website-link" href="https://www.isomo-rw.com/isomo-academy/" target="_blank" rel="noreferrer">Visit ISOMO Academy <ExternalLink size={15}/></a>
+            </div>
+            <div className="about-feature-grid">
+              <article><BookOpen size={24}/><h3>DET preparation</h3><p>Build reading, writing, listening and speaking skills with guided lessons, timed practice and progress feedback.</p></article>
+              <article><GraduationCap size={24}/><h3>SAT readiness</h3><p>Strengthen Reading and Writing, mathematical reasoning and academic vocabulary.</p></article>
+              <article><Gamepad2 size={24}/><h3>Learning through games</h3><p>Use interactive challenges to practise problem-solving, focus and vocabulary.</p></article>
+              <article><Users size={24}/><h3>Learn together</h3><p>Connect with your cohort and take part in a community built around shared learning goals.</p></article>
+            </div>
+            <div className="about-principles"><div className="eyebrow dark">OUR APPROACH</div><h2>Practice with purpose. Progress with confidence.</h2><p>ISOMO Prep Center brings preparation resources and learner support into one place. Your progress is a journey: set a goal, practise consistently, review feedback and return to the skills that need more attention.</p></div>
+          </div>
+        )}
         {!isTeacher && !guestMode && tab === 'Game Zone' && user && <GameZone userId={user.userId} name={user.name || user.email || 'Scholar'} progress={progress} onBack={() => go('Home')} onStudySkill={(area:string)=>{const skill=skills.find(x=>x.area.toLowerCase()===area.toLowerCase());if(skill)startSkill(skill);else go('Skill practice')}} />}
-        {!isTeacher && !guestMode && tab === 'Skill practice' && (
+        {!isTeacher && !guestMode && (tab === 'Skill practice' || tab === 'DET') && (
           <div className="page">
             <div className="page-intro">
               <div className="eyebrow dark">YOUR ADAPTIVE LEARNING JOURNEY</div>
