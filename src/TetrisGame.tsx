@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 import { ArrowLeft, Pause, Play, RotateCw, ChevronLeft, ChevronRight, ChevronDown, Zap, RotateCcw as Restart } from 'lucide-react';
 
 type Cell = string | null;
@@ -47,7 +47,7 @@ export default function TetrisGame({userId,onBack,onStudySkill}:{userId:string;o
  useEffect(()=>{if(!playing||paused||over)return;const timer=window.setInterval(moveDown,speed);return()=>window.clearInterval(timer);},[moveDown,over,paused,playing,speed]);
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if(['ArrowLeft','ArrowRight','ArrowDown','ArrowUp',' ','a','A','d','D','s','S','w','W'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')move(-1);else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')move(1);else if(e.key==='ArrowDown'||e.key==='s'||e.key==='S')moveDown();else if(e.key==='ArrowUp'||e.key==='w'||e.key==='W')rotate();else if(e.key===' ')hardDrop();else if(e.key==='Escape')setPaused(v=>!v);};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);});
 
- const startDrag=(e:React.PointerEvent<HTMLDivElement>)=>{if(!playing||paused||over)return;e.preventDefault();dragPointer.current=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);dragTo(e.clientX);};
+ const startDrag=(e:ReactPointerEvent<HTMLDivElement>)=>{if(!playing||paused||over)return;e.preventDefault();dragPointer.current=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);dragTo(e.clientX);};
  const dragTo=(clientX:number)=>{const el=boardRef.current;if(!el||dragPointer.current===null)return;const rect=el.getBoundingClientRect();const cellWidth=rect.width/W;const targetX=Math.round((clientX-rect.left)/cellWidth-(piece.shape[0].length/2));setPiece(p=>{const x=Math.max(0,Math.min(W-p.shape[0].length,targetX));return fits(board,p,x,p.y)?{...p,x}:p;});};
  const moveDrag=(e:React.PointerEvent<HTMLDivElement>)=>{if(dragPointer.current!==e.pointerId)return;e.preventDefault();dragTo(e.clientX);};
  const endDrag=(e:React.PointerEvent<HTMLDivElement>)=>{if(dragPointer.current!==e.pointerId)return;dragPointer.current=null;if(e.currentTarget.hasPointerCapture(e.pointerId))e.currentTarget.releasePointerCapture(e.pointerId);};
