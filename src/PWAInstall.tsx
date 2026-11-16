@@ -54,7 +54,7 @@ export default function PWAInstall() {
       <button
         type="button"
         onClick={install}
-        aria-label="Install ISOMO Academy DET Prep"
+        aria-label="Install ISOMO Academy Prep Center"
         style={{
           position: 'fixed', right: 18, bottom: 18, zIndex: 1000,
           border: 0, borderRadius: 999, padding: '12px 17px',
@@ -85,7 +85,7 @@ export default function PWAInstall() {
             }}
           >
             <h2 id="isomo-install-title" style={{ margin: '0 0 10px', fontSize: 21 }}>
-              Install ISOMO DET Prep
+              Install ISOMO Prep Center
             </h2>
             {ios ? (
               <>
