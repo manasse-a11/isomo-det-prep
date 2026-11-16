@@ -2691,7 +2691,7 @@ function App() {
             )}
           </div>
         )}
-        {user && !guestMode && tab === 'Cohort chat' && <CohortChat user={{...user, cohort}} isAdmin={String(user?.role||'') === 'admin' || String(user?.email||'').toLowerCase() === 'manasse@icircles.rw'} />}
+        {user && !guestMode && tab === 'Cohort chat' && <CohortChat user={{...user, cohort}} isTeacher={isTeacher} />}
         {!isTeacher && !guestMode && tab === 'Home' && (
           <section className="page">
             <div className="panel teacher-panel">
