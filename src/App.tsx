@@ -2323,20 +2323,20 @@ function App() {
                 <div className="orbit orbit-two"></div>
                 <div className="hero-medal">
                   <Award size={38} />
-                  <strong>145+</strong>
-                  <span>YOUR TARGET</span>
+                  <strong>6</strong>
+                  <span>PROGRAMS</span>
                 </div>
                 <div className="float-card card-a">
                   <BookOpen size={17} />
-                  <span>Read deeply</span>
+                  <span>DET Preparation</span>
                 </div>
                 <div className="float-card card-b">
-                  <Mic size={17} />
-                  <span>Speak boldly</span>
+                  <GraduationCap size={17} />
+                  <span>SAT World</span>
                 </div>
                 <div className="float-card card-c">
-                  <PenLine size={17} />
-                  <span>Write clearly</span>
+                  <Gamepad2 size={17} />
+                  <span>Game Zone</span>
                 </div>
               </div>
             </section>
