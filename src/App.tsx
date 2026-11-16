@@ -2339,163 +2339,19 @@ function App() {
                 </div>
               </div>
             </section>
-            {assessmentStage !== 'complete' && <div className="panel focus-panel" style={{marginBottom:24}}>
-              <div className="eyebrow dark">YOUR ASSESSMENT PATHWAY</div>
-              <h3>{assessmentStage === 'baseline' ? 'Start with your baseline assessment' : assessmentStage === 'midline' ? 'Midline checkpoint: measure your growth' : assessmentStage === 'endline' ? 'Endline assessment: demonstrate your progress' : 'Skill development in progress'}</h3>
-              <p>{assessmentStage === 'baseline' ? 'Before lessons and practice, complete a 45-minute adaptive diagnostic covering reading, listening, writing and speaking. It establishes your starting point.' : assessmentStage === 'midline' ? 'You have completed half of the skill pathway. Take the adaptive midline assessment before continuing.' : 'You have completed the skill pathway. Take the final 45-minute adaptive assessment to measure growth from baseline.'}</p>
-              <button className="btn primary" onClick={() => ['baseline','midline','endline'].includes(assessmentStage) ? beginMock(assessmentStage) : go('Skill practice')}>{assessmentStage === 'baseline' ? 'Begin baseline test' : assessmentStage === 'midline' ? 'Begin midline test' : assessmentStage === 'endline' ? 'Begin endline test' : 'Continue skill practice'} <ArrowRight size={16}/></button>
-            </div>}
-            <div className="section-heading">
-              <div>
-                <div className="eyebrow dark">YOUR LEARNING OVERVIEW</div>
-                <h2>Small steps. Strong results.</h2>
+            <section className="getting-started-panel">
+              <div className="eyebrow dark">A SIMPLE WAY TO GET STARTED</div>
+              <h2>Make this space work for your goals.</h2>
+              <div className="getting-started-steps">
+                <div><span>01</span><strong>Choose a program</strong><p>Open DET Preparation, SAT World, Game Zone or the Learning Library.</p></div>
+                <div><span>02</span><strong>Practise consistently</strong><p>Use lessons, challenges and study support to build your skills step by step.</p></div>
+                <div><span>03</span><strong>Track and connect</strong><p>Review your learning dashboard and stay connected with your cohort.</p></div>
               </div>
-              <button className="text-button" onClick={() => go('Results')}>
-                View progress <ArrowRight size={15} />
-              </button>
-            </div>
-            <section className="stats-grid">
-              <div className="stat-card">
-                <div className="stat-icon teal">
-                  <BookOpen />
-                </div>
-                <div className="stat-label">Skills mastered</div>
-                <div className="stat-value">
-                  {completed}
-                  <small> / {skills.length}</small>
-                </div>
-                <div className="mini-track">
-                  <span
-                    style={{ width: (completed / skills.length) * 100 + '%' }}
-                  />
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon gold">
-                  <BarChart3 />
-                </div>
-                <div className="stat-label">Practice average</div>
-                <div className="stat-value">
-                  {average}
-                  <small> / 100</small>
-                </div>
-                <div className="mini-track">
-                  <span style={{ width: average + '%' }} />
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon purple">
-                  <Trophy />
-                </div>
-                <div className="stat-label">Latest mock estimate</div>
-                <div className="stat-value">
-                  {history[0]?.overall || '—'}
-                  <small> / 160</small>
-                </div>
-                <div className="stat-note">
-                  {history.length
-                    ? 'Latest practice result'
-                    : 'Take your first mock test'}
-                </div>
+              <div className="getting-started-actions">
+                <button className="btn outline" onClick={()=>go('My dashboard')}><BarChart3 size={15}/> View my dashboard</button>
+                <button className="btn outline" onClick={()=>go('Study toolkit')}><Sparkles size={15}/> Open study toolkit</button>
               </div>
             </section>
-            <section className="two-col">
-              <div className="panel">
-                <div className="panel-head">
-                  <div>
-                    <div className="eyebrow dark">YOUR CURRICULUM</div>
-                    <h3>Master every skill</h3>
-                  </div>
-                  <button
-                    className="text-button"
-                    onClick={() => go('Skill practice')}
-                  >
-                    All skills <ArrowRight size={14} />
-                  </button>
-                </div>
-                <div className="skill-list">
-                  {skills.slice(0, 6).map(s => (
-                    <button
-                      className="skill-row"
-                      key={s.id}
-                      onClick={() => startSkill(s)}
-                    >
-                      <div className={'skill-icon ' + s.area.toLowerCase()}>
-                        <s.icon size={18} />
-                      </div>
-                      <div className="skill-meta">
-                        <strong>{s.title}</strong>
-                        <span>
-                          {s.area} · {s.time}
-                        </span>
-                      </div>
-                      <div className="skill-progress">
-                        <div className="mini-track">
-                          <span
-                            style={{ width: (progress[s.id] || 0) + '%' }}
-                          />
-                        </div>
-                        <small>{progress[s.id] || 0}%</small>
-                      </div>
-                      <ChevronRight size={17} className="muted" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="panel focus-panel">
-                <div className="eyebrow dark">YOUR PERSONAL RECOMMENDATION</div>
-                <h3>{skills.reduce((a,b)=>(progress[a.id] ?? 101) <= (progress[b.id] ?? 101) ? a : b).title}</h3>
-                <p>This is currently your lowest-scoring skill. Put extra effort into short, focused practice, analyse every error and repeat a new task until you can reach at least 80% consistently.</p>
-                <div className="eyebrow dark">YOUR NEXT MILESTONE</div>
-                <h3>One focused session can change your trajectory.</h3>
-                <p>
-                  Practise one skill, review your score, then return to the
-                  skill that needs the most attention.
-                </p>
-                <div className="focus-stat">
-                  <span>
-                    {completed} of {skills.length} skills at 70%+
-                  </span>
-                  <strong>
-                    {Math.round((completed / skills.length) * 100)}%
-                  </strong>
-                </div>
-                <div className="mini-track large">
-                  <span
-                    style={{ width: (completed / skills.length) * 100 + '%' }}
-                  />
-                </div>
-                <button
-                  className="btn primary full"
-                  onClick={() => go('Skill practice')}
-                >
-                  Start a practice session <ArrowRight size={16} />
-                </button>
-                <div className="quote">
-                  “Excellence is built through consistent, intentional
-                  practice.”
-                </div>
-              </div>
-            </section>
-            <section className="resource-strip">
-              <div className="resource-icon">
-                <Headphones size={22} />
-              </div>
-              <div>
-                <strong>Learn beyond the lesson</strong>
-                <p>
-                  Explore curated reading, listening and video resources from
-                  trusted learning platforms.
-                </p>
-              </div>
-              <button
-                className="btn outline"
-                onClick={() => go('Learning library')}
-              >
-                Explore resources <ArrowRight size={15} />
-              </button>
-            </section>
-            <button className="arcade-scroll-launch" type="button" onClick={() => go('Game Zone')}><span className="arcade-launch-icon"><Gamepad2 size={30}/></span><span><small>READY FOR A QUICK BREAK?</small><strong>Play the ISOMO Game Zone</strong><em>Find this game whenever you reach the end of your Home page scroll.</em></span><ArrowRight size={23}/></button>
           </div>
         )}
         {!isTeacher && !guestMode && tab === 'SAT World' && user && <SATCenter userId={user.userId} onBack={()=>go('Home')}/>}
