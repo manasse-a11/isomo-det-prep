@@ -21,6 +21,7 @@ import {
   ChevronRight,
   Clock3,
   Headphones,
+  Library,
   Home,
   Menu,
   Mic,
