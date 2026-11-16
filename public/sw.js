@@ -1,4 +1,4 @@
-const CACHE_NAME = 'isomo-det-prep-shell-v3';
+const CACHE_NAME = 'isomo-prep-center-shell-v4';
 const APP_SHELL = ['/'];
 
 self.addEventListener('install', (event) => {
