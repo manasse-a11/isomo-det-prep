@@ -2047,7 +2047,7 @@ function App() {
   };
   const go = (name: string) => {
     if (studentPreview && ['Skill practice','Mock test','Results'].includes(name)) { setNotice('Student preview is read-only. Sign in with a student account to practise, take tests and view private progress.'); return; }
-    if (isTeacher && name !== 'Teacher dashboard') { setNotice('The teacher workspace is separate. Teachers manage learners and assign materials here; tests and student lessons are not available on teacher accounts.'); return; }
+    if (isTeacher && !['Teacher dashboard','Cohort chat'].includes(name)) { setNotice('The teacher workspace is separate. Teachers manage learners and assign materials here; tests and student lessons are not available on teacher accounts.'); return; }
     if (['Skill practice','Mock test','Results','My dashboard','Study toolkit','AI Study Coach','Word Arcade'].includes(name) && !user) { setNotice('Create a student account or sign in to practise and save your private progress.'); return; }
     if (['Skill practice','Mock test','Results'].includes(name) && ['baseline','midline','endline'].includes(assessmentStage)) { beginMock(assessmentStage); return; }
     setTab(name);
