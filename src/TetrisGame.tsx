@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
-import { ArrowLeft, Pause, Play, RotateCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, RotateCcw, Check, Undo2, Volume2, VolumeX, Sparkles, Trophy, HelpCircle, X, Palette, Save } from 'lucide-react';
+import { ArrowLeft, Pause, Play, RotateCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, RotateCcw, Check, Undo2, Volume2, VolumeX, Sparkles, Trophy, HelpCircle, X, Palette } from 'lucide-react';
 
 type Cell = string | null;
 type Piece = { shape: number[][]; color: string; x: number; y: number; type: string };
@@ -22,7 +22,6 @@ const randomPiece = (): Piece => { const type=Object.keys(SHAPES)[Math.floor(Mat
 const rotateShape = (shape:number[][]) => shape[0].map((_,i)=>shape.map(row=>row[i]).reverse());
 const fits = (board:Cell[][],p:Piece,x=p.x,y=p.y,shape=p.shape) => shape.every((row,dy)=>row.every((v,dx)=>!v || (x+dx>=0 && x+dx<W && y+dy>=0 && y+dy<H && !board[y+dy][x+dx])));
 const merge = (board:Cell[][],p:Piece) => { const next=board.map(r=>[...r]); p.shape.forEach((row,dy)=>row.forEach((v,dx)=>{if(v)next[p.y+dy][p.x+dx]=p.color;})); return next; };
-const control: CSSProperties = {border:'1px solid var(--game-line)',borderRadius:13,background:'var(--game-card)',padding:'11px 14px',fontWeight:750,cursor:'pointer',display:'inline-flex',alignItems:'center',justifyContent:'center',gap:7,color:'var(--game-text)',minHeight:44,transition:'transform .15s ease, border-color .15s ease'};
 const stat: CSSProperties = {background:'var(--game-card)',border:'1px solid var(--game-line)',borderRadius:14,padding:'11px 15px',minWidth:88,textAlign:'center'};
 export default function TetrisGame({userId,onBack,onStudySkill}:{userId:string;onBack:()=>void;onStudySkill:(skill:string)=>void}) {
  const [board,setBoard]=useState<Cell[][]>(emptyBoard);
