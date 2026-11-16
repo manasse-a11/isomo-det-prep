@@ -2151,7 +2151,7 @@ function App() {
           {[
             ...(!isTeacher && !guestMode ? [
               {label:'DET', icon:BookOpen, target:'DET', hint:'English Test preparation'},
-              {label:'SAT', icon:GraduationCap, target:'SAT', hint:'SAT practice and vocabulary'},
+              {label:'SAT WORLD', icon:GraduationCap, target:'SAT World', hint:'SAT Quest and Vocabulary Rush'},
               {label:'GAME', icon:Gamepad2, target:'Game Zone', hint:'Learning games'},
             ] : []),
             {label:'About', icon:Info, target:'About', hint:'About ISOMO Prep Center'},
@@ -2275,39 +2275,46 @@ function App() {
         )}
         {!isTeacher && tab === 'Home' && (
           <div className="page">
+            <section className="program-launchpad" id="program-launchpad">
+              <div className="program-launchpad-heading">
+                <div><div className="eyebrow dark">EXPLORE ISOMO PREP CENTER</div><h2>Choose where you want to grow.</h2><p>Every program has its own space. Start with a goal, or explore something new.</p></div>
+                <span className="program-count">LEARN · PRACTISE · CONNECT</span>
+              </div>
+              <div className="program-launchpad-grid">
+                <button className="program-launch-card det-program" onClick={()=>go('DET')}><span className="program-launch-icon"><BookOpen size={23}/></span><span className="program-launch-tag">ENGLISH PROFICIENCY</span><strong>DET Preparation</strong><span>Build reading, writing, listening and speaking skills with lessons, practice and mock tests.</span><em>Explore DET <ArrowRight size={15}/></em></button>
+                <button className="program-launch-card sat-program" onClick={()=>go('SAT World')}><span className="program-launch-icon"><GraduationCap size={23}/></span><span className="program-launch-tag">COLLEGE READINESS</span><strong>SAT World</strong><span>Prepare for Reading & Writing and Math. Explore SAT Quest and Vocabulary Rush.</span><em>Enter SAT World <ArrowRight size={15}/></em></button>
+                <button className="program-launch-card game-program" onClick={()=>go('Game Zone')}><span className="program-launch-icon"><Gamepad2 size={23}/></span><span className="program-launch-tag">LEARN BY PLAYING</span><strong>Game Zone</strong><span>Take on interactive challenges that build vocabulary, focus and problem-solving.</span><em>Play and learn <ArrowRight size={15}/></em></button>
+                <button className="program-launch-card library-program" onClick={()=>go('Learning library')}><span className="program-launch-icon"><Library size={23}/></span><span className="program-launch-tag">KNOWLEDGE & DISCOVERY</span><strong>Learning Library</strong><span>Explore curated lessons, articles, videos and resources to extend your learning.</span><em>Browse resources <ArrowRight size={15}/></em></button>
+                <button className="program-launch-card coach-program" onClick={()=>go('AI Study Coach')}><span className="program-launch-icon"><Sparkles size={23}/></span><span className="program-launch-tag">PERSONALISED SUPPORT</span><strong>AI Study Coach</strong><span>Get guidance, practise skills and work through learning questions with AI support.</span><em>Meet your study coach <ArrowRight size={15}/></em></button>
+                <button className="program-launch-card group-program" onClick={()=>go('Cohort chat')}><span className="program-launch-icon"><Users size={23}/></span><span className="program-launch-tag">LEARN TOGETHER</span><strong>Groups & Community</strong><span>Connect with your cohort, share ideas and learn alongside other scholars.</span><em>Open your groups <ArrowRight size={15}/></em></button>
+              </div>
+            </section>
             <section className="hero">
               <div className="hero-copy">
                 <div className="eyebrow">
-                  <span></span> YOUR ENGLISH, YOUR NEXT CHAPTER
+                  <span></span> ONE CENTER · MANY WAYS TO GROW
                 </div>
                 <h1>
-                  Prepare with purpose.
+                  Your goals. Your learning.
                   <br />
-                  <em>Perform with confidence.</em>
+                  <em>All in one place.</em>
                 </h1>
                 <p>
-                  A complete Duolingo English Test preparation journey, built to
-                  help you reach 145+ through deliberate practice, meaningful
-                  feedback and steady progress.
+                  Welcome to ISOMO Prep Center: prepare for the DET and SAT, sharpen
+                  your skills through games, explore learning resources and grow
+                  with your scholar community.
                 </p>
                 <div className="hero-actions">
-                  <button
-                    className="btn primary"
-                    onClick={() => go('Skill practice')}
-                  >
-                    Continue learning <ArrowRight size={17} />
+                  <button className="btn primary" onClick={() => document.getElementById('program-launchpad')?.scrollIntoView({behavior:'smooth',block:'start'})}>
+                    Explore all programs <ArrowRight size={17} />
                   </button>
-                  <button className="btn ghost-light" onClick={beginMock}>
-                    <Play size={15} /> Take 45-min mock
+                  <button className="btn ghost-light" onClick={() => go('My dashboard')}>
+                    <BarChart3 size={15} /> My learning dashboard
                   </button>
                 </div>
                 <div className="hero-foot">
-                  <span>
-                    <CheckCircle2 size={14} /> Original practice questions
-                  </span>
-                  <span>
-                    <CheckCircle2 size={14} /> Instant skill feedback
-                  </span>
+                  <span><CheckCircle2 size={14} /> DET and SAT preparation</span>
+                  <span><CheckCircle2 size={14} /> Games, resources and community</span>
                 </div>
               </div>
               <div className="hero-art">
@@ -2491,7 +2498,7 @@ function App() {
             <button className="arcade-scroll-launch" type="button" onClick={() => go('Game Zone')}><span className="arcade-launch-icon"><Gamepad2 size={30}/></span><span><small>READY FOR A QUICK BREAK?</small><strong>Play the ISOMO Game Zone</strong><em>Find this game whenever you reach the end of your Home page scroll.</em></span><ArrowRight size={23}/></button>
           </div>
         )}
-        {!isTeacher && !guestMode && tab === 'SAT' && user && <SATCenter userId={user.userId} onBack={()=>go('Home')}/>}
+        {!isTeacher && !guestMode && tab === 'SAT World' && user && <SATCenter userId={user.userId} onBack={()=>go('Home')}/>}
         {tab === 'About' && (
           <div className="page about-page">
             <div className="about-hero">
