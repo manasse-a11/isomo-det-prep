@@ -31,7 +31,8 @@ const shuffle=<T,>(a:T[])=>[...a].sort(()=>Math.random()-.5);
 type Stats={best:number;attempts:number;correct:number;domains:Record<string,{right:number;total:number}>};
 export default function SATQuest({onBack,userId}:{onBack:()=>void;userId:string}){
  const [section,setSection]=useState<Section>('Reading & Writing'),[screen,setScreen]=useState<'home'|'quiz'|'result'>('home'),[questions,setQuestions]=useState<Question[]>([]),[index,setIndex]=useState(0),[chosen,setChosen]=useState<number|null>(null),[answers,setAnswers]=useState<(number|null)[]>([]),[seconds,setSeconds]=useState(600),[timed,setTimed]=useState(true),[showExplain,setShowExplain]=useState(false);
- const storageKey='isomo-satquest-'+(userId||'guest');\n const recorded=useRef(false);
+ const storageKey='isomo-satquest-'+(userId||'guest');
+ const recorded=useRef(false);
  const [stats,setStats]=useState<Stats>(()=>{try{return JSON.parse(localStorage.getItem(storageKey)||'')||{best:0,attempts:0,correct:0,domains:{}}}catch{return {best:0,attempts:0,correct:0,domains:{}}}});
  const current=questions[index];
  const score=answers.reduce((n,a,i)=>n+(a===questions[i]?.answer?1:0),0);
@@ -41,8 +42,8 @@ export default function SATQuest({onBack,userId}:{onBack:()=>void;userId:string}
  const begin=(s:Section,review=false)=>{const pool=review?BANK.filter(q=>answers.some((a,i)=>a!==null&&a!==questions[i]?.answer&&q.id===questions[i]?.id)):BANK.filter(q=>q.section===s);const selected=shuffle(pool).slice(0,10);recorded.current=false;setSection(s);setQuestions(selected);setAnswers(Array(selected.length).fill(null));setIndex(0);setChosen(null);setShowExplain(false);setSeconds(600);setTimed(true);setScreen('quiz');};
  const beginComplete=()=>{const selected=shuffle(BANK);recorded.current=false;setSection('Reading & Writing');setQuestions(selected);setAnswers(Array(selected.length).fill(null));setIndex(0);setChosen(null);setShowExplain(false);setSeconds(1800);setTimed(true);setScreen('quiz');};
  const submit=()=>{if(!current||chosen===null)return;const next=[...answers];next[index]=chosen;setAnswers(next);setShowExplain(true);};
- const advance=()=>{if(index+1>=questions.length){finish();return;}setIndex(i=>i+1);setChosen(null);setShowExplain(false);};
- const finish=()=>{const total=answers.length,right=score;setStats(old=>{const domains={...old.domains};questions.forEach((q,i)=>{const d=domains[q.domain]||{right:0,total:0};d.total++;if(answers[i]===q.answer)d.right++;domains[q.domain]=d;});return {...old,attempts:old.attempts+1,correct:old.correct+right,best:Math.max(old.best,Math.round(right/Math.max(1,total)*100)),domains};});setScreen('result');};
+ const advance=()=>{if(index+1>=questions.length){finish(answers);return;}setIndex(i=>i+1);setChosen(null);setShowExplain(false);};
+ const finish=(finalAnswers:(number|null)[]=answers)=>{if(recorded.current)return;recorded.current=true;const total=finalAnswers.length,right=finalAnswers.reduce((n,a,i)=>n+(a===questions[i]?.answer?1:0),0);setStats(old=>{const domains={...old.domains};questions.forEach((q,i)=>{const d=domains[q.domain]||{right:0,total:0};d.total++;if(finalAnswers[i]===q.answer)d.right++;domains[q.domain]=d;});return {...old,attempts:old.attempts+1,correct:old.correct+right,best:Math.max(old.best,Math.round(right/Math.max(1,total)*100)),domains};});setScreen('result');};
  const format=(n:number)=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
  const missed=questions.filter((q,i)=>answers[i]!==q.answer);
  const accuracy=questions.length?Math.round(score/questions.length*100):0;
