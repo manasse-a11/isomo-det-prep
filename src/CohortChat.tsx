@@ -46,7 +46,7 @@ export default function CohortChat({ user, isTeacher }: { user:any; isTeacher:bo
           <small style={{color:'var(--muted, #687780)'}}>{new Date(m.created_at).toLocaleString()}</small>
         </div>)}
       </div>
-      <form onSubmit={send} style={{display:'flex',gap:8}}>
+      {!isTeacher && <form onSubmit={send} style={{display:'flex',gap:8}}>
         <input className="teacher-input" value={draft} onChange={e=>setDraft(e.target.value)} maxLength={2000} placeholder="Write a message to your cohort…" aria-label="Message" />
         <button className="btn primary" disabled={!draft.trim() || busy}><Send size={16}/> Send</button>
         <button type="button" className="btn outline" onClick={load} aria-label="Refresh chat"><RefreshCw size={16}/></button>
