@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, BookOpen, Calculator, GraduationCap, Library, Save, Sparkles } from 'lucide-react';
 import SATQuest from './SATQuest';
 import SATVocabTrainer from './SATVocabTrainer';
@@ -8,6 +8,7 @@ type SATPreviousScores = { readingWriting: number | ''; math: number | '' };
 export default function SATCenter({userId,onBack,scores,onSaveScores}:{userId:string;onBack:()=>void;scores:SATPreviousScores;onSaveScores:(scores:SATPreviousScores)=>Promise<void>}) {
   const [section,setSection]=useState<'home'|'quest'|'vocabulary'>('home');
   const [draft,setDraft]=useState<SATPreviousScores>(scores || {readingWriting:'',math:''});
+  useEffect(()=>{setDraft(scores || {readingWriting:'',math:''});},[scores.readingWriting,scores.math]);
   const [saving,setSaving]=useState(false);
   const [message,setMessage]=useState('');
   const update=(key:keyof SATPreviousScores,raw:string)=>{
