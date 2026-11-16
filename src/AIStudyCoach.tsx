@@ -1,5 +1,5 @@
-import {useEffect,useMemo,useRef,useState} from 'react';
-import {Bot,Send,Trash2,BookOpen,Mic,PenLine,Headphones,Volume2,Sparkles,ShieldCheck,GraduationCap,Target,Clock3,BarChart3,ClipboardCheck,StopCircle,MessageCircle,Loader2} from 'lucide-react';
+import {useEffect,useMemo,useRef,useState,type KeyboardEvent} from 'react';
+import {Bot,Send,Trash2,BookOpen,Mic,PenLine,Headphones,Volume2,Sparkles,ShieldCheck,GraduationCap,Target,Clock3,BarChart3,ClipboardCheck,Loader2} from 'lucide-react';
 import {supabase} from './lib';
 
 type ChatLine={role:'user'|'model';text:string;time:number};
@@ -76,7 +76,7 @@ export default function AIStudyCoach({user,priorMarks,progress,onPractice}:any){
   utterance.lang='en-US';utterance.rate=0.94;window.speechSynthesis.speak(utterance);
  };
  const stopSpeaking=()=>window.speechSynthesis?.cancel();
- const handleKey=(event:React.KeyboardEvent<HTMLTextAreaElement>)=>{
+ const handleKey=(event:KeyboardEvent<HTMLTextAreaElement>)=>{
   if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();void send();}
  };
 
