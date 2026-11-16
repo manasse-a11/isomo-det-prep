@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { ArrowLeft, Candy, Gamepad2, Sparkles, Droplets, GraduationCap } from 'lucide-react';
 import TetrisGame from './TetrisGame';
 import CandyMatch from './CandyMatch';
-import WaterSort from './WaterSort';\nimport SATQuest from './SATQuest';
+import WaterSort from './WaterSort';
+import SATQuest from './SATQuest';
 
 export default function WordArcade({userId,onBack,onStudySkill}:{userId:string;name:string;progress:Record<string,any>;onBack:()=>void;onStudySkill:(skill:string)=>void}) {
  const [game,setGame]=useState<'menu'|'blocks'|'candy'|'water'|'sat'>('menu');
  if(game==='blocks')return <TetrisGame userId={userId} onBack={()=>setGame('menu')} onStudySkill={onStudySkill}/>;
  if(game==='candy')return <CandyMatch onBack={()=>setGame('menu')}/>;
- if(game==='water')return <WaterSort onBack={()=>setGame('menu')}/>;\n if(game==='sat')return <SATQuest userId={userId} onBack={()=>setGame('menu')}/>;
+ if(game==='water')return <WaterSort onBack={()=>setGame('menu')}/>;
+ if(game==='sat')return <SATQuest userId={userId} onBack={()=>setGame('menu')}/>;
  return <div className="page arcade-page" style={{maxWidth:980,margin:'0 auto'}}>
   <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}><button className="btn outline" onClick={onBack}><ArrowLeft size={17}/> Back</button><div><div style={{fontSize:12,fontWeight:850,letterSpacing:1.5,opacity:.7}}>ISOMO ACADEMY · PLAY & LEARN</div><h1 style={{margin:'3px 0'}}>Word Arcade</h1><p style={{margin:0,opacity:.72}}>Choose a game and enjoy a quick brain break.</p></div></div>
   <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,260px),1fr))',gap:18}}>
@@ -23,7 +25,8 @@ export default function WordArcade({userId,onBack,onStudySkill}:{userId:string;n
    <button onClick={()=>setGame('sat')} style={{textAlign:'left',padding:0,border:0,borderRadius:22,overflow:'hidden',cursor:'pointer',background:'linear-gradient(145deg,#173c72,#101a35)',color:'white',boxShadow:'0 14px 35px #0002'}}>
     <div style={{padding:22,minHeight:230,display:'flex',flexDirection:'column',justifyContent:'space-between',background:'radial-gradient(circle at 85% 15%,#6d91e6,#294c91 48%,#101a35)'}}><div style={{display:'flex',justifyContent:'space-between'}}><span style={{fontWeight:900,letterSpacing:1}}>SAT EXAM TRAINING</span><GraduationCap size={27}/></div><div style={{display:'flex',justifyContent:'center',alignItems:'center',gap:13,fontSize:35}}><span>📖</span><span>✍️</span><span>➗</span><span>🏆</span></div><div><h2 style={{fontSize:26,margin:'0 0 5px'}}>SAT Quest</h2><p style={{margin:0,color:'#e0eaff'}}>Challenge yourself in SAT Reading & Writing and Math. Learn from every answer.</p></div></div><div style={{padding:'13px 22px',fontWeight:850,background:'#172e5a'}}>Start SAT practice →</div>
    </button>
-\n   <button onClick={()=>setGame('water')} style={{textAlign:'left',padding:0,border:0,borderRadius:22,overflow:'hidden',cursor:'pointer',background:'linear-gradient(145deg,#155d82,#0c233d)',color:'white',boxShadow:'0 14px 35px #0002'}}>
+
+   <button onClick={()=>setGame('water')} style={{textAlign:'left',padding:0,border:0,borderRadius:22,overflow:'hidden',cursor:'pointer',background:'linear-gradient(145deg,#155d82,#0c233d)',color:'white',boxShadow:'0 14px 35px #0002'}}>
     <div style={{padding:22,minHeight:230,display:'flex',flexDirection:'column',justifyContent:'space-between',background:'radial-gradient(circle at 85% 15%,#48a9ce,#155d82 48%,#0c233d)'}}><div style={{display:'flex',justifyContent:'space-between'}}><span style={{fontWeight:900,letterSpacing:1}}>SORT & RELAX</span><Droplets size={25}/></div><div style={{display:'flex',justifyContent:'center',alignItems:'end',gap:12,height:76}}>{[['#ff6384','#42c7f4','#ffd34e'],['#9b7cff','#53d69a'],['#ff9852','#ed75df','#a8dc55']].map((colors,i)=><div key={i} style={{width:25,height:65,border:'2px solid #d7f4ffbb',borderTop:0,borderRadius:'3px 3px 12px 12px',display:'flex',flexDirection:'column-reverse',padding:2,background:'#ffffff18',boxShadow:'inset 2px 0 5px #fff5'}}>{colors.map((c,j)=><span key={j} style={{height:'25%',background:c,borderRadius:3}}/>)}</div>)}</div><div><h2 style={{fontSize:26,margin:'0 0 5px'}}>Water Sort</h2><p style={{margin:0,color:'#d4f2ff'}}>Pour colourful layers into matching tubes. Relax, plan and solve.</p></div></div><div style={{padding:'13px 22px',fontWeight:850,background:'#0a304a'}}>Play Water Sort →</div>
    </button>
   </div>
