@@ -5,7 +5,7 @@ import StudentGrowthDashboard from './StudentGrowthDashboard';
 import LearningToolkit from './LearningToolkit';
 import AIStudyCoach from './AIStudyCoach';
 import MotivationHub from './MotivationHub';
-import WordArcade from './WordArcade';
+import GameZone from './WordArcade';
 import SkillCheckpoint from './SkillCheckpoint';
 import StudySubmission from './StudySubmission';
 import CohortChat from './CohortChat';
