@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "ISOMO Academy DET Prep",
-  "short_name": "ISOMO DET Prep",
-  "description": "Prepare confidently for the Duolingo English Test with ISOMO Academy.",
+  "name": "ISOMO Academy Prep Center",
+  "short_name": "Prep Center",
+  "description": "Prepare confidently with ISOMO Academy Prep Center.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
