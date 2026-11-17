@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import './dms.css';
 import { supabase } from './lib';
 import { Archive, CalendarClock, FilePlus2, FileText, Link2, RefreshCw, Search, Trash2, ClipboardList, CheckCircle2 } from 'lucide-react';
 
@@ -66,7 +67,7 @@ export default function DocumentManagement() {
     setDocForm({title:'',document_type:'Policy',department:'',owner_name:'',version:'1.0',status:'Draft',confidentiality:'Internal',storage_url:'',review_date:'',notes:''});
     setShowDocForm(true);
   };
-  const saveDoc = async (e:React.FormEvent) => {
+  const saveDoc = async (e:FormEvent) => {
     e.preventDefault();
     if (!docForm.title.trim()) { setMessage('Enter a document title.'); return; }
     if (docForm.storage_url && !/^https:\/\//i.test(docForm.storage_url)) { setMessage('Storage link must begin with https://'); return; }
