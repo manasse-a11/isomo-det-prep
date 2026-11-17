@@ -1,5 +1,5 @@
-const CACHE_NAME = 'isomo-prep-center-shell-v5';
-const APP_SHELL = ['/'];
+const CACHE_NAME = 'isomo-prep-center-shell-v6';
+const APP_SHELL = ['/', '/icon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
@@ -9,7 +9,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((key) => key.startsWith('isomo-det-prep-') && key !== CACHE_NAME).map((key) => caches.delete(key)))
+      Promise.all(keys.filter((key) => key.startsWith('isomo-prep-center-shell-') && key !== CACHE_NAME).map((key) => caches.delete(key)))
     )
   );
   self.clients.claim();
@@ -35,7 +35,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (/\.(?:js|css|svg|woff2?)$/i.test(url.pathname)) {
+  if (/\\.(?:js|css|svg|woff2?)$/i.test(url.pathname) || url.pathname === '/manifest.webmanifest') {
     event.respondWith(
       caches.open(CACHE_NAME).then(async (cache) => {
         const cached = await cache.match(request);
