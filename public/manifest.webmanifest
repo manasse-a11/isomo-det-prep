@@ -1,21 +1,21 @@
 {
   "id": "/",
-  "name": "ISOMO Academy Prep Center",
-  "short_name": "Prep Center",
-  "description": "Prepare confidently with ISOMO Academy Prep Center.",
+  "name": "ISOMO Prep Center",
+  "short_name": "ISOMO",
+  "description": "DET and SAT preparation, games, learning library, AI study coaching and scholar community.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#fffaf0",
-  "theme_color": "#0b766e",
+  "background_color": "#06164f",
+  "theme_color": "#063d9b",
   "categories": ["education", "productivity"],
   "icons": [
     {
       "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
