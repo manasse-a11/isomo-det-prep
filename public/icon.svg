@@ -1,13 +1,41 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<rect width="512" height="512" rx="76" fill="#fffaf0"/>
-<g fill="#59595b" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="112" letter-spacing="-8">
-<text x="20" y="244">isomo</text>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0787dc"/><stop offset=".48" stop-color="#063d9b"/><stop offset="1" stop-color="#06164f"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#8deaff" stop-opacity=".9"/><stop offset="1" stop-color="#1c83e8" stop-opacity="0"/></radialGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff3a5"/><stop offset=".48" stop-color="#ffc52e"/><stop offset="1" stop-color="#e88a05"/></linearGradient>
+  <linearGradient id="book" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#b9e6ff"/></linearGradient>
+  <clipPath id="round"><rect width="512" height="512" rx="88"/></clipPath>
+</defs>
+<g clip-path="url(#round)">
+<rect width="512" height="512" fill="url(#bg)"/>
+<circle cx="256" cy="207" r="205" fill="url(#glow)"/>
+<path d="M0 370Q120 320 256 370T512 370V512H0Z" fill="#06164f" opacity=".55"/>
+<!-- feature tiles -->
+<g font-family="Arial,sans-serif" font-weight="800" text-anchor="middle">
+ <g transform="translate(34 103)"><rect width="112" height="74" rx="19" fill="#087bd4" stroke="#69d9ff" stroke-width="4"/><text x="56" y="48" font-size="30" fill="white">DET</text></g>
+ <g transform="translate(366 103)"><rect width="112" height="74" rx="19" fill="#7a43d5" stroke="#c8a0ff" stroke-width="4"/><text x="56" y="48" font-size="30" fill="white">SAT</text></g>
+ <g transform="translate(28 222)"><rect width="82" height="74" rx="19" fill="#25b943" stroke="#9bff79" stroke-width="4"/><path d="M21 38h40M41 18v40" stroke="white" stroke-width="8" stroke-linecap="round"/><circle cx="60" cy="25" r="5" fill="white"/></g>
+ <g transform="translate(402 222)"><rect width="82" height="74" rx="19" fill="#f28b13" stroke="#ffd36b" stroke-width="4"/><path d="M18 22q22-10 23 5v31q-13-12-23-5zM64 22q-22-10-23 5v31q13-12 23-5z" fill="none" stroke="white" stroke-width="5" stroke-linejoin="round"/></g>
+ <g transform="translate(29 323)"><rect width="84" height="68" rx="18" fill="#6946d8" stroke="#bca5ff" stroke-width="4"/><rect x="23" y="21" width="38" height="29" rx="8" fill="none" stroke="white" stroke-width="4"/><circle cx="34" cy="34" r="3" fill="white"/><circle cx="50" cy="34" r="3" fill="white"/><path d="M34 43q8 7 16 0M42 21v-8" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+ <g transform="translate(399 323)"><rect width="84" height="68" rx="18" fill="#05a9b4" stroke="#7af2e6" stroke-width="4"/><circle cx="42" cy="25" r="10" fill="white"/><circle cx="22" cy="31" r="7" fill="white"/><circle cx="62" cy="31" r="7" fill="white"/><path d="M21 54q2-18 21-18t21 18M5 54q1-13 15-13M64 41q14 0 15 13" fill="none" stroke="white" stroke-width="7" stroke-linecap="round"/></g>
 </g>
-<g transform="translate(246 190)" fill="none" stroke-width="10">
-<path d="M-38 -51 C12 -82 67 -48 67 7 C67 53 22 81 -23 62" stroke="#59595b"/>
-<path d="M-61 -29 C-42 -84 25 -93 63 -48 C91 -14 76 43 30 62" stroke="#ffc66e"/>
-<path d="M-48 42 C-87 6 -69 -57 -17 -72 C26 -84 67 -53 68 -9" stroke="#60c2e8"/>
-<path d="M38 -55 C85 -28 91 32 48 62 C11 88 -43 72 -60 31" stroke="#91c83e"/>
-</g>
-<text x="256" y="342" text-anchor="middle" fill="#0b514c" font-family="Arial, Helvetica, sans-serif" font-size="43" font-weight="700" letter-spacing="-1">Prep Center</text>
-</svg>
+<!-- globe -->
+<circle cx="256" cy="213" r="104" fill="#0754bd" stroke="#a9edff" stroke-width="8"/>
+<circle cx="256" cy="213" r="91" fill="#1688df"/>
+<path d="M196 150q23-28 44-18l9 20-16 15 9 17-25 18-20-13-12-24zM278 129l31 8 18 25-19 13-4 27-23 10-13-19 9-24-15-17zM228 226l28-17 24 15-4 27 20 21-16 28-34-5-14-26-22-8zM314 236l23-11 13 20-12 28-23-5z" fill="#b4efff" opacity=".95"/>
+<ellipse cx="256" cy="213" rx="43" ry="104" fill="none" stroke="#70d6ff" stroke-width="3" opacity=".65"/>
+<path d="M155 205q101-83 202 0" fill="none" stroke="#70d6ff" stroke-width="3" opacity=".55"/>
+<!-- orbital ring -->
+<ellipse cx="256" cy="218" rx="151" ry="39" transform="rotate(-18 256 218)" fill="none" stroke="url(#gold)" stroke-width="13"/>
+<!-- graduation cap -->
+<path d="M187 117l69-34 69 34-69 34z" fill="#101d50" stroke="url(#gold)" stroke-width="5" stroke-linejoin="round"/>
+<path d="M207 127v25q49 28 98 0v-25" fill="#15275d" stroke="#f9cc51" stroke-width="4"/>
+<path d="M325 111v42" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/><circle cx="325" cy="157" r="7" fill="#ffd34d"/>
+<!-- open book -->
+<path d="M92 345q77-31 164 10 87-41 164-10l-12 69q-78-23-152 20-74-43-152-20z" fill="url(#book)" stroke="#d9f5ff" stroke-width="5" stroke-linejoin="round"/>
+<path d="M256 355v77M113 354q72-18 126 12M399 354q-72-18-126 12" stroke="#67b9f4" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M92 414q82-22 164 20 82-42 164-20" fill="none" stroke="url(#gold)" stroke-width="9" stroke-linecap="round"/>
+<!-- wordmark -->
+<text x="256" y="472" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="54" font-weight="900" letter-spacing="2">ISOMO</text>
+<path d="M130 485h252" stroke="url(#gold)" stroke-width="5" stroke-linecap="round"/>
+</g></svg>
