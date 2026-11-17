@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api } from './lib';
+import DocumentManagement from './DocumentManagement';
 import { Users, Plus, RefreshCw, Download, ShieldCheck, Activity, Target, BookOpen } from 'lucide-react';
 
 type Props = { user: any; progress: Record<string, number>; onViewAsStudent: () => void };
@@ -119,6 +120,7 @@ export default function TeacherDashboard({ user, onViewAsStudent }: Props) {
         <div className="access-actions"><button className="btn primary" disabled={busy} onClick={()=>reviewSubmission(s,'reviewed')}>Mark reviewed</button><button className="btn outline" disabled={busy} onClick={()=>reviewSubmission(s,'needs_revision')}>Request revision</button></div>
       </article>)}</div> : <p>No submissions have been received for {cohortFilter} yet.</p>}
     </section>
+    <DocumentManagement />
     <div className="stats-grid">
       <div className="stat-card"><div className="stat-icon teal"><Users/></div><div className="stat-label">Student accounts with records</div><div className="stat-value">{summary.students}</div></div>
       <div className="stat-card"><div className="stat-icon gold"><Activity/></div><div className="stat-label">Recorded app activities</div><div className="stat-value">{overview?.activityCount || 0}</div></div>
