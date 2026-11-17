@@ -1,0 +1,24 @@
+.isomo-dms{margin:24px 0;border:1px solid #dbe7e6}
+.isomo-dms .panel-head h2{display:flex;align-items:center;gap:9px;margin:7px 0}
+.dms-stats{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin:18px 0}
+.dms-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin:18px 0}
+.dms-tabs,.dms-actions,.dms-row-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dms-search{display:flex;align-items:center;gap:8px;border:1px solid #d5dfdf;border-radius:10px;padding:0 11px;background:#fff;min-height:42px}
+.dms-search input{border:0;outline:0;min-width:180px;padding:9px 0;background:transparent;color:#183b3b}
+.dms-form{margin:14px 0;padding:18px;border:1px solid #dce7e6}
+.dms-form h3{margin:0 0 14px}
+.dms-table-wrap{width:100%;overflow-x:auto;border:1px solid #e0e8e7;border-radius:12px}
+.dms-table{width:100%;border-collapse:collapse;min-width:850px;background:#fff;font-size:13px}
+.dms-table th{background:#edf5f3;color:#244746;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:12px 11px;white-space:nowrap}
+.dms-table td{padding:12px 11px;border-top:1px solid #e8eeee;vertical-align:middle;color:#334b4a}
+.dms-table td strong,.dms-table td small{display:block}
+.dms-table td small{font-size:11px;color:#788987;margin-top:4px}
+.dms-table a{display:inline-flex;align-items:center;gap:5px;color:#087f78;font-weight:650;text-decoration:none}
+.dms-status{display:inline-block;padding:5px 8px;border-radius:20px;background:#edf2f2;color:#435b59;font-size:11px;font-weight:700;white-space:nowrap}
+.dms-status.approved,.dms-status.published{background:#e2f0e8;color:#17633c}
+.dms-status.expired{background:#fce4d6;color:#a13d25}
+.dms-status.in-review,.dms-status.pending-approval{background:#fff2cc;color:#775a12}
+.dms-empty{text-align:center!important;padding:28px!important;color:#73827f!important}
+.dms-row-actions{flex-wrap:nowrap}
+.dms-row-actions .btn{padding:7px 9px;min-height:34px}
+@media(max-width:700px){.dms-toolbar{align-items:stretch}.dms-tabs,.dms-actions{width:100%}.dms-actions>*{flex:1}.dms-search{flex:1}.dms-search input{min-width:0;width:100%}.dms-tabs .btn{flex:1;justify-content:center}.isomo-dms .panel-head{align-items:flex-start}}
