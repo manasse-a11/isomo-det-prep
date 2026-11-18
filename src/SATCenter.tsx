@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, BookOpen, Calculator, GraduationCap, Library, Save, Sparkles } from 'lucide-react';
 import SATQuest from './SATQuest';
 import SATVocabTrainer from './SATVocabTrainer';
+import SATMaths from './SATMaths';
 
 type SATPreviousScores = { readingWriting: number | ''; math: number | '' };
 
 export default function SATCenter({userId,onBack,scores,onSaveScores}:{userId:string;onBack:()=>void;scores:SATPreviousScores;onSaveScores:(scores:SATPreviousScores)=>Promise<void>}) {
-  const [section,setSection]=useState<'home'|'quest'|'vocabulary'>('home');
+  const [section,setSection]=useState<'home'|'quest'|'vocabulary'|'maths'>('home');
   const [draft,setDraft]=useState<SATPreviousScores>(scores || {readingWriting:'',math:''});
   useEffect(()=>{setDraft(scores || {readingWriting:'',math:''});},[scores.readingWriting,scores.math]);
   const [saving,setSaving]=useState(false);
@@ -32,6 +33,7 @@ export default function SATCenter({userId,onBack,scores,onSaveScores}:{userId:st
   };
   if(section==='quest') return <SATQuest userId={userId} onBack={()=>setSection('home')}/>;
   if(section==='vocabulary') return <SATVocabTrainer userId={userId} onBack={()=>setSection('home')}/>;
+  if(section==='maths') return <SATMaths onBack={()=>setSection('home')}/>;
   return <main className="page sat-center-page">
     <div className="sat-center-heading">
       <button className="btn outline" onClick={onBack}><ArrowLeft size={16}/> Back</button>
@@ -56,6 +58,10 @@ export default function SATCenter({userId,onBack,scores,onSaveScores}:{userId:st
       <button className="sat-center-card sat-card-violet" onClick={()=>setSection('vocabulary')}>
         <span className="sat-card-icon"><Library size={27}/></span><span className="sat-card-label">ACADEMIC WORD POWER</span>
         <strong>Vocabulary Rush</strong><span>Explore the full 611-word library, study definitions and train with timed vocabulary rounds.</span><em>Play Vocabulary Rush <span>→</span></em>
+      </button>
+      <button className="sat-center-card sat-card-blue" onClick={()=>setSection('maths')}>
+        <span className="sat-card-icon"><Calculator size={27}/></span><span className="sat-card-label">LESSONS · QUIZZES · PRACTICE PAPERS</span>
+        <strong>SAT Maths</strong><span>Study all four SAT Maths domains through guided lessons, worked examples, short videos, skill quizzes and official practice PDFs.</span><em>Explore SAT Maths <span>→</span></em>
       </button>
     </div>
     <div className="sat-center-note"><Sparkles size={18}/><p><strong>Make every session count.</strong> Review explanations after each practice set and revisit unfamiliar words before moving to the next challenge.</p></div>
